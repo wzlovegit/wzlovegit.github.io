@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next mist use-motion" lang="中文">
+<html class="theme-next gemini use-motion" lang="中文">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -96,7 +96,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Mist',
+    scheme: 'Gemini',
     version: '5.1.4',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -232,6 +232,163 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/03/15/Java多线程服务启动和停止/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/15/Java多线程服务启动和停止/" itemprop="url">Java多线程服务启动和停止</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-15T20:33:00+08:00">
+                2018-03-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/多线程/" itemprop="url" rel="index">
+                    <span itemprop="name">多线程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文从多线程服务的启动，运行，停止着手，深入了解Java多线程编程框架以及不同场景的解决方案。</p>
+<h1 id="Java多线程服务启动和停止"><a href="#Java多线程服务启动和停止" class="headerlink" title="Java多线程服务启动和停止"></a>Java多线程服务启动和停止</h1><p>Java如何编写多线程代码？，绝大部分人会想起Java的Excutor框架。如何管理多线程服务的生命周期？大家又会推荐ExcutorService。如何用好它们？哪些场景需要拓展它们？</p>
+<h1 id="线程模型"><a href="#线程模型" class="headerlink" title="线程模型"></a>线程模型</h1><p>线程真实的表现在OS当中，它是OS任务调度的基本单位。当OS选择让哪个线程执行的时候，就会将相应的资源（CPU、IO）调配给它。那么既然OS将资源给它了，那咱就不能让它白费电，所以通常我们会给它分配任务，让它利用OS的资源将任务执行完毕。</p>
+<p>Java很好的将线程和任务做了分离，这一小节，我们先介绍线程模型。</p>
+<p>定义hiWork任务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void hiWork(int i) &#123;</span><br><span class="line">	System.out.println(&quot;hi : &quot; + i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行100次hiWork。</p>
+<h2 id="单线程"><a href="#单线程" class="headerlink" title="单线程"></a>单线程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Thread t = new Thread() &#123;</span><br><span class="line">	public void run() &#123;</span><br><span class="line">		int i = 0;</span><br><span class="line">		while (i &lt; 100) &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>优点：不用考虑临界资源、锁等多线程活跃性带来的麻烦<br>缺点：吞吐和响应都很差、系统资源利用率低</p>
+<h2 id="一个任务一个线程"><a href="#一个任务一个线程" class="headerlink" title="一个任务一个线程"></a>一个任务一个线程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">int i = 0;</span><br><span class="line">while (i &lt; 100) &#123;</span><br><span class="line">	Thread t = new Thread() &#123;</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	i++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>优点：吞吐和响应较3.1提升、资源利用率高<br>缺点：需要考虑多线程活跃性、线程创建销毁频繁带来的资源消耗大、线程过多引起线程切换、可能导致系统崩溃</p>
+<h2 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executor = ...;</span><br><span class="line">int i = 0;</span><br><span class="line">while (i &lt; 100) &#123;</span><br><span class="line">	excutor.excute(new Runnable() &#123;</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	i++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>优点：根据OS和物理机实际条件调优线程池线程个数、吞吐和响应好、不会频繁创建线程、不会由于任务过多导致线程太多系统崩溃<br>缺点：需要考虑线程活跃性</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>对比以上三种的优缺点，找到任务类型，选择合适的线程模型。比如，强烈要求顺序性的任务，我们会选择类似于第一种的方案，保证顺序性；比如互相独立的任务，我们会选择类似第三种的方案，保证高吞吐，低延时。</p>
+<h1 id="Executor-线程框架"><a href="#Executor-线程框架" class="headerlink" title="Executor 线程框架"></a>Executor 线程框架</h1><p><img src="/images/Executors.png" alt="Executors线程池框架" title="Executors框架"></p>
+<p>Executor将任务和执行任务的线程分离开来。任务提交到传送带上，由线程池中的线程依次处理。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/03/11/中年男人拯救手册/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -325,10 +482,8 @@
       
         
           
-            <blockquote>
-<p>Live like a human.</p>
-</blockquote>
-
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>10年前，一切还是未知，对未来充满了憧憬和向往。学校宣传的此时不搏何时搏，一遍又一遍的麻醉着我的神经，总以为熬过了高中题海与乏味，就会进入一个有趣而享受的世界。</p>
+<h1 id="1-调整"><a href="#1-调整" class="headerlink" title="1 调整"></a>1 调整</h1><h1 id="2-压力"><a href="#2-压力" class="headerlink" title="2 压力"></a>2 压力</h1><h1 id="3-提升"><a href="#3-提升" class="headerlink" title="3 提升"></a>3 提升</h1><h1 id="4-运动"><a href="#4-运动" class="headerlink" title="4 运动"></a>4 运动</h1><h1 id="5-衣品"><a href="#5-衣品" class="headerlink" title="5 衣品"></a>5 衣品</h1><h1 id="6-兴趣"><a href="#6-兴趣" class="headerlink" title="6 兴趣"></a>6 兴趣</h1><h1 id="7-感情"><a href="#7-感情" class="headerlink" title="7 感情"></a>7 感情</h1><h1 id="8-未知"><a href="#8-未知" class="headerlink" title="8 未知"></a>8 未知</h1><h1 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h1>
           
         
       
@@ -551,7 +706,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
@@ -562,7 +717,7 @@
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">Kategorien</span>
                 
               </div>
@@ -573,7 +728,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">Tags</span>
                 
               </div>
@@ -628,7 +783,7 @@
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
@@ -727,6 +882,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
 
   
 
