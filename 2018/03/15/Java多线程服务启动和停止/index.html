@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="前言本文从多线程服务的启动，运行，停止着手，深入了解Java多线程编程框架以及不同场景的解决方案。 Java多线程服务启动和停止Java如何编写多线程代码？，绝大部分人会想起Java的Excutor框架。如何管理多线程服务的生命周期？大家又会推荐ExcutorService。如何用好它们？哪些场景需要拓展它们？ 线程模型线程真实的表现在OS当中，它是OS任务调度的基本单位。当OS选择让哪个线程执行">
+<meta name="description" content="前言本文从多线程服务的启动，运行，停止着手，深入了解Java多线程编程框架以及不同场景的解决方案。 Java多线程服务启动和停止Java如何编写多线程代码？绝大部分人会想起Java的Excutor框架。如何管理多线程服务的生命周期？大家又会推荐ExcutorService。如何用好它们？哪些场景需要拓展它们？ 线程模型线程真实的表现在OS当中，它是OS任务调度的基本单位。当OS选择让哪个线程执行的">
 <meta name="keywords" content="java 多线程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java多线程服务启动和停止">
 <meta property="og:url" content="http://wzlovegit.github.io/2018/03/15/Java多线程服务启动和停止/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="前言本文从多线程服务的启动，运行，停止着手，深入了解Java多线程编程框架以及不同场景的解决方案。 Java多线程服务启动和停止Java如何编写多线程代码？，绝大部分人会想起Java的Excutor框架。如何管理多线程服务的生命周期？大家又会推荐ExcutorService。如何用好它们？哪些场景需要拓展它们？ 线程模型线程真实的表现在OS当中，它是OS任务调度的基本单位。当OS选择让哪个线程执行">
+<meta property="og:description" content="前言本文从多线程服务的启动，运行，停止着手，深入了解Java多线程编程框架以及不同场景的解决方案。 Java多线程服务启动和停止Java如何编写多线程代码？绝大部分人会想起Java的Excutor框架。如何管理多线程服务的生命周期？大家又会推荐ExcutorService。如何用好它们？哪些场景需要拓展它们？ 线程模型线程真实的表现在OS当中，它是OS任务调度的基本单位。当OS选择让哪个线程执行的">
 <meta property="og:locale" content="中文">
 <meta property="og:image" content="http://wzlovegit.github.io/images/Executors.png">
-<meta property="og:updated_time" content="2018-03-15T14:30:00.346Z">
+<meta property="og:updated_time" content="2018-03-15T14:47:38.514Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java多线程服务启动和停止">
-<meta name="twitter:description" content="前言本文从多线程服务的启动，运行，停止着手，深入了解Java多线程编程框架以及不同场景的解决方案。 Java多线程服务启动和停止Java如何编写多线程代码？，绝大部分人会想起Java的Excutor框架。如何管理多线程服务的生命周期？大家又会推荐ExcutorService。如何用好它们？哪些场景需要拓展它们？ 线程模型线程真实的表现在OS当中，它是OS任务调度的基本单位。当OS选择让哪个线程执行">
+<meta name="twitter:description" content="前言本文从多线程服务的启动，运行，停止着手，深入了解Java多线程编程框架以及不同场景的解决方案。 Java多线程服务启动和停止Java如何编写多线程代码？绝大部分人会想起Java的Excutor框架。如何管理多线程服务的生命周期？大家又会推荐ExcutorService。如何用好它们？哪些场景需要拓展它们？ 线程模型线程真实的表现在OS当中，它是OS任务调度的基本单位。当OS选择让哪个线程执行的">
 <meta name="twitter:image" content="http://wzlovegit.github.io/images/Executors.png">
 
 
@@ -325,7 +325,7 @@
 
       
         <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文从多线程服务的启动，运行，停止着手，深入了解Java多线程编程框架以及不同场景的解决方案。</p>
-<h1 id="Java多线程服务启动和停止"><a href="#Java多线程服务启动和停止" class="headerlink" title="Java多线程服务启动和停止"></a>Java多线程服务启动和停止</h1><p>Java如何编写多线程代码？，绝大部分人会想起Java的Excutor框架。如何管理多线程服务的生命周期？大家又会推荐ExcutorService。如何用好它们？哪些场景需要拓展它们？</p>
+<h1 id="Java多线程服务启动和停止"><a href="#Java多线程服务启动和停止" class="headerlink" title="Java多线程服务启动和停止"></a>Java多线程服务启动和停止</h1><p>Java如何编写多线程代码？绝大部分人会想起Java的Excutor框架。如何管理多线程服务的生命周期？大家又会推荐ExcutorService。如何用好它们？哪些场景需要拓展它们？</p>
 <h1 id="线程模型"><a href="#线程模型" class="headerlink" title="线程模型"></a>线程模型</h1><p>线程真实的表现在OS当中，它是OS任务调度的基本单位。当OS选择让哪个线程执行的时候，就会将相应的资源（CPU、IO）调配给它。那么既然OS将资源给它了，那咱就不能让它白费电，所以通常我们会给它分配任务，让它利用OS的资源将任务执行完毕。</p>
 <p>Java很好的将线程和任务做了分离，这一小节，我们先介绍线程模型。</p>
 <p>定义hiWork任务：</p>
