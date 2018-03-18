@@ -185,7 +185,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -195,7 +195,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -218,6 +218,125 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/03/15/MySQL索引/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/15/MySQL索引/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-15T22:54:12+08:00">
+                2018-03-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -261,7 +380,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-15T20:33:00+08:00">
                 2018-03-15
@@ -282,7 +401,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -326,22 +445,49 @@
         
           
             <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文从多线程服务的启动，运行，停止着手，深入了解Java多线程编程框架以及不同场景的解决方案。</p>
-<h1 id="Java多线程服务启动和停止"><a href="#Java多线程服务启动和停止" class="headerlink" title="Java多线程服务启动和停止"></a>Java多线程服务启动和停止</h1><p>Java如何编写多线程代码？绝大部分人会想起Java的Excutor框架。如何管理多线程服务的生命周期？大家又会推荐ExcutorService。如何用好它们？哪些场景需要拓展它们？</p>
-<h1 id="线程模型"><a href="#线程模型" class="headerlink" title="线程模型"></a>线程模型</h1><p>线程真实的表现在OS当中，它是OS任务调度的基本单位。当OS选择让哪个线程执行的时候，就会将相应的资源（CPU、IO）调配给它。那么既然OS将资源给它了，那咱就不能让它白费电，所以通常我们会给它分配任务，让它利用OS的资源将任务执行完毕。</p>
+<h1 id="1-Java多线程服务启动和停止"><a href="#1-Java多线程服务启动和停止" class="headerlink" title="1 Java多线程服务启动和停止"></a>1 Java多线程服务启动和停止</h1><p>Java如何编写多线程代码？绝大部分人会想起Java的Excutor框架。如何管理多线程服务的生命周期？大家又会推荐ExcutorService。如何用好它们？哪些场景需要拓展它们？</p>
+<h1 id="2-基础介绍"><a href="#2-基础介绍" class="headerlink" title="2 基础介绍"></a>2 基础介绍</h1><p>大牛无需关注此节</p>
+<h2 id="2-1-线程模型"><a href="#2-1-线程模型" class="headerlink" title="2.1 线程模型"></a>2.1 线程模型</h2><p>线程真实的表现在OS当中，它是OS任务调度的基本单位。当OS选择让哪个线程执行的时候，就会将相应的资源（CPU、IO）调配给它。那么既然OS将资源给它了，那咱就不能让它白费电，所以通常我们会给它分配任务，让它利用OS的资源将任务执行完毕。</p>
 <p>Java很好的将线程和任务做了分离，这一小节，我们先介绍线程模型。</p>
 <p>定义hiWork任务：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void hiWork(int i) &#123;</span><br><span class="line">	System.out.println(&quot;hi : &quot; + i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>执行100次hiWork。</p>
-<h2 id="单线程"><a href="#单线程" class="headerlink" title="单线程"></a>单线程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Thread t = new Thread() &#123;</span><br><span class="line">	public void run() &#123;</span><br><span class="line">		int i = 0;</span><br><span class="line">		while (i &lt; 100) &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-1-1-单线程"><a href="#2-1-1-单线程" class="headerlink" title="2.1.1 单线程"></a>2.1.1 单线程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Thread t = new Thread() &#123;</span><br><span class="line">	public void run() &#123;</span><br><span class="line">		int i = 0;</span><br><span class="line">		while (i &lt; 100) &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>优点：不用考虑临界资源、锁等多线程活跃性带来的麻烦<br>缺点：吞吐和响应都很差、系统资源利用率低</p>
-<h2 id="一个任务一个线程"><a href="#一个任务一个线程" class="headerlink" title="一个任务一个线程"></a>一个任务一个线程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">int i = 0;</span><br><span class="line">while (i &lt; 100) &#123;</span><br><span class="line">	Thread t = new Thread() &#123;</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	i++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-1-2-一个任务一个线程"><a href="#2-1-2-一个任务一个线程" class="headerlink" title="2.1.2 一个任务一个线程"></a>2.1.2 一个任务一个线程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">int i = 0;</span><br><span class="line">while (i &lt; 100) &#123;</span><br><span class="line">	Thread t = new Thread() &#123;</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	i++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>优点：吞吐和响应较3.1提升、资源利用率高<br>缺点：需要考虑多线程活跃性、线程创建销毁频繁带来的资源消耗大、线程过多引起线程切换、可能导致系统崩溃</p>
-<h2 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executor = ...;</span><br><span class="line">int i = 0;</span><br><span class="line">while (i &lt; 100) &#123;</span><br><span class="line">	excutor.excute(new Runnable() &#123;</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	i++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-1-3-线程池"><a href="#2-1-3-线程池" class="headerlink" title="2.1.3 线程池"></a>2.1.3 线程池</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executor = ...;</span><br><span class="line">int i = 0;</span><br><span class="line">while (i &lt; 100) &#123;</span><br><span class="line">	excutor.excute(new Runnable() &#123;</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	i++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>优点：根据OS和物理机实际条件调优线程池线程个数、吞吐和响应好、不会频繁创建线程、不会由于任务过多导致线程太多系统崩溃<br>缺点：需要考虑线程活跃性</p>
-<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>对比以上三种的优缺点，找到任务类型，选择合适的线程模型。比如，强烈要求顺序性的任务，我们会选择类似于第一种的方案，保证顺序性；比如互相独立的任务，我们会选择类似第三种的方案，保证高吞吐，低延时。</p>
-<h1 id="Executor-线程框架"><a href="#Executor-线程框架" class="headerlink" title="Executor 线程框架"></a>Executor 线程框架</h1><p><img src="/images/Executors.png" alt="Executors线程池框架" title="Executors框架"></p>
-<p>Executor将任务和执行任务的线程分离开来。任务提交到传送带上，由线程池中的线程依次处理。</p>
-
+<h2 id="2-1-4-结论"><a href="#2-1-4-结论" class="headerlink" title="2.1.4 结论"></a>2.1.4 结论</h2><p>对比以上三种的优缺点，找到任务类型，选择合适的线程模型。比如，强烈要求顺序性的任务，我们会选择类似于第一种的方案，保证顺序性；比如互相独立的任务，我们会选择类似第三种的方案，保证高吞吐，低延时。</p>
+<h2 id="2-2-Executor-线程框架"><a href="#2-2-Executor-线程框架" class="headerlink" title="2.2 Executor 线程框架"></a>2.2 Executor 线程框架</h2><p><img src="/images/Executors.png" alt="Executors线程池框架" title="Executors框架"></p>
+<p>Executor将任务和执行任务的线程分离开来。线程池当中的线程就像工人一样，不断从传送带上提取任务，处理完之后，从传送带上获取下一个任务，循环往复。线程池细节很多，本小节对线程池创建、任务执行、任务提交方式进行简单介绍。并不是所有的线程池都采用这种方式创建，如果用到了定制过的线程池还需谨慎。</p>
+<h3 id="2-2-1-框架图说明"><a href="#2-2-1-框架图说明" class="headerlink" title="2.2.1 框架图说明"></a>2.2.1 框架图说明</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Creates a new &#123;@code ThreadPoolExecutor&#125; with the given initial</span><br><span class="line"> * parameters.</span><br><span class="line"> *</span><br><span class="line"> * @param corePoolSize the number of threads to keep in the pool, even</span><br><span class="line"> *        if they are idle, unless &#123;@code allowCoreThreadTimeOut&#125; is set</span><br><span class="line"> * @param maximumPoolSize the maximum number of threads to allow in the</span><br><span class="line"> *        pool</span><br><span class="line"> * @param keepAliveTime when the number of threads is greater than</span><br><span class="line"> *        the core, this is the maximum time that excess idle threads</span><br><span class="line"> *        will wait for new tasks before terminating.</span><br><span class="line"> * @param unit the time unit for the &#123;@code keepAliveTime&#125; argument</span><br><span class="line"> * @param workQueue the queue to use for holding tasks before they are</span><br><span class="line"> *        executed.  This queue will hold only the &#123;@code Runnable&#125;</span><br><span class="line"> *        tasks submitted by the &#123;@code execute&#125; method.</span><br><span class="line"> * @param threadFactory the factory to use when the executor</span><br><span class="line"> *        creates a new thread</span><br><span class="line"> * @param handler the handler to use when execution is blocked</span><br><span class="line"> *        because the thread bounds and queue capacities are reached</span><br><span class="line"> * @throws IllegalArgumentException if one of the following holds:&lt;br&gt;</span><br><span class="line"> *         &#123;@code corePoolSize &lt; 0&#125;&lt;br&gt;</span><br><span class="line"> *         &#123;@code keepAliveTime &lt; 0&#125;&lt;br&gt;</span><br><span class="line"> *         &#123;@code maximumPoolSize &lt;= 0&#125;&lt;br&gt;</span><br><span class="line"> *         &#123;@code maximumPoolSize &lt; corePoolSize&#125;</span><br><span class="line"> * @throws NullPointerException if &#123;@code workQueue&#125;</span><br><span class="line"> *         or &#123;@code threadFactory&#125; or &#123;@code handler&#125; is null</span><br><span class="line"> */</span><br><span class="line">public ThreadPoolExecutor(int corePoolSize,</span><br><span class="line">                          int maximumPoolSize,</span><br><span class="line">                          long keepAliveTime,</span><br><span class="line">                          TimeUnit unit,</span><br><span class="line">                          BlockingQueue&lt;Runnable&gt; workQueue,</span><br><span class="line">                          ThreadFactory threadFactory,</span><br><span class="line">                          RejectedExecutionHandler handler) &#123;</span><br><span class="line">    if (corePoolSize &lt; 0 ||</span><br><span class="line">        maximumPoolSize &lt;= 0 ||</span><br><span class="line">        maximumPoolSize &lt; corePoolSize ||</span><br><span class="line">        keepAliveTime &lt; 0)</span><br><span class="line">        throw new IllegalArgumentException();</span><br><span class="line">    if (workQueue == null || threadFactory == null || handler == null)</span><br><span class="line">        throw new NullPointerException();</span><br><span class="line">    this.acc = System.getSecurityManager() == null ?</span><br><span class="line">            null :</span><br><span class="line">            AccessController.getContext();</span><br><span class="line">    this.corePoolSize = corePoolSize;</span><br><span class="line">    this.maximumPoolSize = maximumPoolSize;</span><br><span class="line">    this.workQueue = workQueue;</span><br><span class="line">    this.keepAliveTime = unit.toNanos(keepAliveTime);</span><br><span class="line">    this.threadFactory = threadFactory;</span><br><span class="line">    this.handler = handler;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个线程池构造函数是参数最全的。</p>
+<ul>
+<li>corePoolSize : 线程池中线程的个数</li>
+<li>maximumPoolSize : 线程池中线程的最大个数</li>
+<li>keepAliveTime : 当线程池中线城的个数超过corePoolSize的时候，在线程退出之前，需要保持keepAliveTime</li>
+<li>unit : keepAliveTime的时间单位</li>
+<li>workQueue : 上图中的传送带，队列中只保存由execute方法提交的任务</li>
+<li>threadFactory : 线程生成的工厂方法</li>
+<li>handler : 任务提交被拒绝时的回调函数</li>
+</ul>
+<h3 id="2-2-2-线程池中的线程如何创建"><a href="#2-2-2-线程池中的线程如何创建" class="headerlink" title="2.2.2 线程池中的线程如何创建"></a>2.2.2 线程池中的线程如何创建</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">  * Creates with given first task and thread from ThreadFactory.</span><br><span class="line">  * @param firstTask the first task (null if none)</span><br><span class="line">  */</span><br><span class="line"> Worker(Runnable firstTask) &#123;</span><br><span class="line">     setState(-1); // inhibit interrupts until runWorker</span><br><span class="line">     this.firstTask = firstTask;</span><br><span class="line">     this.thread = getThreadFactory().newThread(this);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>线程池中，将线程封装为Worker，非常形象的名字。因为线程不拥有任务，只是执行任务。任务有时候太恶心还能把Worker搞坏。如果叫Boss，就文不对题了。thread是采用newThread的方式创建的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public Thread newThread(Runnable r) &#123;</span><br><span class="line">    Thread t = new Thread(group, r,</span><br><span class="line">                          namePrefix + threadNumber.getAndIncrement(),</span><br><span class="line">                          0);</span><br><span class="line">    if (t.isDaemon())</span><br><span class="line">        t.setDaemon(false);</span><br><span class="line">    if (t.getPriority() != Thread.NORM_PRIORITY)</span><br><span class="line">        t.setPriority(Thread.NORM_PRIORITY);</span><br><span class="line">    return t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码片是线程池默认的创建线程的方式。我们看到它生成了Thread对象，设置线程是否为守护线程，设置线程优先级，然后就将Thread对象的引用返回。线程对象只是OS线程的一个句柄，现在线程只是在内核当中有这么个数据结构，并未真正开始占用CPU等资源执行任务。</p>
+<p>线程池中的线程根据参数的不同在需要的时候按照类似这种方式将线程创建完成，生成Worker。然后将Worker加入到线程池中。</p>
+<h3 id="2-2-3-线程池中的线程如何执行任务"><a href="#2-2-3-线程池中的线程如何执行任务" class="headerlink" title="2.2.3 线程池中的线程如何执行任务"></a>2.2.3 线程池中的线程如何执行任务</h3><p>通常情况下，线程执行完任务后，会退出。线程池中的线程是怎么保持自己不死掉的呢？<br>这跟workQueue队列密切相关。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">private final class Worker</span><br><span class="line">    extends AbstractQueuedSynchronizer</span><br><span class="line">    implements Runnable</span><br><span class="line">&#123;</span><br><span class="line">    /**</span><br><span class="line">     * This class will never be serialized, but we provide a</span><br><span class="line">     * serialVersionUID to suppress a javac warning.</span><br><span class="line">     */</span><br><span class="line">    private static final long serialVersionUID = 6138294804551838833L;</span><br><span class="line"></span><br><span class="line">    /** Thread this worker is running in.  Null if factory fails. */</span><br><span class="line">    final Thread thread;</span><br><span class="line">    /** Initial task to run.  Possibly null. */</span><br><span class="line">    Runnable firstTask;</span><br><span class="line">    /** Per-thread task counter */</span><br><span class="line">    volatile long completedTasks;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Creates with given first task and thread from ThreadFactory.</span><br><span class="line">     * @param firstTask the first task (null if none)</span><br><span class="line">     */</span><br><span class="line">    Worker(Runnable firstTask) &#123;</span><br><span class="line">        setState(-1); // inhibit interrupts until runWorker</span><br><span class="line">        this.firstTask = firstTask;</span><br><span class="line">        this.thread = getThreadFactory().newThread(this);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /** Delegates main run loop to outer runWorker  */</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        runWorker(this);</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以看到，Worker的run方法调用的时runWorker。那么我们就需要关注为什么runWorker不会执行完一个任务就退出。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"> */</span><br><span class="line">final void runWorker(Worker w) &#123;</span><br><span class="line">    Thread wt = Thread.currentThread();</span><br><span class="line">    Runnable task = w.firstTask;</span><br><span class="line">    w.firstTask = null;</span><br><span class="line">    w.unlock(); // allow interrupts</span><br><span class="line">    boolean completedAbruptly = true;</span><br><span class="line">    try &#123;</span><br><span class="line">        while (task != null || (task = getTask()) != null) &#123;</span><br><span class="line">            w.lock();</span><br><span class="line">            // If pool is stopping, ensure thread is interrupted;</span><br><span class="line">            // if not, ensure thread is not interrupted.  This</span><br><span class="line">            // requires a recheck in second case to deal with</span><br><span class="line">            // shutdownNow race while clearing interrupt</span><br><span class="line">            if ((runStateAtLeast(ctl.get(), STOP) ||</span><br><span class="line">                 (Thread.interrupted() &amp;&amp;</span><br><span class="line">                  runStateAtLeast(ctl.get(), STOP))) &amp;&amp;</span><br><span class="line">                !wt.isInterrupted())</span><br><span class="line">                wt.interrupt();</span><br><span class="line">            try &#123;</span><br><span class="line">                beforeExecute(wt, task);</span><br><span class="line">                Throwable thrown = null;</span><br><span class="line">                try &#123;</span><br><span class="line">                    task.run();</span><br><span class="line">                &#125; catch (RuntimeException x) &#123;</span><br><span class="line">                    thrown = x; throw x;</span><br><span class="line">                &#125; catch (Error x) &#123;</span><br><span class="line">                    thrown = x; throw x;</span><br><span class="line">                &#125; catch (Throwable x) &#123;</span><br><span class="line">                    thrown = x; throw new Error(x);</span><br><span class="line">                &#125; finally &#123;</span><br><span class="line">                    afterExecute(task, thrown);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                task = null;</span><br><span class="line">                w.completedTasks++;</span><br><span class="line">                w.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        completedAbruptly = false;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        processWorkerExit(w, completedAbruptly);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>while循环中，task = getTask()方法是个阻塞方法，调用workQueue.take()从队列中获取任务执行。所以线程启动之后，如果有任务就会从队列中取出来一个任务，去执行。如果没有任务，就会在take()这里阻塞。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">private Runnable getTask() &#123;</span><br><span class="line">    boolean timedOut = false; // Did the last poll() time out?</span><br><span class="line"></span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        int c = ctl.get();</span><br><span class="line">        int rs = runStateOf(c);</span><br><span class="line"></span><br><span class="line">        // Check if queue empty only if necessary.</span><br><span class="line">        if (rs &gt;= SHUTDOWN &amp;&amp; (rs &gt;= STOP || workQueue.isEmpty())) &#123;</span><br><span class="line">            decrementWorkerCount();</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int wc = workerCountOf(c);</span><br><span class="line"></span><br><span class="line">        // Are workers subject to culling?</span><br><span class="line">        boolean timed = allowCoreThreadTimeOut || wc &gt; corePoolSize;</span><br><span class="line"></span><br><span class="line">        if ((wc &gt; maximumPoolSize || (timed &amp;&amp; timedOut))</span><br><span class="line">            &amp;&amp; (wc &gt; 1 || workQueue.isEmpty())) &#123;</span><br><span class="line">            if (compareAndDecrementWorkerCount(c))</span><br><span class="line">                return null;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            Runnable r = timed ?</span><br><span class="line">                workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) :</span><br><span class="line">                workQueue.take();</span><br><span class="line">            if (r != null)</span><br><span class="line">                return r;</span><br><span class="line">            timedOut = true;</span><br><span class="line">        &#125; catch (InterruptedException retry) &#123;</span><br><span class="line">            timedOut = false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-2-4-如何向线程池提交任务"><a href="#2-2-4-如何向线程池提交任务" class="headerlink" title="2.2.4 如何向线程池提交任务"></a>2.2.4 如何向线程池提交任务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">public void execute(Runnable command) &#123;</span><br><span class="line">    if (command == null)</span><br><span class="line">        throw new NullPointerException();</span><br><span class="line">    /*</span><br><span class="line">     * Proceed in 3 steps:</span><br><span class="line">     *</span><br><span class="line">     * 1. If fewer than corePoolSize threads are running, try to</span><br><span class="line">     * start a new thread with the given command as its first</span><br><span class="line">     * task.  The call to addWorker atomically checks runState and</span><br><span class="line">     * workerCount, and so prevents false alarms that would add</span><br><span class="line">     * threads when it shouldn&apos;t, by returning false.</span><br><span class="line">     *</span><br><span class="line">     * 2. If a task can be successfully queued, then we still need</span><br><span class="line">     * to double-check whether we should have added a thread</span><br><span class="line">     * (because existing ones died since last checking) or that</span><br><span class="line">     * the pool shut down since entry into this method. So we</span><br><span class="line">     * recheck state and if necessary roll back the enqueuing if</span><br><span class="line">     * stopped, or start a new thread if there are none.</span><br><span class="line">     *</span><br><span class="line">     * 3. If we cannot queue task, then we try to add a new</span><br><span class="line">     * thread.  If it fails, we know we are shut down or saturated</span><br><span class="line">     * and so reject the task.</span><br><span class="line">     */</span><br><span class="line">    int c = ctl.get();</span><br><span class="line">    if (workerCountOf(c) &lt; corePoolSize) &#123;</span><br><span class="line">        if (addWorker(command, true))</span><br><span class="line">            return;</span><br><span class="line">        c = ctl.get();</span><br><span class="line">    &#125;</span><br><span class="line">    if (isRunning(c) &amp;&amp; workQueue.offer(command)) &#123;</span><br><span class="line">        int recheck = ctl.get();</span><br><span class="line">        if (! isRunning(recheck) &amp;&amp; remove(command))</span><br><span class="line">            reject(command);</span><br><span class="line">        else if (workerCountOf(recheck) == 0)</span><br><span class="line">            addWorker(null, false);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (!addWorker(command, false))</span><br><span class="line">        reject(command);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>任务采用offer的方式向队列中提交。队列满会导致offer提交失败。提交失败之后，线程池会调用RejectExceptionHandler处理提交失败的任务。</p>
+<p><strong>submit &amp;&amp; execute</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @throws RejectedExecutionException &#123;@inheritDoc&#125;</span><br><span class="line"> * @throws NullPointerException       &#123;@inheritDoc&#125;</span><br><span class="line"> */</span><br><span class="line">public &lt;T&gt; Future&lt;T&gt; submit(Runnable task, T result) &#123;</span><br><span class="line">    if (task == null) throw new NullPointerException();</span><br><span class="line">    RunnableFuture&lt;T&gt; ftask = newTaskFor(task, result);</span><br><span class="line">    execute(ftask);</span><br><span class="line">    return ftask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>submit提交任务之后，会先生成一个RunnableFuture对象来管理提交任务的生命周期，然后调用execute去提交任务。</p>
+<h1 id="服务启动"><a href="#服务启动" class="headerlink" title="服务启动"></a>服务启动</h1><h1 id="服务停止"><a href="#服务停止" class="headerlink" title="服务停止"></a>服务停止</h1>
           
         
       
@@ -418,7 +564,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-11T23:09:00+08:00">
                 2018-03-11
@@ -439,7 +585,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -560,7 +706,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-11T17:46:00+08:00">
                 2018-03-11
@@ -581,7 +727,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -706,8 +852,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
@@ -718,7 +864,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">3</span>
-                  <span class="site-state-item-name">Kategorien</span>
+                  <span class="site-state-item-name">categories</span>
                 
               </div>
             
@@ -729,7 +875,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">4</span>
-                  <span class="site-state-item-name">Tags</span>
+                  <span class="site-state-item-name">tags</span>
                 
               </div>
             
@@ -775,7 +921,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
