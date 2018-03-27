@@ -325,7 +325,57 @@
       
         
           
-            <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><h1 id="JVM-内存布局"><a href="#JVM-内存布局" class="headerlink" title="JVM 内存布局"></a>JVM 内存布局</h1><h1 id="JVM-内存回收算法"><a href="#JVM-内存回收算法" class="headerlink" title="JVM 内存回收算法"></a>JVM 内存回收算法</h1><h1 id="JVM-垃圾回收机制"><a href="#JVM-垃圾回收机制" class="headerlink" title="JVM 垃圾回收机制"></a>JVM 垃圾回收机制</h1><h1 id="JVM-常用参数实战配置"><a href="#JVM-常用参数实战配置" class="headerlink" title="JVM 常用参数实战配置"></a>JVM 常用参数实战配置</h1><h1 id="JAVA-内存问题定位手段"><a href="#JAVA-内存问题定位手段" class="headerlink" title="JAVA 内存问题定位手段"></a>JAVA 内存问题定位手段</h1><h1 id="JAVA-CPU问题定位手段"><a href="#JAVA-CPU问题定位手段" class="headerlink" title="JAVA CPU问题定位手段"></a>JAVA CPU问题定位手段</h1>
+            <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><h1 id="JVM-内存布局"><a href="#JVM-内存布局" class="headerlink" title="JVM 内存布局"></a>JVM 内存布局</h1><ol>
+<li>线程独享内存</li>
+</ol>
+<ul>
+<li>PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。</li>
+<li>虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数、返回值等，用到虚拟机栈</li>
+<li>本地方法栈：JVM调用本地方法执行，需要存储局部变量、参数、返回值等，用到本地方法栈</li>
+</ul>
+<ol>
+<li>线程共享内存</li>
+</ol>
+<ul>
+<li>heap：堆内存通常是JVM最大的内存，用于存储对象实体</li>
+<li>方法区：用于存放代码指令、常量等</li>
+</ul>
+<h1 id="GC-Root"><a href="#GC-Root" class="headerlink" title="GC Root"></a>GC Root</h1><ul>
+<li>虚拟机栈中的引用指向的对象</li>
+<li>本地方法栈中的引用指向的对象</li>
+<li>类中静态变量指向的对象</li>
+<li>类中静态方法使用的对象</li>
+<li>类中常量引用（final修饰）指向的常量</li>
+</ul>
+<p>GC Root其实就是heap内存之外的内存中的一些引用指向的对象。堆中引用指向的对象属于间接的，不属于GC Root。</p>
+<h1 id="JVM-内存回收算法"><a href="#JVM-内存回收算法" class="headerlink" title="JVM 内存回收算法"></a>JVM 内存回收算法</h1><h2 id="标记清除-Mark-Sweep"><a href="#标记清除-Mark-Sweep" class="headerlink" title="标记清除 Mark-Sweep"></a>标记清除 Mark-Sweep</h2><h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><ol>
+<li>先标记哪些内存需要回收</li>
+<li>清除标记要删除的内存</li>
+</ol>
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
+<li>内存碎片</li>
+</ol>
+<h2 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h2><h3 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h3><ol>
+<li>划分出一部分区域用于给新生成的对象分配空间</li>
+<li>划分出的一部分区域被用完之后，复制到另外一份空闲区域<h3 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h3></li>
+<li>内存中有一部分无法使用</li>
+<li>对象移动多</li>
+</ol>
+<h2 id="标记整理-Mark-Compact"><a href="#标记整理-Mark-Compact" class="headerlink" title="标记整理 Mark-Compact"></a>标记整理 Mark-Compact</h2><h3 id="算法-2"><a href="#算法-2" class="headerlink" title="算法"></a>算法</h3><ol>
+<li>标记哪些内存需要回收</li>
+<li>将不被回收的内存整理到一起<h3 id="优缺点-2"><a href="#优缺点-2" class="headerlink" title="优缺点"></a>优缺点</h3></li>
+<li>减少内存碎片</li>
+<li>对象移动少</li>
+</ol>
+<h1 id="JVM-垃圾回收机制"><a href="#JVM-垃圾回收机制" class="headerlink" title="JVM 垃圾回收机制"></a>JVM 垃圾回收机制</h1><h2 id="Serial-新生代内存回收机制，复制算法"><a href="#Serial-新生代内存回收机制，复制算法" class="headerlink" title="Serial: 新生代内存回收机制，复制算法"></a>Serial: 新生代内存回收机制，复制算法</h2><h2 id="ParNew：Serial算法的并行版本"><a href="#ParNew：Serial算法的并行版本" class="headerlink" title="ParNew：Serial算法的并行版本"></a>ParNew：Serial算法的并行版本</h2><h2 id="Serial-old：-老年代内存回收机制"><a href="#Serial-old：-老年代内存回收机制" class="headerlink" title="Serial-old： 老年代内存回收机制"></a>Serial-old： 老年代内存回收机制</h2><p>ParOld</p>
+<p>Pare Scanverge</p>
+<p>CMS</p>
+<p>G1GC</p>
+<h1 id="JVM-常用参数实战配置"><a href="#JVM-常用参数实战配置" class="headerlink" title="JVM 常用参数实战配置"></a>JVM 常用参数实战配置</h1><h1 id="JAVA-内存问题定位手段"><a href="#JAVA-内存问题定位手段" class="headerlink" title="JAVA 内存问题定位手段"></a>JAVA 内存问题定位手段</h1><p>jmap</p>
+<p>jstat</p>
+<h1 id="JAVA-CPU问题定位手段"><a href="#JAVA-CPU问题定位手段" class="headerlink" title="JAVA CPU问题定位手段"></a>JAVA CPU问题定位手段</h1><p>top</p>
+<p>jstack</p>
+
           
         
       

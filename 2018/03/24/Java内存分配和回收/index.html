@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="1 简介JVM 内存布局JVM 内存回收算法JVM 垃圾回收机制JVM 常用参数实战配置JAVA 内存问题定位手段JAVA CPU问题定位手段">
+<meta name="description" content="1 简介JVM 内存布局 线程独享内存   PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。 虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数、返回值等，用到虚拟机栈 本地方法栈：JVM调用本地方法执行，需要存储局部变量、参数、返回值等，用到本地方法栈   线程共享内存   heap：堆内存通常是JVM最大的内存，用于存储对象实体 方法区：用于存放">
 <meta name="keywords" content="java jvm">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java内存分配和回收">
 <meta property="og:url" content="http://wzlovegit.github.io/2018/03/24/Java内存分配和回收/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="1 简介JVM 内存布局JVM 内存回收算法JVM 垃圾回收机制JVM 常用参数实战配置JAVA 内存问题定位手段JAVA CPU问题定位手段">
+<meta property="og:description" content="1 简介JVM 内存布局 线程独享内存   PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。 虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数、返回值等，用到虚拟机栈 本地方法栈：JVM调用本地方法执行，需要存储局部变量、参数、返回值等，用到本地方法栈   线程共享内存   heap：堆内存通常是JVM最大的内存，用于存储对象实体 方法区：用于存放">
 <meta property="og:locale" content="中文">
-<meta property="og:updated_time" content="2018-03-26T12:30:57.853Z">
+<meta property="og:updated_time" content="2018-03-26T13:07:47.708Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java内存分配和回收">
-<meta name="twitter:description" content="1 简介JVM 内存布局JVM 内存回收算法JVM 垃圾回收机制JVM 常用参数实战配置JAVA 内存问题定位手段JAVA CPU问题定位手段">
+<meta name="twitter:description" content="1 简介JVM 内存布局 线程独享内存   PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。 虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数、返回值等，用到虚拟机栈 本地方法栈：JVM调用本地方法执行，需要存储局部变量、参数、返回值等，用到本地方法栈   线程共享内存   heap：堆内存通常是JVM最大的内存，用于存储对象实体 方法区：用于存放">
 
 
 
@@ -322,7 +322,57 @@
       
 
       
-        <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><h1 id="JVM-内存布局"><a href="#JVM-内存布局" class="headerlink" title="JVM 内存布局"></a>JVM 内存布局</h1><h1 id="JVM-内存回收算法"><a href="#JVM-内存回收算法" class="headerlink" title="JVM 内存回收算法"></a>JVM 内存回收算法</h1><h1 id="JVM-垃圾回收机制"><a href="#JVM-垃圾回收机制" class="headerlink" title="JVM 垃圾回收机制"></a>JVM 垃圾回收机制</h1><h1 id="JVM-常用参数实战配置"><a href="#JVM-常用参数实战配置" class="headerlink" title="JVM 常用参数实战配置"></a>JVM 常用参数实战配置</h1><h1 id="JAVA-内存问题定位手段"><a href="#JAVA-内存问题定位手段" class="headerlink" title="JAVA 内存问题定位手段"></a>JAVA 内存问题定位手段</h1><h1 id="JAVA-CPU问题定位手段"><a href="#JAVA-CPU问题定位手段" class="headerlink" title="JAVA CPU问题定位手段"></a>JAVA CPU问题定位手段</h1>
+        <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><h1 id="JVM-内存布局"><a href="#JVM-内存布局" class="headerlink" title="JVM 内存布局"></a>JVM 内存布局</h1><ol>
+<li>线程独享内存</li>
+</ol>
+<ul>
+<li>PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。</li>
+<li>虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数、返回值等，用到虚拟机栈</li>
+<li>本地方法栈：JVM调用本地方法执行，需要存储局部变量、参数、返回值等，用到本地方法栈</li>
+</ul>
+<ol>
+<li>线程共享内存</li>
+</ol>
+<ul>
+<li>heap：堆内存通常是JVM最大的内存，用于存储对象实体</li>
+<li>方法区：用于存放代码指令、常量等</li>
+</ul>
+<h1 id="GC-Root"><a href="#GC-Root" class="headerlink" title="GC Root"></a>GC Root</h1><ul>
+<li>虚拟机栈中的引用指向的对象</li>
+<li>本地方法栈中的引用指向的对象</li>
+<li>类中静态变量指向的对象</li>
+<li>类中静态方法使用的对象</li>
+<li>类中常量引用（final修饰）指向的常量</li>
+</ul>
+<p>GC Root其实就是heap内存之外的内存中的一些引用指向的对象。堆中引用指向的对象属于间接的，不属于GC Root。</p>
+<h1 id="JVM-内存回收算法"><a href="#JVM-内存回收算法" class="headerlink" title="JVM 内存回收算法"></a>JVM 内存回收算法</h1><h2 id="标记清除-Mark-Sweep"><a href="#标记清除-Mark-Sweep" class="headerlink" title="标记清除 Mark-Sweep"></a>标记清除 Mark-Sweep</h2><h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><ol>
+<li>先标记哪些内存需要回收</li>
+<li>清除标记要删除的内存</li>
+</ol>
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
+<li>内存碎片</li>
+</ol>
+<h2 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h2><h3 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h3><ol>
+<li>划分出一部分区域用于给新生成的对象分配空间</li>
+<li>划分出的一部分区域被用完之后，复制到另外一份空闲区域<h3 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h3></li>
+<li>内存中有一部分无法使用</li>
+<li>对象移动多</li>
+</ol>
+<h2 id="标记整理-Mark-Compact"><a href="#标记整理-Mark-Compact" class="headerlink" title="标记整理 Mark-Compact"></a>标记整理 Mark-Compact</h2><h3 id="算法-2"><a href="#算法-2" class="headerlink" title="算法"></a>算法</h3><ol>
+<li>标记哪些内存需要回收</li>
+<li>将不被回收的内存整理到一起<h3 id="优缺点-2"><a href="#优缺点-2" class="headerlink" title="优缺点"></a>优缺点</h3></li>
+<li>减少内存碎片</li>
+<li>对象移动少</li>
+</ol>
+<h1 id="JVM-垃圾回收机制"><a href="#JVM-垃圾回收机制" class="headerlink" title="JVM 垃圾回收机制"></a>JVM 垃圾回收机制</h1><h2 id="Serial-新生代内存回收机制，复制算法"><a href="#Serial-新生代内存回收机制，复制算法" class="headerlink" title="Serial: 新生代内存回收机制，复制算法"></a>Serial: 新生代内存回收机制，复制算法</h2><h2 id="ParNew：Serial算法的并行版本"><a href="#ParNew：Serial算法的并行版本" class="headerlink" title="ParNew：Serial算法的并行版本"></a>ParNew：Serial算法的并行版本</h2><h2 id="Serial-old：-老年代内存回收机制"><a href="#Serial-old：-老年代内存回收机制" class="headerlink" title="Serial-old： 老年代内存回收机制"></a>Serial-old： 老年代内存回收机制</h2><p>ParOld</p>
+<p>Pare Scanverge</p>
+<p>CMS</p>
+<p>G1GC</p>
+<h1 id="JVM-常用参数实战配置"><a href="#JVM-常用参数实战配置" class="headerlink" title="JVM 常用参数实战配置"></a>JVM 常用参数实战配置</h1><h1 id="JAVA-内存问题定位手段"><a href="#JAVA-内存问题定位手段" class="headerlink" title="JAVA 内存问题定位手段"></a>JAVA 内存问题定位手段</h1><p>jmap</p>
+<p>jstat</p>
+<h1 id="JAVA-CPU问题定位手段"><a href="#JAVA-CPU问题定位手段" class="headerlink" title="JAVA CPU问题定位手段"></a>JAVA CPU问题定位手段</h1><p>top</p>
+<p>jstack</p>
+
       
     </div>
     
@@ -492,7 +542,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-简介"><span class="nav-number">1.</span> <span class="nav-text">1 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM-内存布局"><span class="nav-number">2.</span> <span class="nav-text">JVM 内存布局</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM-内存回收算法"><span class="nav-number">3.</span> <span class="nav-text">JVM 内存回收算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM-垃圾回收机制"><span class="nav-number">4.</span> <span class="nav-text">JVM 垃圾回收机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM-常用参数实战配置"><span class="nav-number">5.</span> <span class="nav-text">JVM 常用参数实战配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JAVA-内存问题定位手段"><span class="nav-number">6.</span> <span class="nav-text">JAVA 内存问题定位手段</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JAVA-CPU问题定位手段"><span class="nav-number">7.</span> <span class="nav-text">JAVA CPU问题定位手段</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-简介"><span class="nav-number">1.</span> <span class="nav-text">1 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM-内存布局"><span class="nav-number">2.</span> <span class="nav-text">JVM 内存布局</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GC-Root"><span class="nav-number">3.</span> <span class="nav-text">GC Root</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM-内存回收算法"><span class="nav-number">4.</span> <span class="nav-text">JVM 内存回收算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#标记清除-Mark-Sweep"><span class="nav-number">4.1.</span> <span class="nav-text">标记清除 Mark-Sweep</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法"><span class="nav-number">4.1.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点"><span class="nav-number">4.1.2.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复制"><span class="nav-number">4.2.</span> <span class="nav-text">复制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点-1"><span class="nav-number">4.2.2.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#标记整理-Mark-Compact"><span class="nav-number">4.3.</span> <span class="nav-text">标记整理 Mark-Compact</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法-2"><span class="nav-number">4.3.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点-2"><span class="nav-number">4.3.2.</span> <span class="nav-text">优缺点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM-垃圾回收机制"><span class="nav-number">5.</span> <span class="nav-text">JVM 垃圾回收机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Serial-新生代内存回收机制，复制算法"><span class="nav-number">5.1.</span> <span class="nav-text">Serial: 新生代内存回收机制，复制算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ParNew：Serial算法的并行版本"><span class="nav-number">5.2.</span> <span class="nav-text">ParNew：Serial算法的并行版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Serial-old：-老年代内存回收机制"><span class="nav-number">5.3.</span> <span class="nav-text">Serial-old： 老年代内存回收机制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM-常用参数实战配置"><span class="nav-number">6.</span> <span class="nav-text">JVM 常用参数实战配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JAVA-内存问题定位手段"><span class="nav-number">7.</span> <span class="nav-text">JAVA 内存问题定位手段</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JAVA-CPU问题定位手段"><span class="nav-number">8.</span> <span class="nav-text">JAVA CPU问题定位手段</span></a></li></ol></div>
             
 
           </div>
