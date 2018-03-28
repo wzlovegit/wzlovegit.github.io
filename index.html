@@ -423,7 +423,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/03/24/Java多线程模型和ThreadPoolExecutor框架/">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/03/24/Java多线程模型和Executor框架/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王哲">
@@ -442,7 +442,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/03/24/Java多线程模型和ThreadPoolExecutor框架/" itemprop="url">Java多线程模型和ThreadPoolExecutor框架</a></h1>
+                <a class="post-title-link" href="/2018/03/24/Java多线程模型和Executor框架/" itemprop="url">Java多线程模型和Executor框架</a></h1>
         
 
         <div class="post-meta">
@@ -516,7 +516,7 @@
       
         
           
-            <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><p>本文主要介绍Java多线程模型以及Java成熟的线程池框架ThreadPoolExecutor框架。线程模型分为单线程、无线多线程、线程池模型。ThreadPoolExecutor框架是Executor框架的实现。Executor直接创建线程池的方法通常不推荐使用，除非你明确知道它的含义；在实际应用过程中我们还是会通过ThreadPoolExecutor定制自己想要的线程池，以便控制内存和CPU利用率，提升系统稳定性。</p>
+            <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><p>本文主要介绍Java多线程模型以及Java成熟的线程池框架Executor框架。线程模型分为单线程、无限多线程、线程池模型。Executor直接创建线程池的方法通常不推荐使用，除非你明确知道它的含义；在实际应用过程中我们还是会通过ThreadPoolExecutor定制自己想要的线程池，以便控制内存和CPU利用率，提升系统稳定性。</p>
 <h1 id="2-线程模型"><a href="#2-线程模型" class="headerlink" title="2 线程模型"></a>2 线程模型</h1><h2 id="2-1-线程和进程"><a href="#2-1-线程和进程" class="headerlink" title="2.1 线程和进程"></a>2.1 线程和进程</h2><p>线程是OS任务调度的基本单位，进程是OS资源分配的基本单位。什么意思？</p>
 <ul>
 <li>OS在分配内存地址空间的时候，是以进程分配的。即一个进程享有虚拟地址空间的访问权限；该进程不可以访问其他进程地址空间中的资源。然而该进程中的线程可以共享该进程的地址空间。</li>
@@ -526,7 +526,7 @@
 <p><strong>任务</strong>：定义招待客人的hiWork任务，对每个传递进来的整型值say hi：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void hiWork(int i) &#123;</span><br><span class="line">	System.out.println(&quot;hi : &quot; + i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="2-2-1-单线程"><a href="#2-2-1-单线程" class="headerlink" title="2.2.1 单线程"></a>2.2.1 单线程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Thread t = new Thread() &#123;</span><br><span class="line">	public void run() &#123;</span><br><span class="line">		int i = 0;</span><br><span class="line">		while (i &lt; 100) &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>优点：</p>
+<p>一个线程循环执行所有任务。<br>优点：</p>
 <ul>
 <li>不用考虑临界资源、锁带来的线程活跃性问题：因为只有一个线程执行，不会出现临界资源争用，不会出现死锁，也不会饿死任务。</li>
 </ul>
@@ -536,7 +536,7 @@
 <li>吞吐和响应都很差。后面的任务必须等待前面的任务执行完。<h3 id="2-2-2-一个任务一个线程"><a href="#2-2-2-一个任务一个线程" class="headerlink" title="2.2.2 一个任务一个线程"></a>2.2.2 一个任务一个线程</h3></li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">int i = 0;</span><br><span class="line">while (i &lt; 100) &#123;</span><br><span class="line">	Thread t = new Thread() &#123;</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	i++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>优点：</p>
+<p>每个任务分配一个线程。<br>优点：</p>
 <ul>
 <li>响应速度快。任务会直接被拿走执行，不用等待其他任务。</li>
 <li>资源利用率高。多个任务同时执行，CPU使用率高。</li>
@@ -549,7 +549,7 @@
 <li>线程过多可能导致频繁切换。CPU个数有限，过多的线程会引起CPU不断切换线程执行，浪费资源。<h3 id="2-2-3-线程池"><a href="#2-2-3-线程池" class="headerlink" title="2.2.3 线程池"></a>2.2.3 线程池</h3></li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executor = ...;</span><br><span class="line">int i = 0;</span><br><span class="line">while (i &lt; 100) &#123;</span><br><span class="line">	excutor.excute(new Runnable() &#123;</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	i++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>优点：</p>
+<p>多个线程分别执行不同的任务。<br>优点：</p>
 <ul>
 <li>吞吐和响应好</li>
 <li>不会频繁创建销毁线程</li>
@@ -585,31 +585,25 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @throws RejectedExecutionException &#123;@inheritDoc&#125;</span><br><span class="line"> * @throws NullPointerException       &#123;@inheritDoc&#125;</span><br><span class="line"> */</span><br><span class="line">public &lt;T&gt; Future&lt;T&gt; submit(Runnable task, T result) &#123;</span><br><span class="line">    if (task == null) throw new NullPointerException();</span><br><span class="line">    RunnableFuture&lt;T&gt; ftask = newTaskFor(task, result);</span><br><span class="line">    execute(ftask);</span><br><span class="line">    return ftask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>submit提交任务之后，会先生成一个RunnableFuture对象来管理提交任务的生命周期，然后调用execute去提交任务。</p>
 <h2 id="3-3-任务队列满之后的处理方式"><a href="#3-3-任务队列满之后的处理方式" class="headerlink" title="3.3 任务队列满之后的处理方式"></a>3.3 任务队列满之后的处理方式</h2><p>Executor框架调用executor提交任务，executor调用BlockedQueue的offer方法提交任务。如果队列不满，则提交成功；如果队列满，则offer返回false，转而执行RejectExecutionHandler提供的方法。那么RejectExecutionHandler方法如何处理呢？</p>
-<ol>
-<li>任务不能丢失的情况</li>
-</ol>
-<ul>
-<li><p>阻塞任务提交</p>
+<h3 id="3-3-1-任务不能丢失的情况"><a href="#3-3-1-任务不能丢失的情况" class="headerlink" title="3.3.1 任务不能丢失的情况"></a>3.3.1 任务不能丢失的情况</h3><ol>
+<li><p>阻塞任务提交<br>缺点：1）任务延时；2）任务全部阻塞到任务队列，可能引发内存溢出；3）提交任务的线程可能需要做其他重要工作却被阻塞；</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public static class MyKeepPolicy implements RejectedExecutionHandler &#123;</span><br><span class="line">    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) &#123;</span><br><span class="line">        while (true) &#123;</span><br><span class="line">           try &#123;</span><br><span class="line">               e.getQueue().put(r);</span><br><span class="line">           &#125; catch (InterruptException e) &#123;</span><br><span class="line">               ;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>在任务提交线程执行任务：可以减缓任务提交效率，一定程度上控制流量。</p>
+<li><p>在任务提交线程执行任务<br>优点：1）不丢任务；2）任务在任务提交线程执行，可以不阻塞任务提交线程；3）任务的形成速度得到一定程度降低；<br>缺点：1）任务延时；2）时序问题，最后提交不进去的任务，反而比队列中的任务先获得处理权</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public static class CallerRunsPolicy implements RejectedExecutionHandler &#123;</span><br><span class="line">    /**</span><br><span class="line">     * Creates a &#123;@code CallerRunsPolicy&#125;.</span><br><span class="line">     */</span><br><span class="line">    public CallerRunsPolicy() &#123; &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Executes task r in the caller&apos;s thread, unless the executor</span><br><span class="line">     * has been shut down, in which case the task is discarded.</span><br><span class="line">     *</span><br><span class="line">     * @param r the runnable task requested to be executed</span><br><span class="line">     * @param e the executor attempting to execute this task</span><br><span class="line">     */</span><br><span class="line">    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) &#123;</span><br><span class="line">        if (!e.isShutdown()) &#123;</span><br><span class="line">            r.run();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
-</ul>
-<ol>
-<li>任务可以丢失的情况</li>
 </ol>
-<ul>
-<li><p>选择抛出异常</p>
+<h3 id="3-3-2-任务可以丢失的情况"><a href="#3-3-2-任务可以丢失的情况" class="headerlink" title="3.3.2 任务可以丢失的情况"></a>3.3.2 任务可以丢失的情况</h3><ol>
+<li><p>抛出异常，将处理权转交给任务提交线程<br>优点：1）控制权转移到任务提交线程；2）不会稀里糊涂丢任务；3）不会阻塞后续任务<br>缺点：1）抛出了异常通常情况下也没有更好的办法</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public void rejectedExecution(Runnable r, ThreadPoolExecutor e) &#123;</span><br><span class="line">            throw new RejectedExecutionException(&quot;Task &quot; + r.toString() +</span><br><span class="line">                                                 &quot; rejected from &quot; +</span><br><span class="line">                                                 e.toString());</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>选择默默丢弃：通常不会这样做。</p>
+<li><p>选择默默丢弃：通常不会这样做，稀里糊涂丢任务，在实际情况下通常是不能容忍的。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * A handler for rejected tasks that silently discards the</span><br><span class="line"> * rejected task.</span><br><span class="line"> */</span><br><span class="line">public static class DiscardPolicy implements RejectedExecutionHandler &#123;</span><br><span class="line">    /**</span><br><span class="line">     * Creates a &#123;@code DiscardPolicy&#125;.</span><br><span class="line">     */</span><br><span class="line">    public DiscardPolicy() &#123; &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Does nothing, which has the effect of discarding task r.</span><br><span class="line">     *</span><br><span class="line">     * @param r the runnable task requested to be executed</span><br><span class="line">     * @param e the executor attempting to execute this task</span><br><span class="line">     */</span><br><span class="line">    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>选择丢弃最前面的任务：这个策略通常也不会和优先级队列连用，会导致优先级最高的任务被丢弃</p>
 <h2 id="3-4-线程池中线程个数区间"><a href="#3-4-线程池中线程个数区间" class="headerlink" title="3.4 线程池中线程个数区间"></a>3.4 线程池中线程个数区间</h2><p>最小线程数：从任务队列中取出任务之后，会创建线程执行任务，执行完任务之后，如果线程总数小于等于最小线程数，则线程不会退出。<br>最大线程数：当线程都忙以后，从任务获取队列会创建新的线程，直到达到最大线程数。</p>
 </li>
-</ul>
+</ol>
 <h2 id="3-5-线程池中线程在idle状态下能活多长时间"><a href="#3-5-线程池中线程在idle状态下能活多长时间" class="headerlink" title="3.5 线程池中线程在idle状态下能活多长时间"></a>3.5 线程池中线程在idle状态下能活多长时间</h2><p>达到最大线程数之后，如果线程处于空闲状态，超过参数设置的时长，则超出的线程会不断退出。</p>
 <h2 id="3-6-线程池中线程的创建方式"><a href="#3-6-线程池中线程的创建方式" class="headerlink" title="3.6 线程池中线程的创建方式"></a>3.6 线程池中线程的创建方式</h2><h3 id="3-6-1-线程创建和任务执行"><a href="#3-6-1-线程创建和任务执行" class="headerlink" title="3.6.1 线程创建和任务执行"></a>3.6.1 线程创建和任务执行</h3><p>线程池中的线程被封装为Worker。Worker中thread的创建方式跟我们通常采取的方法一样，new Thread之后复写run方法。run方法中采用poll或者take的方式从BlockedQueue当中获取任务，并执行。时序图和代码如下：</p>
 <p><img src="/images/线程池时序.png" alt="线程池时序图" title="线程池执行任务时序"></p>
@@ -622,7 +616,10 @@
 <li>Executor框架已经实现了成熟的任务队列和线程池</li>
 <li>Executor建议采用ThreadPoolExecutor去初始化， 不建议使用默认方式</li>
 <li>线程执行过程中，在入口处捕获大异常，而不是让线程直接跑飞，查询不到异常日志。</li>
+<li>对于不重要的任务，可以选择抛异常的形式交给任务提交线程处理；对于重要的任务，可以选择阻塞的方式，或者将任务转移的方式处理。具体策略依据业务而定。</li>
 </ol>
+<h1 id="4-总结"><a href="#4-总结" class="headerlink" title="4 总结"></a>4 总结</h1><p>通过本篇介绍，相信可以了解到多线程的优缺点以及EXECUTOR框架的注意事项。这样我们就可以根据优缺点为我们的业务选择合适的线程池配置。通过对Executor框架源码的部分了解，也避免我们犯一些低级错误，导致OOM和稀里糊涂丢任务或者线程阻塞。</p>
+<p><strong>完</strong></p>
 
           
         
