@@ -87,19 +87,19 @@
 <meta property="og:site_name" content="Light">
 <meta property="og:description" content="1 简介我不会JVM开发，但是加深对JVM的理解可以帮助我们编写更好的服务。目前我只了解了一下JVM的内存相关的内容，比如怎么分配内存空间可以减少gc次数，如何调整JVM参数提升程序性能，如何定位OOM的问题。 2 JVM 内存布局 线程独享内存   PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。 虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数">
 <meta property="og:locale" content="中文">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Java内存分配和回收/images/jvm%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Java内存分配和回收/images/mark-sweep.png">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Java内存分配和回收/images/copy.png">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Java内存分配和回收/images/mark-compact.png">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Java内存分配和回收/images/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8.png">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Java内存分配和回收/images/serial.png">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Java内存分配和回收/images/ParNew.png">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Java内存分配和回收/images/CMS.png">
-<meta property="og:updated_time" content="2018-03-31T09:42:36.665Z">
+<meta property="og:image" content="http://wzlovegit.github.io/images/jvm%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png">
+<meta property="og:image" content="http://wzlovegit.github.io/images/mark-sweep.png">
+<meta property="og:image" content="http://wzlovegit.github.io/images/copy.png">
+<meta property="og:image" content="http://wzlovegit.github.io/images/mark-compact.png">
+<meta property="og:image" content="http://wzlovegit.github.io/images/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8.png">
+<meta property="og:image" content="http://wzlovegit.github.io/images/serial.png">
+<meta property="og:image" content="http://wzlovegit.github.io/images/ParNew.png">
+<meta property="og:image" content="http://wzlovegit.github.io/images/CMS.png">
+<meta property="og:updated_time" content="2018-03-31T09:45:05.147Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java内存分配和回收">
 <meta name="twitter:description" content="1 简介我不会JVM开发，但是加深对JVM的理解可以帮助我们编写更好的服务。目前我只了解了一下JVM的内存相关的内容，比如怎么分配内存空间可以减少gc次数，如何调整JVM参数提升程序性能，如何定位OOM的问题。 2 JVM 内存布局 线程独享内存   PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。 虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数">
-<meta name="twitter:image" content="http://wzlovegit.github.io/2018/03/31/Java内存分配和回收/images/jvm%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png">
+<meta name="twitter:image" content="http://wzlovegit.github.io/images/jvm%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png">
 
 
 
@@ -347,7 +347,7 @@
 <li>heap：堆内存通常是JVM最大的内存，用于存储对象实体</li>
 <li>方法区：用于存放代码指令、常量等</li>
 </ul>
-<p><img src="./images/jvm%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png" alt="jvm内存布局" title="jvm内存布局.png"></p>
+<p><img src="/images/jvm%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80.png" alt="jvm内存布局" title="jvm内存布局.png"></p>
 <h1 id="3-GC-Root"><a href="#3-GC-Root" class="headerlink" title="3 GC Root"></a>3 GC Root</h1><ul>
 <li>虚拟机栈中的引用指向的对象</li>
 <li>本地方法栈中的引用指向的对象</li>
@@ -361,7 +361,7 @@
 <li>清除标记要删除的内存</li>
 </ol>
 <p>首先将用过的内存空间标记为已用，在gc的时候，首先根据GC Root标记需要被回收的对象，然后将这些被回收的对象所占用的空间标记为可用。此时jvm在分配堆内存的时候，就可以在这些标记为可用的内存当中开辟空间。</p>
-<p><img src="./images/mark-sweep.png" alt="mark-sweep" title="mark-sweep.png"></p>
+<p><img src="/images/mark-sweep.png" alt="mark-sweep" title="mark-sweep.png"></p>
 <h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
 <li>内存碎片。由于对象占用的内存就地回收，所以内存碎片会越来越严重，最终导致内存无法分配给对象使<br>用。由mark-sweep图可以看出3个方格大的对象分配内存失败，虽然内存当中有足够的空间可以使用。</li>
 </ol>
@@ -370,7 +370,7 @@
 <li>划分出一部分区域用于给新生成的对象分配空间</li>
 <li>划分出的一部分区域被用完之后，复制到另外一份空闲区域</li>
 </ol>
-<p><img src="./images/copy.png" alt="copy" title="copy.png"></p>
+<p><img src="/images/copy.png" alt="copy" title="copy.png"></p>
 <h3 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
 <li>内存中有一部分无法使用，我们可以看出内存最多可以使用S + E的空间。</li>
 <li>对象移动</li>
@@ -381,19 +381,19 @@
 <li>标记哪些内存需要回收</li>
 <li>将不被回收的内存整理到一起</li>
 </ol>
-<p><img src="./images/mark-compact.png" alt="mark-compact" title="mark-compact.png"></p>
+<p><img src="/images/mark-compact.png" alt="mark-compact" title="mark-compact.png"></p>
 <h3 id="优缺点-2"><a href="#优缺点-2" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
 <li>减少内存碎片</li>
 <li>对象移动少</li>
 <li>不需要浪费内存空间</li>
 </ol>
-<h1 id="5-JVM-垃圾回收器"><a href="#5-JVM-垃圾回收器" class="headerlink" title="5 JVM 垃圾回收器"></a>5 JVM 垃圾回收器</h1><p><img src="./images/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8.png" alt="垃圾回收器" title="垃圾回收器.png"></p>
-<h2 id="5-1-Serial-新生代内存回收机制，复制算法"><a href="#5-1-Serial-新生代内存回收机制，复制算法" class="headerlink" title="5.1 Serial: 新生代内存回收机制，复制算法"></a>5.1 Serial: 新生代内存回收机制，复制算法</h2><p><img src="./images/serial.png" alt="serial" title="serial.png"></p>
+<h1 id="5-JVM-垃圾回收器"><a href="#5-JVM-垃圾回收器" class="headerlink" title="5 JVM 垃圾回收器"></a>5 JVM 垃圾回收器</h1><p><img src="/images/%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8.png" alt="垃圾回收器" title="垃圾回收器.png"></p>
+<h2 id="5-1-Serial-新生代内存回收机制，复制算法"><a href="#5-1-Serial-新生代内存回收机制，复制算法" class="headerlink" title="5.1 Serial: 新生代内存回收机制，复制算法"></a>5.1 Serial: 新生代内存回收机制，复制算法</h2><p><img src="/images/serial.png" alt="serial" title="serial.png"></p>
 <p>STOP THE WORLD听着很厉害，但是真正出现的时候，通常面临着痛苦。比如，在大量任务执行的过程中，本来一秒处理100个，突然就变成了几个，用图形化界面展示出来就是一个暴跌的曲线。这通常象征着需要加班了。所以串行gc在多CPU的情况下，不推荐。</p>
-<h2 id="5-2-ParNew：Serial算法的并行版本"><a href="#5-2-ParNew：Serial算法的并行版本" class="headerlink" title="5.2 ParNew：Serial算法的并行版本"></a>5.2 ParNew：Serial算法的并行版本</h2><p><img src="./images/ParNew.png" alt="ParNew" title="ParNew.png"></p>
+<h2 id="5-2-ParNew：Serial算法的并行版本"><a href="#5-2-ParNew：Serial算法的并行版本" class="headerlink" title="5.2 ParNew：Serial算法的并行版本"></a>5.2 ParNew：Serial算法的并行版本</h2><p><img src="/images/ParNew.png" alt="ParNew" title="ParNew.png"></p>
 <p>ParNew是Serial的并行实现。它同样存在STOP THE WORLD的限制。但并行版本在多核情况下通常会有更优秀的回收效率。比较难受的一点是ParNew如果设置为新生代垃圾回收器，那么老年代只能用Serial-Old回收器。Serial-Old是标记整理算法的串行版本的实现，也无法利用多核优势。</p>
 <h2 id="5-3-Serial-old：-老年代内存回收机制"><a href="#5-3-Serial-old：-老年代内存回收机制" class="headerlink" title="5.3 Serial-old： 老年代内存回收机制"></a>5.3 Serial-old： 老年代内存回收机制</h2><p>老年代垃圾回收器，标记整理算法，有STOP THE WORLD的限制，并且无法利用多核性能。但可以与ParNew、Serial和Parallel Scanvege搭配使用。也是CMS无法整理内存的时候采用的后继方案。</p>
-<h2 id="5-4-ParOld：-Serial-Old的并行版本"><a href="#5-4-ParOld：-Serial-Old的并行版本" class="headerlink" title="5.4 ParOld： Serial-Old的并行版本"></a>5.4 ParOld： Serial-Old的并行版本</h2><h2 id="5-5-Par-Scanverge-吞吐优先考虑的垃圾回收器"><a href="#5-5-Par-Scanverge-吞吐优先考虑的垃圾回收器" class="headerlink" title="5.5 Par Scanverge 吞吐优先考虑的垃圾回收器"></a>5.5 Par Scanverge 吞吐优先考虑的垃圾回收器</h2><h2 id="5-6-CMS"><a href="#5-6-CMS" class="headerlink" title="5.6 CMS"></a>5.6 CMS</h2><p><img src="./images/CMS.png" alt="CMS" title="CMS.png"><br>Java 1.6之前的常用的老年代垃圾回收器。虽然初始标记和重新标记都会STW，但是它们执行都比较快，可以将对用户线程的影响降到最低。</p>
+<h2 id="5-4-ParOld：-Serial-Old的并行版本"><a href="#5-4-ParOld：-Serial-Old的并行版本" class="headerlink" title="5.4 ParOld： Serial-Old的并行版本"></a>5.4 ParOld： Serial-Old的并行版本</h2><h2 id="5-5-Par-Scanverge-吞吐优先考虑的垃圾回收器"><a href="#5-5-Par-Scanverge-吞吐优先考虑的垃圾回收器" class="headerlink" title="5.5 Par Scanverge 吞吐优先考虑的垃圾回收器"></a>5.5 Par Scanverge 吞吐优先考虑的垃圾回收器</h2><h2 id="5-6-CMS"><a href="#5-6-CMS" class="headerlink" title="5.6 CMS"></a>5.6 CMS</h2><p><img src="/images/CMS.png" alt="CMS" title="CMS.png"><br>Java 1.6之前的常用的老年代垃圾回收器。虽然初始标记和重新标记都会STW，但是它们执行都比较快，可以将对用户线程的影响降到最低。</p>
 <p>缺点：</p>
 <ol>
 <li>CPU敏感，占用（CPU + 3）/4的CPU资源进行GC</li>
