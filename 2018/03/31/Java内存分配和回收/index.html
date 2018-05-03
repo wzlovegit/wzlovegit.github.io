@@ -95,7 +95,7 @@
 <meta property="og:image" content="http://wzlovegit.github.io/images/serial.png">
 <meta property="og:image" content="http://wzlovegit.github.io/images/ParNew.png">
 <meta property="og:image" content="http://wzlovegit.github.io/images/CMS.png">
-<meta property="og:updated_time" content="2018-03-31T09:45:05.147Z">
+<meta property="og:updated_time" content="2018-04-14T08:20:22.526Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java内存分配和回收">
 <meta name="twitter:description" content="1 简介我不会JVM开发，但是加深对JVM的理解可以帮助我们编写更好的服务。目前我只了解了一下JVM的内存相关的内容，比如怎么分配内存空间可以减少gc次数，如何调整JVM参数提升程序性能，如何定位OOM的问题。 2 JVM 内存布局 线程独享内存   PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。 虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数">
@@ -407,7 +407,7 @@
 <p>dump文件可以通过MemoryAnalyzer(MAT)分析查看,可以查看dump时对象数量，内存占用，线程情况等。</p>
 <p>通常情况下我们不会用jhat分析jmap信息，第一jhat消耗服务器资源；第二jhat的分析能力还不上javaVisualvm。</p>
 <h2 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h2><p>jstat是查看java进程内存和gc的神器，通常配置参数jstat -gcutil {pid}</p>
-<h1 id="JAVA-CPU问题定位手段"><a href="#JAVA-CPU问题定位手段" class="headerlink" title="JAVA CPU问题定位手段"></a>JAVA CPU问题定位手段</h1><p>top<br>jstack</p>
+<h1 id="JAVA-CPU问题定位手段"><a href="#JAVA-CPU问题定位手段" class="headerlink" title="JAVA CPU问题定位手段"></a>JAVA CPU问题定位手段</h1><p>jps<br>ps -mp pid -o THREAD,tid,time<br>jstack</p>
 
       
     </div>
@@ -447,6 +447,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/03/Java多线程服务启动和停止/" rel="prev" title="Java多线程服务启动和停止">
+                Java多线程服务启动和停止 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
