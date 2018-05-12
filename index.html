@@ -232,6 +232,197 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/05/11/Jedis简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/11/Jedis简介/" itemprop="url">Jedis简介</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-11T18:34:00+08:00">
+                2018-05-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/redis/" itemprop="url" rel="index">
+                    <span itemprop="name">redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><p>Jedis是redis的Java客户端。它基于BIO实现。Jedis包含以下几个核心类与服务端交互：Jedis，JedisCluster，ShardedJedis，JedisPool，JedisSentinelPool，ShardedJedisPool。通过本文加深对对象池化和连接管理的理解。</p>
+<h1 id="2-Jedis简介"><a href="#2-Jedis简介" class="headerlink" title="2 Jedis简介"></a>2 Jedis简介</h1><p><img src="./images/jedis.jpg" alt="jedis" title="jedis.jpg"></p>
+<h2 id="2-1-Jedis介绍"><a href="#2-1-Jedis介绍" class="headerlink" title="2.1 Jedis介绍"></a>2.1 Jedis介绍</h2><p>Jedis是对redis命令的封装，包括数据操作命令，哨兵相关命令，集群相关命令。Jedis对象封装了与redis服务器的Connection，因此它只能执行与redis服务器相关的命令；对于需要在redis-sentinel执行的命令需要采用JedisSentinel对象，JedisSentinel对象封装了客户端与redis-sentinel之间的连接；需要执行redis-cluster相关的命令则只能采用JedisCluster对象。</p>
+<h2 id="2-2-Client介绍"><a href="#2-2-Client介绍" class="headerlink" title="2.2 Client介绍"></a>2.2 Client介绍</h2><p>Client用于封装与redis服务器的Connection。Client利用Connection执行sendCommand命令给服务端发送命令以外，还会进行鉴权，连接指定数据库等操作。</p>
+<h2 id="2-3-Connection介绍"><a href="#2-3-Connection介绍" class="headerlink" title="2.3 Connection介绍"></a>2.3 Connection介绍</h2><p>Jedis的方法在有返回值的情况下大致分两步执行：1，将redis命令通过按照redis协议发往redis服务器；2，接收来自服务器的返回值并解析。第一步是写的过程，即将redis命令按照redis协议写入与redis服务器连接的Socket当中；第二步是读的过程，即将redis命令的执行结果从刚刚的Socket中读出来解析。</p>
+<p>Socket的建立通过Connection封装管理。Socket为TCP的BIO实现，采用NODELAY，KEEPALIVE，超时时间默认2min的形式配置。情况下，2min足够redis将结果返回，但也不排除会抛出I/O异常。I/O异常会封装为JedisConnectionException向外抛。</p>
+<h2 id="2-4-小结"><a href="#2-4-小结" class="headerlink" title="2.4 小结"></a>2.4 小结</h2><p>Jedis用于给使用者提供跟服务器基本一样的命令接口。Client用于鉴权、连接数据库，并且执行Jedis调用自己的指令。Connection用于管理与服务器之间的连接。Protocol用于完成命令的封装。分工非常清晰。</p>
+<h1 id="3-JedisSentinel"><a href="#3-JedisSentinel" class="headerlink" title="3 JedisSentinel"></a>3 JedisSentinel</h1><p><img src="./images/JedisSentinel.PNG" alt="JedisSentinel" title="JedisSentinel.PNG"></p>
+<p>并不存在JedisSentinel类。在执行redis-sentinel的命令时，其实也是采用的Jedis对象，不过Jedis对象中使用的连接是连接到redis-sentinel的。Jedis jedisSentinel = new Jedis(sentinel)；sentinel为redis-sentinel的ip和port。</p>
+<h1 id="4-JedisCluster"><a href="#4-JedisCluster" class="headerlink" title="4 JedisCluster"></a>4 JedisCluster</h1><p>JedisCluster和Jedis不同，JedisCluster对象用于执行一些集群相关的命令。</p>
+<h1 id="5-ShardedJedis"><a href="#5-ShardedJedis" class="headerlink" title="5 ShardedJedis"></a>5 ShardedJedis</h1><p><img src="./images/ShardJedis.jpg" alt="enter description here" title="ShardJedis.jpg"></p>
+<h2 id="5-1-ShardedJedis"><a href="#5-1-ShardedJedis" class="headerlink" title="5.1 ShardedJedis"></a>5.1 ShardedJedis</h2><p>ShardedJedis是基于客户端分片的redis客户端实现。ShardedJedis在执行命令的时候，首先获取key对应的分片使用的Jedis对象，然后通过该Jedis对象执行相应的命令。使用者不感知Jedis和分片的存在。如上图的get流程所示：ShardedJedis调用get方法，get方法里面会先获取key对应的Jedis，然后采用Jedis执行命令，然后将结果返回；整个过程使用者不感知分片和Jedis的存在。</p>
+<p><img src="./images/ShardedJedis1.jpg" alt="enter description here" title="ShardedJedis1.jpg"></p>
+<h2 id="5-2-Sharded"><a href="#5-2-Sharded" class="headerlink" title="5.2 Sharded"></a>5.2 Sharded</h2><p>Sharded用于管理key与Jedis之间的关系。</p>
+<ol>
+<li>Sharded缓存key的hash值区间和ShardInfo的映射关系</li>
+<li>Sharded缓存ShardInfo与Jedis的映射关系</li>
+</ol>
+<p>所以Sharded执行命令的过程如下：</p>
+<ol>
+<li>计算key的hash值应该落到那个区间</li>
+<li>查看该区间对应的ShardInfo</li>
+<li>查找ShardInfo对应的Jedis</li>
+<li>利用Jedis对象发送命令给对应的redis服务器并获取结果</li>
+<li>返回结果。</li>
+</ol>
+<h2 id="5-3-ShardedInfo"><a href="#5-3-ShardedInfo" class="headerlink" title="5.3 ShardedInfo"></a>5.3 ShardedInfo</h2><p>ShardedInfo有两个作用：</p>
+<ol>
+<li>存储多个redis服务器的信息</li>
+<li>提供createResource方法创建对象</li>
+</ol>
+<h1 id="6-JedisPool"><a href="#6-JedisPool" class="headerlink" title="6 JedisPool"></a>6 JedisPool</h1><p><img src="./images/JedisPool.jpg" alt="enter description here" title="JedisPool.jpg"></p>
+<h2 id="6-1-JedisPool介绍"><a href="#6-1-JedisPool介绍" class="headerlink" title="6.1 JedisPool介绍"></a>6.1 JedisPool介绍</h2><p>JedisPool是Jedis对象池。Jedis对象中的连接为TCP长连接，TCP连接的创建需要三次握手，销毁需要四次挥手。如果每次执行一个redis命令都进行连接的创建和销毁，对于客户端和服务端来讲均有不小的毫无意义的开销。因而引入了Pool。</p>
+<p>JedisPool提供getResource()方法，返回一个Jedis对象，用于执行redis命令。提供returnResource(returnBrokenResource)方法，将Jedis对象归回到Pool。</p>
+<h2 id="6-2-GenericObjectPool"><a href="#6-2-GenericObjectPool" class="headerlink" title="6.2 GenericObjectPool"></a>6.2 GenericObjectPool</h2><p>GenericObjectPool是Pool的一种。它提供Pool中对象的借用（borrowObject）和归还（returnObject）的方法，管理Pool中对象的生命周期。它提供了一些配置参数用于管理对象池中对象的个数，对象的生命周期。</p>
+<ul>
+<li>maxIdle：Pool中最大空闲对象数</li>
+<li>minIdle：Pool中最小空闲对象数</li>
+<li>maxTotal：Pool中对象个数最大值</li>
+<li>testOnBorrow：对象借出前合法性检查，不合法则销毁</li>
+<li>testOnReturn：对象归还pool之前合法性检查，不合法则销毁</li>
+</ul>
+<h2 id="6-3-JedisFactory"><a href="#6-3-JedisFactory" class="headerlink" title="6.3 JedisFactory"></a>6.3 JedisFactory</h2><p>JedisFactory继承自PooledObjectFactory，用于提供对象生命周期管理的方法，供pool使用。PooledObjectFactory提供了对象的创建（makeObject）、激活（activateObject)、去激活（passivateObject)、销毁（destoryObject)、合法性检查（validateObject)方法。JedisFactory这些方法，makeObject创建Jedis对象；activateObject选择指定的数据库；destoryObject销毁Jedis对象；validateObject给服务器发送PING消息探测连接是否可用。</p>
+<h1 id="7-JedisSentinelPool"><a href="#7-JedisSentinelPool" class="headerlink" title="7 JedisSentinelPool"></a>7 JedisSentinelPool</h1><p>JedisSentinelPool并不是客户端与哨兵之间的连接池，而是客户端通过redis-sentinel获取到redis-master的ip和port，然后建立与master之间的Jedis池。</p>
+<p>JedisSentinelPool主要负责两个事情：1，监听redis-sentinel发布的切主事件，销毁与旧master之间的连接，建立与新master之间的连接；2，维护池中Jedis对象。</p>
+<p><img src="./images/JedisSentinelPool1.jpg" alt="enter description here" title="JedisSentinelPool1.jpg"></p>
+<h2 id="7-1-MasterListener"><a href="#7-1-MasterListener" class="headerlink" title="7.1 MasterListener"></a>7.1 MasterListener</h2><p>MasterListener是在JedisSentinelPool初始化的时候创建的，它订阅redis-sentinel的+switch-master主题，在发生主从切换的时候，哨兵将事件发布到该topic，然后MasterListener订阅到该信息，根据该信息，关闭与旧的主redis的连接，创建与新redis的连接。</p>
+<h2 id="7-2-PooledObjectFactory"><a href="#7-2-PooledObjectFactory" class="headerlink" title="7.2 PooledObjectFactory"></a>7.2 PooledObjectFactory</h2><p>JedisSentinelPool默认的PooledObjectFactory是JedisFactory。该JedisFactory是管理与master连接的Jedis的对象生命周期的，因此JedisSentinelPool并没有创建大量的与redis-sentinel的连接，而是创建与master的连接。</p>
+<h2 id="7-3-小结"><a href="#7-3-小结" class="headerlink" title="7.3 小结"></a>7.3 小结</h2><p>为什么JedisSentinelPool不直接依赖JedisPool实现呢？如果实现默认功能的话，确实可以直接饮用JedisPool的实现方法。但是有时候我们需要扩充JedisSentinelPool，比如扩充为ShardJedisSentinelPool，那么就可以考虑重新设计PooledObjectFactory并传递给JedisSentinelPool。</p>
+<h1 id="8-ShardedJedisPool"><a href="#8-ShardedJedisPool" class="headerlink" title="8 ShardedJedisPool"></a>8 ShardedJedisPool</h1><p>ShardedJedisPool是ShardedJedis的对象池。它需要提供自己的PooledObjectFactory即ShardedJedisFactory。这里不再赘述。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/05/03/Java多线程服务启动和停止/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1314,7 +1505,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
@@ -1325,7 +1516,7 @@
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">Kategorien</span>
                 
               </div>
@@ -1336,7 +1527,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">Tags</span>
                 
               </div>
