@@ -87,14 +87,14 @@
 <meta property="og:site_name" content="Light">
 <meta property="og:description" content="简介Mosquitto简介这篇文章介绍了Mosquitto的基本功能。本文在此基础上，对Mosquitto的内核实现进行简单总结。文章只对Mosquitto概要设计进行分析，不深入代码细节。 连接管理Mosquitto对socket连接的管理和redis等其他开源c软件大同小异，均采用反应堆模式（可参考http://www.cnblogs.com/xujian2014/p/5711828.html">
 <meta property="og:locale" content="中文">
-<meta property="og:image" content="https://images2015.cnblogs.com/blog/713721/201607/713721-20160727152840778-35176672.png">
-<meta property="og:image" content="http://wzlovegit.github.io/images/mosquitto_subhier.vsd">
-<meta property="og:image" content="http://wzlovegit.github.io/images/UT_hash_handle.vsd">
-<meta property="og:updated_time" content="2018-07-24T14:29:40.185Z">
+<meta property="og:image" content="http://wzlovegit.github.io/images/事件驱动.png">
+<meta property="og:image" content="http://wzlovegit.github.io/images/mosquitto_subhier.jpg">
+<meta property="og:image" content="http://wzlovegit.github.io/images/UT_hash_handle.jpg">
+<meta property="og:updated_time" content="2018-07-24T14:46:08.444Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mosquitto源码分析">
 <meta name="twitter:description" content="简介Mosquitto简介这篇文章介绍了Mosquitto的基本功能。本文在此基础上，对Mosquitto的内核实现进行简单总结。文章只对Mosquitto概要设计进行分析，不深入代码细节。 连接管理Mosquitto对socket连接的管理和redis等其他开源c软件大同小异，均采用反应堆模式（可参考http://www.cnblogs.com/xujian2014/p/5711828.html">
-<meta name="twitter:image" content="https://images2015.cnblogs.com/blog/713721/201607/713721-20160727152840778-35176672.png">
+<meta name="twitter:image" content="http://wzlovegit.github.io/images/事件驱动.png">
 
 
 
@@ -190,7 +190,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Accueil
           </a>
         </li>
       
@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -264,7 +264,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posté le</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-21T16:30:00+08:00">
                 2018-05-21
@@ -285,7 +285,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -329,7 +329,7 @@
         <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><a href="/attachments/mosquttio%E7%AE%80%E4%BB%8B.md">Mosquitto简介</a>这篇文章介绍了Mosquitto的基本功能。本文在此基础上，对Mosquitto的内核实现进行简单总结。文章只对Mosquitto概要设计进行分析，不深入代码细节。</p>
 <h1 id="连接管理"><a href="#连接管理" class="headerlink" title="连接管理"></a>连接管理</h1><p>Mosquitto对socket连接的管理和redis等其他开源c软件大同小异，均采用反应堆模式（可参考<a href="http://www.cnblogs.com/xujian2014/p/5711828.html）。事件驱动是反应堆的核心。" target="_blank" rel="noopener">http://www.cnblogs.com/xujian2014/p/5711828.html）。事件驱动是反应堆的核心。</a></p>
 <h2 id="事件驱动模型"><a href="#事件驱动模型" class="headerlink" title="事件驱动模型"></a>事件驱动模型</h2><p>事件指I/O、定时器等事件。一个新的客户端连接服务器，就会触发监听socket的可读事件；客户端向服务器发送消息，就会触发客户端与服务器之间这个socket的可读事件；服务器想向客户端发送消息，那么服务器会去触发客户端与服务器之间这个socket的可写事件。</p>
-<p><img src="https://images2015.cnblogs.com/blog/713721/201607/713721-20160727152840778-35176672.png" alt="事件驱动模型，来源见链接"></p>
+<p><img src="/images/事件驱动.png" alt="事件驱动模型，来源见链接"></p>
 <p>由上图，事件驱动模型有3大部件：1，事件收集器；2，事件发送器；3，事件处理器。在C语言编写的服务器里面，事件收集器的工作通常由select、poll或epoll这类多路复用IO承担。事件发送器通常在与多路复用IO同一个应用线程当中实现，即将收集的事件分发到不同的事件队列。事件处理器通常是与多路复用IO不同的一些线程，这些线程从事件队列中获取事件，并根据事件类型执行响应的事件处理函数。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mosquitto_main_loop</span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">	while (run)</span><br><span class="line">	&#123;</span><br><span class="line">		...</span><br><span class="line">		fdcount = epoll_wait(db-&gt;epollfd, events, MAX_EVENTS, 100);</span><br><span class="line">		...</span><br><span class="line">			ev.data.fd = net__socket_accept(db, listensock[j])</span><br><span class="line">		...</span><br><span class="line">		loop_handle_reads_writes(db, events[i].data.fd, events[i].events);</span><br><span class="line">		...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>上述代码片为简化版的1.5.0的Mosquitto的主循环实现。代码中清晰的分辨出事件收集器epoll，事件发送器loop_handle_reads_writes。事件处理器则在其他线程执行不同事件的处理函数。</p>
@@ -341,8 +341,9 @@
 <h2 id="订阅树"><a href="#订阅树" class="headerlink" title="订阅树"></a>订阅树</h2><p>Mosquitto 的订阅树采用的是孩子兄弟表示法。与平时见到的实现不同，为了快速找到某个 topic 上的订阅者，它采用了 hash 表来加速查询。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">struct mosquitto__subleaf &#123;</span><br><span class="line">	struct mosquitto__subleaf *prev;</span><br><span class="line">	struct mosquitto__subleaf *next;</span><br><span class="line">	struct mosquitto *context;</span><br><span class="line">	int qos;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct mosquitto__subhier &#123;</span><br><span class="line">	UT_hash_handle hh;</span><br><span class="line">	struct mosquitto__subhier *parent;</span><br><span class="line">	struct mosquitto__subhier *children;</span><br><span class="line">	struct mosquitto__subleaf *subs;</span><br><span class="line">	struct mosquitto_msg_store *retained;</span><br><span class="line">	mosquitto__topic_element_uhpa topic;</span><br><span class="line">	uint16_t topic_len;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">typedef struct UT_hash_bucket &#123;</span><br><span class="line">   struct UT_hash_handle *hh_head;</span><br><span class="line">   unsigned count;</span><br><span class="line">   unsigned expand_mult;</span><br><span class="line"></span><br><span class="line">&#125; UT_hash_bucket;</span><br><span class="line"></span><br><span class="line">typedef struct UT_hash_table &#123;</span><br><span class="line">   UT_hash_bucket *buckets;</span><br><span class="line">   unsigned num_buckets, log2_num_buckets;</span><br><span class="line">   unsigned num_items;</span><br><span class="line">   struct UT_hash_handle *tail; /* tail hh in app order, for fast append    */</span><br><span class="line">   ptrdiff_t hho; /* hash handle offset (byte pos of hash handle in element */</span><br><span class="line">   unsigned ideal_chain_maxlen;</span><br><span class="line">   unsigned nonideal_items;</span><br><span class="line">   unsigned ineff_expands, noexpand;</span><br><span class="line"></span><br><span class="line">   uint32_t signature; /* used only to find hash tables in external analysis */</span><br><span class="line">#ifdef HASH_BLOOM</span><br><span class="line">   uint32_t bloom_sig; /* used only to test bloom exists in external analysis */</span><br><span class="line">   uint8_t *bloom_bv;</span><br><span class="line">   char bloom_nbits;</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">&#125; UT_hash_table;</span><br><span class="line"></span><br><span class="line">typedef struct UT_hash_handle &#123;</span><br><span class="line">   struct UT_hash_table *tbl;</span><br><span class="line">   void *prev;                       /* prev element in app order      */</span><br><span class="line">   void *next;                       /* next element in app order      */</span><br><span class="line">   struct UT_hash_handle *hh_prev;   /* previous hh in bucket order    */</span><br><span class="line">   struct UT_hash_handle *hh_next;   /* next hh in bucket order        */</span><br><span class="line">   void *key;                        /* ptr to enclosing struct&apos;s key  */</span><br><span class="line">   unsigned keylen;                  /* enclosing struct&apos;s key len     */</span><br><span class="line">   unsigned hashv;                   /* result of hash-fcn(key)        */</span><br><span class="line">&#125; UT_hash_handle;</span><br></pre></td></tr></table></figure>
 <p>订阅树中订阅节点采用双向链表实现。孩子兄弟表示法隐藏在handle数据结构中。从下图可以清晰得看出订阅树的数据结构。MQTT 主题采用目录结构形式，天然是树形结构，因此订阅主题采用订阅树的结构非常合适。Hash 表可以提升树形结构的查询效率。目前用不上，不做详细分析。</p>
-<p><img src="/images/mosquitto_subhier.vsd" alt="mosquitto_subhier" title="mosquitto_subhier.vsd"></p>
-<p><img src="/images/UT_hash_handle.vsd" alt="UT_hash_handle" title="UT_hash_handle.vsd"></p>
+<p><img src="/images/mosquitto_subhier.jpg" alt="mosquitto_subhier" title="mosquitto_subhier.jpg"></p>
+<p><img src="/images/UT_hash_handle.jpg" alt="UT_hash_handle" title="UT_hash_handle.jpg"></p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>本文描述了 C 语言开发的事件驱动模型以及 mosquitto 的订阅树结构。若需要更加深入的使用 mosquitto 则可以沿此思路继续深入。</p>
 
       
     </div>
@@ -439,10 +440,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Inhaltsverzeichnis
+            Table Des Matières
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Übersicht
+            Ensemble
           </li>
         </ul>
       
@@ -463,7 +464,7 @@
                 <a href="/archives/">
               
                   <span class="site-state-item-count">10</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-name">articles</span>
                 </a>
               </div>
             
@@ -474,7 +475,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">8</span>
-                  <span class="site-state-item-name">Kategorien</span>
+                  <span class="site-state-item-name">categories</span>
                 
               </div>
             
@@ -485,7 +486,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">9</span>
-                  <span class="site-state-item-name">Tags</span>
+                  <span class="site-state-item-name">tags</span>
                 
               </div>
             
@@ -517,7 +518,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#连接管理"><span class="nav-number">2.</span> <span class="nav-text">连接管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#事件驱动模型"><span class="nav-number">2.1.</span> <span class="nav-text">事件驱动模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端对象"><span class="nav-number">2.2.</span> <span class="nav-text">客户端对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务器数据结构"><span class="nav-number">3.</span> <span class="nav-text">服务器数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#订阅树"><span class="nav-number">3.1.</span> <span class="nav-text">订阅树</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#连接管理"><span class="nav-number">2.</span> <span class="nav-text">连接管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#事件驱动模型"><span class="nav-number">2.1.</span> <span class="nav-text">事件驱动模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端对象"><span class="nav-number">2.2.</span> <span class="nav-text">客户端对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#服务器数据结构"><span class="nav-number">3.</span> <span class="nav-text">服务器数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#订阅树"><span class="nav-number">3.1.</span> <span class="nav-text">订阅树</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结语"><span class="nav-number">4.</span> <span class="nav-text">结语</span></a></li></ol></div>
             
 
           </div>
@@ -547,7 +548,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
@@ -555,7 +556,7 @@
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+  <div class="theme-info">Thème &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
