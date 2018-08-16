@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="中年 男人," />
+  <meta name="keywords" content="诊断," />
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="前言10年前，一切还是未知，对未来充满了憧憬和向往。学校宣传的此时不搏何时搏，一遍又一遍的麻醉着我的神经，总以为熬过了高中题海与乏味，就会进入一个有趣而享受的世界。 1 调整2 压力3 提升4 运动5 衣品6 兴趣7 感情8 未知结束">
-<meta name="keywords" content="中年 男人">
+<meta name="description" content="CLOSE_WAIT服务端出现 CLOSE_WAIT 状态，必然是某些原因导致服务端 socket 未关闭， FIN 包未发送到客户端，所以一直处于 CLOSE_WAIT 状态。打印 jstack 发现有大量的相同堆栈，均由同步 RPC 调用未能及时返回引起。 Jedis连接到slave服务器服务端采用哨兵+主备方案部署，客户端采用 Jedis 连接。测试反应数据无法写入 redis，一直打印 R">
+<meta name="keywords" content="诊断">
 <meta property="og:type" content="article">
-<meta property="og:title" content="中年男人拯救手册">
-<meta property="og:url" content="http://wzlovegit.github.io/2018/03/11/中年男人拯救手册/index.html">
+<meta property="og:title" content="记几次有意思的问题诊断">
+<meta property="og:url" content="http://wzlovegit.github.io/2018/08/05/记几次有意思的问题分析/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="前言10年前，一切还是未知，对未来充满了憧憬和向往。学校宣传的此时不搏何时搏，一遍又一遍的麻醉着我的神经，总以为熬过了高中题海与乏味，就会进入一个有趣而享受的世界。 1 调整2 压力3 提升4 运动5 衣品6 兴趣7 感情8 未知结束">
+<meta property="og:description" content="CLOSE_WAIT服务端出现 CLOSE_WAIT 状态，必然是某些原因导致服务端 socket 未关闭， FIN 包未发送到客户端，所以一直处于 CLOSE_WAIT 状态。打印 jstack 发现有大量的相同堆栈，均由同步 RPC 调用未能及时返回引起。 Jedis连接到slave服务器服务端采用哨兵+主备方案部署，客户端采用 Jedis 连接。测试反应数据无法写入 redis，一直打印 R">
 <meta property="og:locale" content="中文">
-<meta property="og:updated_time" content="2018-03-15T13:56:51.187Z">
+<meta property="og:updated_time" content="2018-08-16T14:19:43.243Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="中年男人拯救手册">
-<meta name="twitter:description" content="前言10年前，一切还是未知，对未来充满了憧憬和向往。学校宣传的此时不搏何时搏，一遍又一遍的麻醉着我的神经，总以为熬过了高中题海与乏味，就会进入一个有趣而享受的世界。 1 调整2 压力3 提升4 运动5 衣品6 兴趣7 感情8 未知结束">
+<meta name="twitter:title" content="记几次有意思的问题诊断">
+<meta name="twitter:description" content="CLOSE_WAIT服务端出现 CLOSE_WAIT 状态，必然是某些原因导致服务端 socket 未关闭， FIN 包未发送到客户端，所以一直处于 CLOSE_WAIT 状态。打印 jstack 发现有大量的相同堆栈，均由同步 RPC 调用未能及时返回引起。 Jedis连接到slave服务器服务端采用哨兵+主备方案部署，客户端采用 Jedis 连接。测试反应数据无法写入 redis，一直打印 R">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://wzlovegit.github.io/2018/03/11/中年男人拯救手册/"/>
+  <link rel="canonical" href="http://wzlovegit.github.io/2018/08/05/记几次有意思的问题分析/"/>
 
 
 
 
 
-  <title>中年男人拯救手册 | Light</title>
+  <title>记几次有意思的问题诊断 | Light</title>
   
 
 
@@ -233,7 +233,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/03/11/中年男人拯救手册/">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/08/05/记几次有意思的问题分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王哲">
@@ -250,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">中年男人拯救手册</h1>
+          <h1 class="post-title" itemprop="name headline">记几次有意思的问题诊断</h1>
         
 
         <div class="post-meta">
@@ -262,8 +262,8 @@
               
                 <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-11T23:09:00+08:00">
-                2018-03-11
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-05T14:38:00+08:00">
+                2018-08-05
               </time>
             
 
@@ -285,8 +285,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/救赎/" itemprop="url" rel="index">
-                    <span itemprop="name">救赎</span>
+                  <a href="/categories/诊断/" itemprop="url" rel="index">
+                    <span itemprop="name">诊断</span>
                   </a>
                 </span>
 
@@ -322,8 +322,10 @@
       
 
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>10年前，一切还是未知，对未来充满了憧憬和向往。学校宣传的此时不搏何时搏，一遍又一遍的麻醉着我的神经，总以为熬过了高中题海与乏味，就会进入一个有趣而享受的世界。</p>
-<h1 id="1-调整"><a href="#1-调整" class="headerlink" title="1 调整"></a>1 调整</h1><h1 id="2-压力"><a href="#2-压力" class="headerlink" title="2 压力"></a>2 压力</h1><h1 id="3-提升"><a href="#3-提升" class="headerlink" title="3 提升"></a>3 提升</h1><h1 id="4-运动"><a href="#4-运动" class="headerlink" title="4 运动"></a>4 运动</h1><h1 id="5-衣品"><a href="#5-衣品" class="headerlink" title="5 衣品"></a>5 衣品</h1><h1 id="6-兴趣"><a href="#6-兴趣" class="headerlink" title="6 兴趣"></a>6 兴趣</h1><h1 id="7-感情"><a href="#7-感情" class="headerlink" title="7 感情"></a>7 感情</h1><h1 id="8-未知"><a href="#8-未知" class="headerlink" title="8 未知"></a>8 未知</h1><h1 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h1>
+        <h1 id="CLOSE-WAIT"><a href="#CLOSE-WAIT" class="headerlink" title="CLOSE_WAIT"></a>CLOSE_WAIT</h1><p>服务端出现 CLOSE_WAIT 状态，必然是某些原因导致服务端 socket 未关闭， FIN 包未发送到客户端，所以一直处于 CLOSE_WAIT 状态。打印 jstack 发现有大量的相同堆栈，均由同步 RPC 调用未能及时返回引起。</p>
+<h1 id="Jedis连接到slave服务器"><a href="#Jedis连接到slave服务器" class="headerlink" title="Jedis连接到slave服务器"></a>Jedis连接到slave服务器</h1><p>服务端采用哨兵+主备方案部署，客户端采用 Jedis 连接。测试反应数据无法写入 redis，一直打印 READONLY异常。登录 redis，info 查看连接节点角色为 slave。因此怀疑主备切换之后 Jedis 客户端未能感知到。通过 Jedis 源代码得知 redis 主备切换后哨兵会将主备切换的信息 pub 到 +switch-master 这个主题， Jedis 客户端订阅该主题，在获取到主备切换信息之后关闭当前所有 Jedis 连接，跟新的主节点建立连接。由于测试服务端环境只有一个哨兵，并且 redis 的 pub/sub 模式是发布后需要直接消费，否则就会丢失，造就了 Jedis 客户端未能发现主备切换，引起客户端连接在了从节点。</p>
+<h1 id="kafka无业务状态下流量和CPU较高"><a href="#kafka无业务状态下流量和CPU较高" class="headerlink" title="kafka无业务状态下流量和CPU较高"></a>kafka无业务状态下流量和CPU较高</h1><p>现网和测试反应 kafka 在基本没有业务的情况下，网络带宽竟然占用到了 5Mbits/s。问题反馈上来颇感棘手，原因是 kafka 采用 erlang 开发，而我只对 c/c++/Java 有所了解。既然无法直接阅读 kafka 代码，那就从外围分析。首先抓包，查看到的内容都是一些 topic 的名称，然而从我们的常识判断 kafka 这么成熟的商用消息队列不至于出现自身同步都引起巨大流量的问题。采用工具查看流量都从 kafka 不同节点同步消息互相流动。offset 的同步是采用的自动提交方式，每次提交都会触发 offset 同步。排查后发现 offset 的自动提交时间为 100ms，因此引起多个客户端每秒触发 10 次 offset 同步。将 offset 修改为 5000 ms 之后流量和 CPU 都降下来了。</p>
+
       
     </div>
     
@@ -340,7 +342,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/中年-男人/" rel="tag"># 中年 男人</a>
+            <a href="/tags/诊断/" rel="tag"># 诊断</a>
           
         </div>
       
@@ -353,8 +355,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/03/11/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/2018/07/25/聊聊Spring State Machine/" rel="next" title="聊聊Spring State Machine">
+                <i class="fa fa-chevron-left"></i> 聊聊Spring State Machine
               </a>
             
           </div>
@@ -362,10 +364,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/03/18/MySQL索引/" rel="prev" title="MySQL索引">
-                MySQL索引 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -497,7 +495,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-调整"><span class="nav-number">2.</span> <span class="nav-text">1 调整</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-压力"><span class="nav-number">3.</span> <span class="nav-text">2 压力</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-提升"><span class="nav-number">4.</span> <span class="nav-text">3 提升</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-运动"><span class="nav-number">5.</span> <span class="nav-text">4 运动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-衣品"><span class="nav-number">6.</span> <span class="nav-text">5 衣品</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-兴趣"><span class="nav-number">7.</span> <span class="nav-text">6 兴趣</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-感情"><span class="nav-number">8.</span> <span class="nav-text">7 感情</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#8-未知"><span class="nav-number">9.</span> <span class="nav-text">8 未知</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结束"><span class="nav-number">10.</span> <span class="nav-text">结束</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CLOSE-WAIT"><span class="nav-number">1.</span> <span class="nav-text">CLOSE_WAIT</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Jedis连接到slave服务器"><span class="nav-number">2.</span> <span class="nav-text">Jedis连接到slave服务器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kafka无业务状态下流量和CPU较高"><span class="nav-number">3.</span> <span class="nav-text">kafka无业务状态下流量和CPU较高</span></a></li></ol></div>
             
 
           </div>
