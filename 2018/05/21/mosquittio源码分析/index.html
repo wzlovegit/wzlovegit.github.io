@@ -74,6 +74,8 @@
 
 
 
+  <link rel="alternate" href="/rss2.xml" title="Light" type="application/atom+xml" />
+
 
 
 
@@ -90,7 +92,7 @@
 <meta property="og:image" content="http://wzlovegit.github.io/images/事件驱动.png">
 <meta property="og:image" content="http://wzlovegit.github.io/images/mosquitto_subhier.jpg">
 <meta property="og:image" content="http://wzlovegit.github.io/images/UT_hash_handle.jpg">
-<meta property="og:updated_time" content="2018-07-24T14:46:08.444Z">
+<meta property="og:updated_time" content="2018-09-02T14:23:53.785Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mosquitto源码分析">
 <meta name="twitter:description" content="简介Mosquitto简介这篇文章介绍了Mosquitto的基本功能。本文在此基础上，对Mosquitto的内核实现进行简单总结。文章只对Mosquitto概要设计进行分析，不深入代码细节。 连接管理Mosquitto对socket连接的管理和redis等其他开源c软件大同小异，均采用反应堆模式（可参考http://www.cnblogs.com/xujian2014/p/5711828.html">
@@ -190,7 +192,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Accueil
+            Startseite
           </a>
         </li>
       
@@ -200,7 +202,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -264,7 +266,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-21T16:30:00+08:00">
                 2018-05-21
@@ -285,7 +287,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -440,10 +442,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table Des Matières
+            Inhaltsverzeichnis
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Ensemble
+            Übersicht
           </li>
         </ul>
       
@@ -464,7 +466,7 @@
                 <a href="/archives/">
               
                   <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">articles</span>
+                  <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
             
@@ -475,7 +477,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">10</span>
-                  <span class="site-state-item-name">categories</span>
+                  <span class="site-state-item-name">Kategorien</span>
                 
               </div>
             
@@ -486,13 +488,20 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">11</span>
-                  <span class="site-state-item-name">tags</span>
+                  <span class="site-state-item-name">Tags</span>
                 
               </div>
             
 
           </nav>
 
+          
+            <div class="feed-link motion-element">
+              <a href="/rss2.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
           
 
           
@@ -548,7 +557,7 @@
 </div>
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
@@ -556,7 +565,7 @@
 
 
 
-  <div class="theme-info">Thème &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 

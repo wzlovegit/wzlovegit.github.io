@@ -74,6 +74,8 @@
 
 
 
+  <link rel="alternate" href="/rss2.xml" title="Light" type="application/atom+xml" />
+
 
 
 
@@ -87,12 +89,12 @@
 <meta property="og:site_name" content="Light">
 <meta property="og:description" content="1 JSON Web TokensJSON Web Tokens(JWT)是一个紧凑的自包含的用于多方安全传输信息的开放标准。由于JWT具有数字签名（可用对称密钥和非对称密钥进行签名），因此JWT传输的信息可以被认证和信任。  数字签名： 用户Alice采用非对称密钥加密算法生成一对公钥和私钥；Alice将公钥公诸于世，私钥只有自己知道。此时Alice就可以采用自己的私钥将一段信息进行加密。其他人">
 <meta property="og:locale" content="中文">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/06/23/JWT简介/images/client-credentials-grant.png">
-<meta property="og:updated_time" content="2018-06-23T12:30:55.842Z">
+<meta property="og:image" content="http://wzlovegit.github.io/images/client-credentials-grant.png">
+<meta property="og:updated_time" content="2018-09-02T14:24:02.977Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JWT简介">
 <meta name="twitter:description" content="1 JSON Web TokensJSON Web Tokens(JWT)是一个紧凑的自包含的用于多方安全传输信息的开放标准。由于JWT具有数字签名（可用对称密钥和非对称密钥进行签名），因此JWT传输的信息可以被认证和信任。  数字签名： 用户Alice采用非对称密钥加密算法生成一对公钥和私钥；Alice将公钥公诸于世，私钥只有自己知道。此时Alice就可以采用自己的私钥将一段信息进行加密。其他人">
-<meta name="twitter:image" content="http://wzlovegit.github.io/2018/06/23/JWT简介/images/client-credentials-grant.png">
+<meta name="twitter:image" content="http://wzlovegit.github.io/images/client-credentials-grant.png">
 
 
 
@@ -188,7 +190,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Accueil
+            Startseite
           </a>
         </li>
       
@@ -198,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -262,7 +264,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-23T10:34:00+08:00">
                 2018-06-23
@@ -283,7 +285,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -362,7 +364,7 @@
 </blockquote>
 <p>JWT在某些情况下是无状态认证机制。服务器认证JWT通过之后就会让其访问受保护的资源。如果JWT包含一些必要的数据，那么可以减少对数据库的查询操作。</p>
 <p>如果token在Authorization头中发送，那么跨域资源共享（CORS）就不存在问题，因为他们不是cookie。</p>
-<p>下图是JWT官网的图：<br><img src="./images/client-credentials-grant.png" alt="enter description here" title="client-credentials-grant.png"></p>
+<p>下图是JWT官网的图：<br><img src="/images/client-credentials-grant.png" alt="enter description here" title="client-credentials-grant.png"></p>
 <ol>
 <li>应用或客户端发送认证请求到认证服务器。</li>
 <li>认证通过，认证服务器给应用返回一个访问令牌</li>
@@ -470,10 +472,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table Des Matières
+            Inhaltsverzeichnis
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Ensemble
+            Übersicht
           </li>
         </ul>
       
@@ -494,7 +496,7 @@
                 <a href="/archives/">
               
                   <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">articles</span>
+                  <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
             
@@ -505,7 +507,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">10</span>
-                  <span class="site-state-item-name">categories</span>
+                  <span class="site-state-item-name">Kategorien</span>
                 
               </div>
             
@@ -516,13 +518,20 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">11</span>
-                  <span class="site-state-item-name">tags</span>
+                  <span class="site-state-item-name">Tags</span>
                 
               </div>
             
 
           </nav>
 
+          
+            <div class="feed-link motion-element">
+              <a href="/rss2.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
           
 
           
@@ -578,7 +587,7 @@
 </div>
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
@@ -586,7 +595,7 @@
 
 
 
-  <div class="theme-info">Thème &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 

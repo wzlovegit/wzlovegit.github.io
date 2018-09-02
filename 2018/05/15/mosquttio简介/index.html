@@ -74,6 +74,8 @@
 
 
 
+  <link rel="alternate" href="/rss2.xml" title="Light" type="application/atom+xml" />
+
 
 
 
@@ -87,12 +89,12 @@
 <meta property="og:site_name" content="Light">
 <meta property="og:description" content="1 概述Mosquitto是实现了MQTT协议3.1和3.1.1版本的一个消息服务器的开源实现。Mosquitto是轻量级的，它的应用平台囊括从低电量的单片机到所有服务器。 MQTT协议基于publish/subscribe(发布/订阅)模型提供了轻量级的携带消息的方法。这就为传感器、移动设备（比如手机）、嵌入式设备接入互联网提供了可能。 Mosquitto提供了实现MQTT客户端的C库，并且提供">
 <meta property="og:locale" content="中文">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/05/15/mosquttio简介/images/mosquitto桥接.jpg">
-<meta property="og:updated_time" content="2018-05-18T10:18:38.429Z">
+<meta property="og:image" content="http://wzlovegit.github.io/images/mosquitto桥接.jpg">
+<meta property="og:updated_time" content="2018-09-02T14:23:44.099Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Mosquitto简介">
 <meta name="twitter:description" content="1 概述Mosquitto是实现了MQTT协议3.1和3.1.1版本的一个消息服务器的开源实现。Mosquitto是轻量级的，它的应用平台囊括从低电量的单片机到所有服务器。 MQTT协议基于publish/subscribe(发布/订阅)模型提供了轻量级的携带消息的方法。这就为传感器、移动设备（比如手机）、嵌入式设备接入互联网提供了可能。 Mosquitto提供了实现MQTT客户端的C库，并且提供">
-<meta name="twitter:image" content="http://wzlovegit.github.io/2018/05/15/mosquttio简介/images/mosquitto桥接.jpg">
+<meta name="twitter:image" content="http://wzlovegit.github.io/images/mosquitto桥接.jpg">
 
 
 
@@ -188,7 +190,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Accueil
+            Startseite
           </a>
         </li>
       
@@ -198,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -262,7 +264,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-15T09:15:00+08:00">
                 2018-05-15
@@ -283,7 +285,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -344,7 +346,7 @@
 <h1 id="4-清除会话-持久连接"><a href="#4-清除会话-持久连接" class="headerlink" title="4 清除会话/持久连接"></a>4 清除会话/持久连接</h1><p>客户端的clean session字段若为false，则认为是持久连接。在持久连接中，当客户端断链，那么它将要订阅的所有主题以及所有它订阅的QoS1和QoS2级别的消息将会存储到服务端，直到它重连。如果clean session字段为false，则在客户端断链之后，会清除所有会话相关内容。</p>
 <h1 id="5-遗嘱"><a href="#5-遗嘱" class="headerlink" title="5 遗嘱"></a>5 遗嘱</h1><p>客户单连接到服务端后，可以给向服务端提供自己的遗嘱。这个遗嘱是在客户端意外断链的时候，服务端需要发布的消息。这个消息的主题，QoS和保持状态跟之前介绍的是一致的。</p>
 <h1 id="6-桥接"><a href="#6-桥接" class="headerlink" title="6 桥接"></a>6 桥接</h1><p>关于Mosquitto桥接的配置在配置文档里面已经描述清楚，这里对其原理进行介绍：</p>
-<p><img src="./images/mosquitto桥接.jpg" alt="enter description here" title="mosquitto桥接.jpg"></p>
+<p><img src="/images/mosquitto桥接.jpg" alt="enter description here" title="mosquitto桥接.jpg"></p>
 <p>桥接在一台Mosquitto服务器配置。桥接服务器与其他服务器建立连接，并各自为该连接命名。</p>
 <p>在某个客户端向任何一台Mosquitto服务器publish消息的时候，由于客户端连接订阅了该主题，那么服务器就会往该连接publish 消息。当其他broker收到publish消息，会将消息发布到对应的topic当中。</p>
 
@@ -443,10 +445,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table Des Matières
+            Inhaltsverzeichnis
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Ensemble
+            Übersicht
           </li>
         </ul>
       
@@ -467,7 +469,7 @@
                 <a href="/archives/">
               
                   <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">articles</span>
+                  <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
             
@@ -478,7 +480,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">10</span>
-                  <span class="site-state-item-name">categories</span>
+                  <span class="site-state-item-name">Kategorien</span>
                 
               </div>
             
@@ -489,13 +491,20 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">11</span>
-                  <span class="site-state-item-name">tags</span>
+                  <span class="site-state-item-name">Tags</span>
                 
               </div>
             
 
           </nav>
 
+          
+            <div class="feed-link motion-element">
+              <a href="/rss2.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
           
 
           
@@ -551,7 +560,7 @@
 </div>
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
@@ -559,7 +568,7 @@
 
 
 
-  <div class="theme-info">Thème &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
