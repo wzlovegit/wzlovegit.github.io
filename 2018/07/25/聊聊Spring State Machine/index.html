@@ -90,9 +90,9 @@
 <meta property="og:description" content="状态机FSM (Finite State Machine) 有限状态机。学术上 FSM 分为两种类型： Mealy 状态机和 Moore 状态机。  Mealy 状态机  output = f ( present_state, input )next_state = f ( present_state, input)  Moore 状态机  output = f ( present_state )">
 <meta property="og:locale" content="中文">
 <meta property="og:image" content="https://docs.spring.io/spring-statemachine/docs/current/reference/htmlsingle/images/sm-repository-simplemachine.png">
-<meta property="og:image" content="http://wzlovegit.github.io/images/springsm.jpg">
-<meta property="og:image" content="http://wzlovegit.github.io/images/project_teamwork.jpg">
-<meta property="og:updated_time" content="2018-09-02T14:23:33.389Z">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/07/25/聊聊Spring%20State%20Machine/images/springsm.jpg">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/07/25/聊聊Spring%20State%20Machine/images/project_teamwork.jpg">
+<meta property="og:updated_time" content="2018-09-02T14:29:44.906Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="简单聊聊Spring State Machine">
 <meta name="twitter:description" content="状态机FSM (Finite State Machine) 有限状态机。学术上 FSM 分为两种类型： Mealy 状态机和 Moore 状态机。  Mealy 状态机  output = f ( present_state, input )next_state = f ( present_state, input)  Moore 状态机  output = f ( present_state )">
@@ -192,7 +192,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -202,7 +202,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -266,7 +266,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-25T21:00:00+08:00">
                 2018-07-25
@@ -287,7 +287,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -341,7 +341,7 @@
 <p><a href="https://www.tutorialspoint.com/automata_theory/moore_and_mealy_machines.htm" target="_blank" rel="noopener">https://www.tutorialspoint.com/automata_theory/moore_and_mealy_machines.htm</a></p>
 <h1 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h1><p><img src="https://docs.spring.io/spring-statemachine/docs/current/reference/htmlsingle/images/sm-repository-simplemachine.png" alt="简单状态机"></p>
 <p>Spring State Machine 是事件驱动的，事件可以是定时器事件或者普通事件。上图中，比如状态机目前处于 S1 状态，收到 E1 事件后就切换到 S2 状态；状态机目前处于 S2 状态， 收到 E2 事件后切换到 S3 状态。那么 Spring 状态机是怎么使用计算资源的呢？</p>
-<p><img src="/images/springsm.jpg" alt="spring state machine" title="springsm.jpg"></p>
+<p><img src="./images/springsm.jpg" alt="spring state machine" title="springsm.jpg"></p>
 <p>每个状态机都有一个接收事件的事件队列，每次每个事件触发都会将 Runnable 任务提交到线程池的任务队列。线程从线程池中提取 Runnable 任务，然后执行事件队列中的全部事件。在任务执行的过程中，会首先加锁，不让多个线程同时处理一个事件队列以免引起线程安全问题。</p>
 <h1 id="分布式协作状态机"><a href="#分布式协作状态机" class="headerlink" title="分布式协作状态机"></a>分布式协作状态机</h1><p>Distribute state machine 是借助 Zookeeper 实现的。每次状态发生变化，Spring State Machine 会将状态持久化到 Zookeeper 中，并以 log 的形式记录到 Zookeeper。 由于另一个 State Machine Watch 了 Zookeeper 上 log 的变化，因此它会在 log 发生变化的时候重放 log，以完成两个 State Machine 的同步。这里需要注意，如果状态机中定义的 Action 中存在变量自加的情况，那么重放 log 会导致 Action 中的操作执行多遍，因此我们在设计的时候通常不能在 Action 中执行操作。</p>
 <h1 id="状态机实例化"><a href="#状态机实例化" class="headerlink" title="状态机实例化"></a>状态机实例化</h1><p>初次使用 Spring State Machine，从其 Demo 中只能看到每次启动 Spring 服务只能配置一个 Spring State Machine 实例。这种情况通常不符合我们的业务流程，因为我们会有多个相同的业务同时执行。当然，这不能困住我们啦，把 Spring State Machine 的源代码下下来，就能看到 Builder 模式的创建状态机的方法。</p>
@@ -360,7 +360,7 @@
 </ol>
 <p>事必躬亲是非常错误的，是一种事倍功半的做法。首先一个人精力有限，其次一个人必有局限。充分信任同事，不断沟通结果才是提高生产力的法则。比如，如果不信任 Spring 的代码质量，那么项目从 0 开始，将是非常巨大的成本。信任同事，一起查看设计和开发结果，对不合理的地方不断完善，既可以减轻事必躬亲带来的压力和巨大工作量，又可以让大家都有主人翁精神。</p>
 <h2 id="如何分工合作？"><a href="#如何分工合作？" class="headerlink" title="如何分工合作？"></a>如何分工合作？</h2><p>需求一下来，我立马拉上组内相关同事进行了一个针对性的拆解分工。因为每个人技术背景不同，所以起初我的想法是每两个同事关注一个重要的点，每个同事关注两个重要的点，即下图的形式：</p>
-<p><img src="/images/project_teamwork.jpg" alt="分工" title="分工.jpg"></p>
+<p><img src="./images/project_teamwork.jpg" alt="分工" title="分工.jpg"></p>
 <p>此时大家可以分工调研各自重点关注和辅助关注的模块了。分工上基本是合理的。就是缺少了沟通。沟通是分工合作非常需要关注的一个点。下次牵头做设计，必然要每天沟通，记录进度和结果。</p>
 <h2 id="如何保证质量？"><a href="#如何保证质量？" class="headerlink" title="如何保证质量？"></a>如何保证质量？</h2><p>把信任给了同事，那么质量如何保证。这就又体现了沟通的重要性。不是大家能力问题，而是不同技术背景，开发习惯等会引起一些低级问题。开会 review 是提升大家编码水平的一个重要渠道。</p>
 
@@ -459,10 +459,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Inhaltsverzeichnis
+            Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Übersicht
+            Overview
           </li>
         </ul>
       
@@ -483,7 +483,7 @@
                 <a href="/archives/">
               
                   <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
@@ -494,7 +494,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">10</span>
-                  <span class="site-state-item-name">Kategorien</span>
+                  <span class="site-state-item-name">categories</span>
                 
               </div>
             
@@ -505,7 +505,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">11</span>
-                  <span class="site-state-item-name">Tags</span>
+                  <span class="site-state-item-name">tags</span>
                 
               </div>
             
@@ -574,7 +574,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
