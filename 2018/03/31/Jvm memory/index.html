@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="中文">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="java jvm," />
+
+
+
+
+
+  <link rel="alternate" href="/rss2.xml" title="Light" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="1 简介我不会JVM开发，但是加深对JVM的理解可以帮助我们编写更好的服务。目前我只了解了一下JVM的内存相关的内容，比如怎么分配内存空间可以减少gc次数，如何调整JVM参数提升程序性能，如何定位OOM的问题。 2 JVM 内存布局 线程独享内存   PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。 虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数">
+<meta name="keywords" content="java jvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java内存分配和回收">
+<meta property="og:url" content="http://wzlovegit.github.io/2018/03/31/Jvm memory/index.html">
+<meta property="og:site_name" content="Light">
+<meta property="og:description" content="1 简介我不会JVM开发，但是加深对JVM的理解可以帮助我们编写更好的服务。目前我只了解了一下JVM的内存相关的内容，比如怎么分配内存空间可以减少gc次数，如何调整JVM参数提升程序性能，如何定位OOM的问题。 2 JVM 内存布局 线程独享内存   PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。 虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数">
+<meta property="og:locale" content="中文">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Jvm%20memory/jvm内存布局.png">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Jvm%20memory/mark-sweep.png">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Jvm%20memory/copy.png">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Jvm%20memory/mark-compact.png">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Jvm%20memory/垃圾回收器.png">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Jvm%20memory/serial.png">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Jvm%20memory/ParNew.png">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/03/31/Jvm%20memory/CMS.png">
+<meta property="og:updated_time" content="2018-09-19T14:35:45.555Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java内存分配和回收">
+<meta name="twitter:description" content="1 简介我不会JVM开发，但是加深对JVM的理解可以帮助我们编写更好的服务。目前我只了解了一下JVM的内存相关的内容，比如怎么分配内存空间可以减少gc次数，如何调整JVM参数提升程序性能，如何定位OOM的问题。 2 JVM 内存布局 线程独享内存   PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。 虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数">
+<meta name="twitter:image" content="http://wzlovegit.github.io/2018/03/31/Jvm%20memory/jvm内存布局.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wzlovegit.github.io/2018/03/31/Jvm memory/"/>
+
+
+
+
+
+  <title>Java内存分配和回收 | Light</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="中文">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Light</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">王哲的个人博客</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/03/31/Jvm memory/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java内存分配和回收</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-31T23:40:00+08:00">
+                2018-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/jvm/" itemprop="url" rel="index">
+                    <span itemprop="name">jvm</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><p>我不会JVM开发，但是加深对JVM的理解可以帮助我们编写更好的服务。目前我只了解了一下JVM的内存相关的内容，比如怎么分配内存空间可以减少gc次数，如何调整JVM参数提升程序性能，如何定位OOM的问题。</p>
+<h1 id="2-JVM-内存布局"><a href="#2-JVM-内存布局" class="headerlink" title="2 JVM 内存布局"></a>2 JVM 内存布局</h1><ol>
+<li>线程独享内存</li>
+</ol>
+<ul>
+<li>PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。</li>
+<li>虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数、返回值等，用到虚拟机栈</li>
+<li>本地方法栈：JVM调用本地方法执行，需要存储局部变量、参数、返回值等，用到本地方法栈</li>
+</ul>
+<ol>
+<li>线程共享内存</li>
+</ol>
+<ul>
+<li>heap：堆内存通常是JVM最大的内存，用于存储对象实体</li>
+<li>方法区：用于存放代码指令、常量等</li>
+</ul>
+<img src="/2018/03/31/Jvm%20memory/jvm内存布局.png" title="jvm内存布局">
+<h1 id="3-GC-Root"><a href="#3-GC-Root" class="headerlink" title="3 GC Root"></a>3 GC Root</h1><ul>
+<li>虚拟机栈中的引用指向的对象</li>
+<li>本地方法栈中的引用指向的对象</li>
+<li>类中静态变量指向的对象</li>
+<li>类中静态方法使用的对象</li>
+<li>类中常量引用（final修饰）指向的常量</li>
+</ul>
+<p>从图jvm内存布局可以看出，GC Root其实就是heap内存之外的内存中的一些引用指向的对象。堆中引用指向的对象属于间接的，不属于GC Root。</p>
+<h1 id="4-JVM-内存回收算法"><a href="#4-JVM-内存回收算法" class="headerlink" title="4 JVM 内存回收算法"></a>4 JVM 内存回收算法</h1><h2 id="4-1-标记清除-Mark-Sweep"><a href="#4-1-标记清除-Mark-Sweep" class="headerlink" title="4.1 标记清除 Mark-Sweep"></a>4.1 标记清除 Mark-Sweep</h2><h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><ol>
+<li>先标记哪些内存需要回收</li>
+<li>清除标记要删除的内存</li>
+</ol>
+<p>首先将用过的内存空间标记为已用，在gc的时候，首先根据GC Root标记需要被回收的对象，然后将这些被回收的对象所占用的空间标记为可用。此时jvm在分配堆内存的时候，就可以在这些标记为可用的内存当中开辟空间。</p>
+<img src="/2018/03/31/Jvm%20memory/mark-sweep.png" title="mark-sweep">
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
+<li>内存碎片。由于对象占用的内存就地回收，所以内存碎片会越来越严重，最终导致内存无法分配给对象使<br>用。由mark-sweep图可以看出3个方格大的对象分配内存失败，虽然内存当中有足够的空间可以使用。</li>
+</ol>
+<p>为了解决内存碎片，在内存使用到一定程度后，就需要进行内存整理，将对象搬到一起存储。CMS垃圾回收器就是采用的这种机制，触发内存整理的参数为CMSInitiatingOccupancyFraction、UseCMSCompactAtFullCollection、CMSFullGCsBeforeCompaction。</p>
+<h2 id="4-2-复制"><a href="#4-2-复制" class="headerlink" title="4.2 复制"></a>4.2 复制</h2><h3 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h3><ol>
+<li>划分出一部分区域用于给新生成的对象分配空间</li>
+<li>划分出的一部分区域被用完之后，复制到另外一份空闲区域</li>
+</ol>
+<img src="/2018/03/31/Jvm%20memory/copy.png" title="copy">
+<h3 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
+<li>内存中有一部分无法使用，我们可以看出内存最多可以使用S + E的空间。</li>
+<li>对象移动</li>
+<li>无内存碎片</li>
+</ol>
+<p>由于服务当中大部分的对象是朝生夕死的，所以复制算法作为新生代的回收算法，由于对象存活概率低，S空间可以变小，对象移动也会变少，所以复制算法很适合作为新生代垃圾回收算法。</p>
+<h2 id="4-3-标记整理-Mark-Compact"><a href="#4-3-标记整理-Mark-Compact" class="headerlink" title="4.3 标记整理 Mark-Compact"></a>4.3 标记整理 Mark-Compact</h2><h3 id="算法-2"><a href="#算法-2" class="headerlink" title="算法"></a>算法</h3><ol>
+<li>标记哪些内存需要回收</li>
+<li>将不被回收的内存整理到一起</li>
+</ol>
+<img src="/2018/03/31/Jvm%20memory/mark-compact.png" title="mark-compact">
+<h3 id="优缺点-2"><a href="#优缺点-2" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
+<li>减少内存碎片</li>
+<li>对象移动少</li>
+<li>不需要浪费内存空间</li>
+</ol>
+<h1 id="5-JVM-垃圾回收器"><a href="#5-JVM-垃圾回收器" class="headerlink" title="5 JVM 垃圾回收器"></a>5 JVM 垃圾回收器</h1><img src="/2018/03/31/Jvm%20memory/垃圾回收器.png">
+<h2 id="5-1-Serial-新生代内存回收机制，复制算法"><a href="#5-1-Serial-新生代内存回收机制，复制算法" class="headerlink" title="5.1 Serial: 新生代内存回收机制，复制算法"></a>5.1 Serial: 新生代内存回收机制，复制算法</h2><img src="/2018/03/31/Jvm%20memory/serial.png" title="serial">
+<p>STOP THE WORLD听着很厉害，但是真正出现的时候，通常面临着痛苦。比如，在大量任务执行的过程中，本来一秒处理100个，突然就变成了几个，用图形化界面展示出来就是一个暴跌的曲线。这通常象征着需要加班了。所以串行gc在多CPU的情况下，不推荐。</p>
+<h2 id="5-2-ParNew：Serial算法的并行版本"><a href="#5-2-ParNew：Serial算法的并行版本" class="headerlink" title="5.2 ParNew：Serial算法的并行版本"></a>5.2 ParNew：Serial算法的并行版本</h2><img src="/2018/03/31/Jvm%20memory/ParNew.png">
+<p>ParNew是Serial的并行实现。它同样存在STOP THE WORLD的限制。但并行版本在多核情况下通常会有更优秀的回收效率。比较难受的一点是ParNew如果设置为新生代垃圾回收器，那么老年代只能用Serial-Old回收器。Serial-Old是标记整理算法的串行版本的实现，也无法利用多核优势。</p>
+<h2 id="5-3-Serial-old：-老年代内存回收机制"><a href="#5-3-Serial-old：-老年代内存回收机制" class="headerlink" title="5.3 Serial-old： 老年代内存回收机制"></a>5.3 Serial-old： 老年代内存回收机制</h2><p>老年代垃圾回收器，标记整理算法，有STOP THE WORLD的限制，并且无法利用多核性能。但可以与ParNew、Serial和Parallel Scanvege搭配使用。也是CMS无法整理内存的时候采用的后继方案。</p>
+<h2 id="5-4-ParOld：-Serial-Old的并行版本"><a href="#5-4-ParOld：-Serial-Old的并行版本" class="headerlink" title="5.4 ParOld： Serial-Old的并行版本"></a>5.4 ParOld： Serial-Old的并行版本</h2><h2 id="5-5-Par-Scanverge-吞吐优先考虑的垃圾回收器"><a href="#5-5-Par-Scanverge-吞吐优先考虑的垃圾回收器" class="headerlink" title="5.5 Par Scanverge 吞吐优先考虑的垃圾回收器"></a>5.5 Par Scanverge 吞吐优先考虑的垃圾回收器</h2><h2 id="5-6-CMS"><a href="#5-6-CMS" class="headerlink" title="5.6 CMS"></a>5.6 CMS</h2><img src="/2018/03/31/Jvm%20memory/CMS.png">
+<p>Java 1.6之前的常用的老年代垃圾回收器。虽然初始标记和重新标记都会STW，但是它们执行都比较快，可以将对用户线程的影响降到最低。</p>
+<p>缺点：</p>
+<ol>
+<li>CPU敏感，占用（CPU + 3）/4的CPU资源进行GC</li>
+<li>无法处理浮动垃圾，即一边标记一边由用户线程产生的垃圾，会导致CMS失败，此时会处罚Serial-old再一次进行GC</li>
+<li>标记清除算法的局限性。需要配置内存整理阈值触发内存整理。</li>
+</ol>
+<h2 id="5-7-G1GC"><a href="#5-7-G1GC" class="headerlink" title="5.7 G1GC"></a>5.7 G1GC</h2><p>新一代垃圾回收器。将内存划分为很多的Region，回收的时候进行小范围回收。1.7之后通常在Server端采用G1GC。虽然书上介绍说G1GC在吞吐上对比与CMS并没有优势，但是随着其发展，应该会不断提升。</p>
+<h1 id="JVM-内存管理常用参数实战配置"><a href="#JVM-内存管理常用参数实战配置" class="headerlink" title="JVM 内存管理常用参数实战配置"></a>JVM 内存管理常用参数实战配置</h1><p>Xms : 最小申请内存。 1G<br>Xmx : 最大申请内存。 4G。虽然64bits虚拟机可以配置更大的运行内存，但通常服务不应该去依靠自己内存存储大量的内容，这在异常情况下可能导致任务丢失。而且在OOM进行dump的时候，过大的内存会导致dump文件很大，对于获取信息不利。<br>UseG1GC : G1GC通常是我们队垃圾回收器的选择，因为新，期待G1团队可以将其优化的更好。<br>server : 服务端开启server模式<br>打印gc日志<br>+HeapDumpOnOutOfMemoryError : 内存溢出打印heapdump文件<br>HeapDumpPath=/path/heap/dump :  heapdump文件路径<br>+PrintGCDeatils : 打印垃圾回收的细节信息<br>Xloggc:<filename> : 将垃圾回收信息输出到指定文件<br>+PrintGCDateStamps : 需要打印日历形式的时间戳选项</filename></p>
+<h1 id="JAVA-内存问题定位手段"><a href="#JAVA-内存问题定位手段" class="headerlink" title="JAVA 内存问题定位手段"></a>JAVA 内存问题定位手段</h1><h2 id="jmap"><a href="#jmap" class="headerlink" title="jmap"></a>jmap</h2><p>命令：jmap -dump:format=b,file=heap.bin</p>
+<p>file：保存路径及文件名<br>pid：进程编号（windows通过任务管理器查看，linux通过ps aux查看）</p>
+<p>dump文件可以通过MemoryAnalyzer(MAT)分析查看,可以查看dump时对象数量，内存占用，线程情况等。</p>
+<p>通常情况下我们不会用jhat分析jmap信息，第一jhat消耗服务器资源；第二jhat的分析能力还不上javaVisualvm。</p>
+<h2 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h2><p>jstat是查看java进程内存和gc的神器，通常配置参数jstat -gcutil {pid}</p>
+<h1 id="JAVA-CPU问题定位手段"><a href="#JAVA-CPU问题定位手段" class="headerlink" title="JAVA CPU问题定位手段"></a>JAVA CPU问题定位手段</h1><p>jps<br>ps -mp pid -o THREAD,tid,time<br>jstack</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java-jvm/" rel="tag"># java jvm</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/24/Java executor/" rel="next" title="Java多线程模型和Executor框架">
+                <i class="fa fa-chevron-left"></i> Java多线程模型和Executor框架
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/03/Java thread/" rel="prev" title="Java多线程服务启动和停止">
+                Java多线程服务启动和停止 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">王哲</p>
+              <p class="site-description motion-element" itemprop="description">分享 交流</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/rss2.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-简介"><span class="nav-number">1.</span> <span class="nav-text">1 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-JVM-内存布局"><span class="nav-number">2.</span> <span class="nav-text">2 JVM 内存布局</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-GC-Root"><span class="nav-number">3.</span> <span class="nav-text">3 GC Root</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-JVM-内存回收算法"><span class="nav-number">4.</span> <span class="nav-text">4 JVM 内存回收算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-标记清除-Mark-Sweep"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 标记清除 Mark-Sweep</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法"><span class="nav-number">4.1.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点"><span class="nav-number">4.1.2.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-复制"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 复制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法-1"><span class="nav-number">4.2.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点-1"><span class="nav-number">4.2.2.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-标记整理-Mark-Compact"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 标记整理 Mark-Compact</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法-2"><span class="nav-number">4.3.1.</span> <span class="nav-text">算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点-2"><span class="nav-number">4.3.2.</span> <span class="nav-text">优缺点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-JVM-垃圾回收器"><span class="nav-number">5.</span> <span class="nav-text">5 JVM 垃圾回收器</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#5-1-Serial-新生代内存回收机制，复制算法"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 Serial: 新生代内存回收机制，复制算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-2-ParNew：Serial算法的并行版本"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 ParNew：Serial算法的并行版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-3-Serial-old：-老年代内存回收机制"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 Serial-old： 老年代内存回收机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-4-ParOld：-Serial-Old的并行版本"><span class="nav-number">5.4.</span> <span class="nav-text">5.4 ParOld： Serial-Old的并行版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-5-Par-Scanverge-吞吐优先考虑的垃圾回收器"><span class="nav-number">5.5.</span> <span class="nav-text">5.5 Par Scanverge 吞吐优先考虑的垃圾回收器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-6-CMS"><span class="nav-number">5.6.</span> <span class="nav-text">5.6 CMS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-7-G1GC"><span class="nav-number">5.7.</span> <span class="nav-text">5.7 G1GC</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM-内存管理常用参数实战配置"><span class="nav-number">6.</span> <span class="nav-text">JVM 内存管理常用参数实战配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JAVA-内存问题定位手段"><span class="nav-number">7.</span> <span class="nav-text">JAVA 内存问题定位手段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#jmap"><span class="nav-number">7.1.</span> <span class="nav-text">jmap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jstat"><span class="nav-number">7.2.</span> <span class="nav-text">jstat</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JAVA-CPU问题定位手段"><span class="nav-number">8.</span> <span class="nav-text">JAVA CPU问题定位手段</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">王哲</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
