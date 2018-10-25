@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="状态机 Spring," />
+  <meta name="keywords" content="base rest," />
 
 
 
@@ -81,21 +81,18 @@
 
 
 
-<meta name="description" content="状态机FSM (Finite State Machine) 有限状态机。学术上 FSM 分为两种类型： Mealy 状态机和 Moore 状态机。  Mealy 状态机  output = f ( present_state, input )next_state = f ( present_state, input)  Moore 状态机  output = f ( present_state )">
-<meta name="keywords" content="状态机 Spring">
+<meta name="description" content="本文翻译自 https://www.restapitutorial.com/ ，继承协议 Creative Commons Attribution-ShareAlike 4.0 International License.  背景与其他计算机技术一样，构建好一个 RESTful 服务也是科学与艺术的结合。互联网方兴未艾，如火如荼，采用业界最佳实践创建 REST API 变得越来越重要。由于 RE">
+<meta name="keywords" content="base rest">
 <meta property="og:type" content="article">
-<meta property="og:title" content="简单聊聊Spring State Machine">
-<meta property="og:url" content="http://wzlovegit.github.io/2018/07/25/Spring State Machine/index.html">
+<meta property="og:title" content="rest">
+<meta property="og:url" content="http://wzlovegit.github.io/2018/10/21/rest/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="状态机FSM (Finite State Machine) 有限状态机。学术上 FSM 分为两种类型： Mealy 状态机和 Moore 状态机。  Mealy 状态机  output = f ( present_state, input )next_state = f ( present_state, input)  Moore 状态机  output = f ( present_state )">
+<meta property="og:description" content="本文翻译自 https://www.restapitutorial.com/ ，继承协议 Creative Commons Attribution-ShareAlike 4.0 International License.  背景与其他计算机技术一样，构建好一个 RESTful 服务也是科学与艺术的结合。互联网方兴未艾，如火如荼，采用业界最佳实践创建 REST API 变得越来越重要。由于 RE">
 <meta property="og:locale" content="中文">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/07/25/Spring%20State%20Machine/springsm.jpg">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/07/25/Spring%20State%20Machine/project_teamwork.jpg">
-<meta property="og:updated_time" content="2018-09-19T14:10:28.821Z">
+<meta property="og:updated_time" content="2018-10-25T14:19:49.577Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="简单聊聊Spring State Machine">
-<meta name="twitter:description" content="状态机FSM (Finite State Machine) 有限状态机。学术上 FSM 分为两种类型： Mealy 状态机和 Moore 状态机。  Mealy 状态机  output = f ( present_state, input )next_state = f ( present_state, input)  Moore 状态机  output = f ( present_state )">
-<meta name="twitter:image" content="http://wzlovegit.github.io/2018/07/25/Spring%20State%20Machine/springsm.jpg">
+<meta name="twitter:title" content="rest">
+<meta name="twitter:description" content="本文翻译自 https://www.restapitutorial.com/ ，继承协议 Creative Commons Attribution-ShareAlike 4.0 International License.  背景与其他计算机技术一样，构建好一个 RESTful 服务也是科学与艺术的结合。互联网方兴未艾，如火如荼，采用业界最佳实践创建 REST API 变得越来越重要。由于 RE">
 
 
 
@@ -125,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://wzlovegit.github.io/2018/07/25/Spring State Machine/"/>
+  <link rel="canonical" href="http://wzlovegit.github.io/2018/10/21/rest/"/>
 
 
 
 
 
-  <title>简单聊聊Spring State Machine | Light</title>
+  <title>rest | Light</title>
   
 
 
@@ -238,7 +235,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/07/25/Spring State Machine/">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/10/21/rest/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王哲">
@@ -255,7 +252,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">简单聊聊Spring State Machine</h1>
+          <h1 class="post-title" itemprop="name headline">rest</h1>
         
 
         <div class="post-meta">
@@ -267,8 +264,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-25T21:00:00+08:00">
-                2018-07-25
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-21T17:26:00+08:00">
+                2018-10-21
               </time>
             
 
@@ -290,8 +287,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
                   </a>
                 </span>
 
@@ -327,41 +324,35 @@
       
 
       
-        <h1 id="状态机"><a href="#状态机" class="headerlink" title="状态机"></a>状态机</h1><p>FSM (Finite State Machine) 有限状态机。学术上 FSM 分为两种类型： Mealy 状态机和 Moore 状态机。</p>
+        <blockquote>
+<p>本文翻译自 <a href="https://www.restapitutorial.com/" target="_blank" rel="noopener">https://www.restapitutorial.com/</a> ，继承协议 Creative Commons Attribution-ShareAlike 4.0 International License.</p>
+</blockquote>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>与其他计算机技术一样，构建好一个 RESTful 服务也是科学与艺术的结合。互联网方兴未艾，如火如荼，采用业界最佳实践创建 REST API 变得越来越重要。由于 RESTful web 服务不遵循除 HTTP 以外的规定标准，因此根据行业最佳实践构建 RESTful API 以简化并提高客户端使用率变得非常重要。</p>
+<p>目前没有很多可以帮助开发人员的 REST API 实践指南，RestApiTutorial.com 致力于专研 REST API 的最佳实践并且为开发人员提供资源，以便大家可以参考和自我学习。</p>
+<h1 id="REST-简介"><a href="#REST-简介" class="headerlink" title="REST 简介"></a>REST 简介</h1><p>REST 架构包含 6 个约束，参见 <a href="https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm" target="_blank" rel="noopener">https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm</a> ：</p>
 <ul>
-<li>Mealy 状态机</li>
+<li><p>统一接口</p>
+<p>统一接口用于简化和解耦客户端和服务端，以便于它们独立发展。统一接口设计的 4 个指导原则如下：</p>
+<p><strong>基于资源</strong></p>
+<p>请求中采用 URI 标识唯一资源。资源和返回给客户端的资源呈现是不同的，例如，服务器会将表示数据库记录的用UTF-8编码的 HTML，XML 或 JSON 数据发送给客户端，而不是将数据库返回给客户端。这里的 HTML，XML 或 JSON 等就是资源呈现，数据库真实的记录就是资源。</p>
+<p><strong>通过资源呈现操作资源</strong></p>
+<p>当客户端持有一个资源呈现及其附属的元数据时，它就应该具有足够多的信息在其权限允许的范围内增加、修改、删除服务器的资源。</p>
+<p><strong>自描述消息</strong></p>
+<p>每个消息需要包含如何处理它的足够信息，比如，采用 MIME 类型指定采用那个解析器处理消息，响应也需要明确指定它们的缓存能力。</p>
+<p><strong>超媒体用作应用状态引擎（HATEOAS）</strong></p>
+<p>客户端通过请求体、请求行、请求头传递状态到服务端，服务端通过响应体、响应码、响应头传递状态到客户端。这种方式称为超媒体。</p>
+<p>除了上面的描述，HATEOAS 还意味着在必要的情况下，链接需要包含在返回的响应体重以便 URI 检索相关资源。</p>
+<blockquote>
+<p>统一接口是任何 REST 服务设计的基础</p>
+</blockquote>
+</li>
+<li><p>Stateless</p>
+</li>
+<li>Cacheable</li>
+<li>Client-Server</li>
+<li>Layered System</li>
+<li>Code on Demand(optional)</li>
 </ul>
-<p>output = f ( present_state, input )<br>next_state = f ( present_state, input)</p>
-<ul>
-<li>Moore 状态机</li>
-</ul>
-<p>output = f ( present_state )<br>next_state = f ( present_state, input )</p>
-<p>参见：</p>
-<p><a href="https://www.tutorialspoint.com/automata_theory/moore_and_mealy_machines.htm" target="_blank" rel="noopener">https://www.tutorialspoint.com/automata_theory/moore_and_mealy_machines.htm</a></p>
-<h1 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h1>
-<p>Spring State Machine 是事件驱动的，事件可以是定时器事件或者普通事件。上图中，比如状态机目前处于 S1 状态，收到 E1 事件后就切换到 S2 状态；状态机目前处于 S2 状态， 收到 E2 事件后切换到 S3 状态。那么 Spring 状态机是怎么使用计算资源的呢？</p>
-<img src="/2018/07/25/Spring%20State%20Machine/springsm.jpg" title="This is an example image">
-<p>每个状态机都有一个接收事件的事件队列，每次每个事件触发都会将 Runnable 任务提交到线程池的任务队列。线程从线程池中提取 Runnable 任务，然后执行事件队列中的全部事件。在任务执行的过程中，会首先加锁，不让多个线程同时处理一个事件队列以免引起线程安全问题。</p>
-<h1 id="分布式协作状态机"><a href="#分布式协作状态机" class="headerlink" title="分布式协作状态机"></a>分布式协作状态机</h1><p>Distribute state machine 是借助 Zookeeper 实现的。每次状态发生变化，Spring State Machine 会将状态持久化到 Zookeeper 中，并以 log 的形式记录到 Zookeeper。 由于另一个 State Machine Watch 了 Zookeeper 上 log 的变化，因此它会在 log 发生变化的时候重放 log，以完成两个 State Machine 的同步。这里需要注意，如果状态机中定义的 Action 中存在变量自加的情况，那么重放 log 会导致 Action 中的操作执行多遍，因此我们在设计的时候通常不能在 Action 中执行操作。</p>
-<h1 id="状态机实例化"><a href="#状态机实例化" class="headerlink" title="状态机实例化"></a>状态机实例化</h1><p>初次使用 Spring State Machine，从其 Demo 中只能看到每次启动 Spring 服务只能配置一个 Spring State Machine 实例。这种情况通常不符合我们的业务流程，因为我们会有多个相同的业务同时执行。当然，这不能困住我们啦，把 Spring State Machine 的源代码下下来，就能看到 Builder 模式的创建状态机的方法。</p>
-<h1 id="经验教训"><a href="#经验教训" class="headerlink" title="经验教训"></a>经验教训</h1><p>经验教训是这将近一月的需求分析、概要设计、详细设计、代码开发到自测阶段不断思考的一些内容。由于并非理论知识，不具备普适性，不具备科学性，所以放在了行文的最后，不妨碍阅读 Spring State Machine 本身的内容。</p>
-<h2 id="如何进行设计？"><a href="#如何进行设计？" class="headerlink" title="如何进行设计？"></a>如何进行设计？</h2><p>设计阶段我们分别进行了业务细节设计、研究 Spring State Machine 的设计、 定时器框架 Quarz 的设计。设计阶段没有达到预期的原因，我认为有以下几个点需要自己以后注意：</p>
-<ol>
-<li>设计仓促</li>
-</ol>
-<p>需求分析和可行性分析是最不能节省时间的。这里的仓促需要我花更多的时间和更多的精力买单。时间紧张是一个比较客观的原因。</p>
-<ol>
-<li>缺少沟通</li>
-</ol>
-<p>骨子里认为开会是个浪费时间的动作，但设计阶段的会议必不可少，一天一次或者一天两次都不为过。沟通的过程是需要和大家不断澄清方案合理性的过程，而且不间断的沟通可以激起负责人的主人翁精神，调动起大家的积极性是愉快工作必不可少的环节。</p>
-<ol>
-<li>缺少信任</li>
-</ol>
-<p>事必躬亲是非常错误的，是一种事倍功半的做法。首先一个人精力有限，其次一个人必有局限。充分信任同事，不断沟通结果才是提高生产力的法则。比如，如果不信任 Spring 的代码质量，那么项目从 0 开始，将是非常巨大的成本。信任同事，一起查看设计和开发结果，对不合理的地方不断完善，既可以减轻事必躬亲带来的压力和巨大工作量，又可以让大家都有主人翁精神。</p>
-<h2 id="如何分工合作？"><a href="#如何分工合作？" class="headerlink" title="如何分工合作？"></a>如何分工合作？</h2><p>需求一下来，我立马拉上组内相关同事进行了一个针对性的拆解分工。因为每个人技术背景不同，所以起初我的想法是每两个同事关注一个重要的点，每个同事关注两个重要的点，即下图的形式：</p>
-<img src="/2018/07/25/Spring%20State%20Machine/project_teamwork.jpg" title="This is an example image">
-<p>此时大家可以分工调研各自重点关注和辅助关注的模块了。分工上基本是合理的。就是缺少了沟通。沟通是分工合作非常需要关注的一个点。下次牵头做设计，必然要每天沟通，记录进度和结果。</p>
-<h2 id="如何保证质量？"><a href="#如何保证质量？" class="headerlink" title="如何保证质量？"></a>如何保证质量？</h2><p>把信任给了同事，那么质量如何保证。这就又体现了沟通的重要性。不是大家能力问题，而是不同技术背景，开发习惯等会引起一些低级问题。开会 review 是提升大家编码水平的一个重要渠道。</p>
 
       
     </div>
@@ -379,7 +370,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/状态机-Spring/" rel="tag"># 状态机 Spring</a>
+            <a href="/tags/base-rest/" rel="tag"># base rest</a>
           
         </div>
       
@@ -392,8 +383,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/23/JWT/" rel="next" title="JWT简介">
-                <i class="fa fa-chevron-left"></i> JWT简介
+              <a href="/2018/10/01/lock/" rel="next" title="同步与互斥">
+                <i class="fa fa-chevron-left"></i> 同步与互斥
               </a>
             
           </div>
@@ -401,10 +392,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/08/05/question ananlysis/" rel="prev" title="记几次有意思的问题诊断">
-                记几次有意思的问题诊断 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -543,7 +530,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#状态机"><span class="nav-number">1.</span> <span class="nav-text">状态机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#事件驱动"><span class="nav-number">2.</span> <span class="nav-text">事件驱动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式协作状态机"><span class="nav-number">3.</span> <span class="nav-text">分布式协作状态机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#状态机实例化"><span class="nav-number">4.</span> <span class="nav-text">状态机实例化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#经验教训"><span class="nav-number">5.</span> <span class="nav-text">经验教训</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何进行设计？"><span class="nav-number">5.1.</span> <span class="nav-text">如何进行设计？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何分工合作？"><span class="nav-number">5.2.</span> <span class="nav-text">如何分工合作？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何保证质量？"><span class="nav-number">5.3.</span> <span class="nav-text">如何保证质量？</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#REST-简介"><span class="nav-number">2.</span> <span class="nav-text">REST 简介</span></a></li></ol></div>
             
 
           </div>

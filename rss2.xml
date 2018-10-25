@@ -8,8 +8,28 @@
     <atom:link href="/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>分享 交流</description>
-    <pubDate>Sat, 20 Oct 2018 12:40:24 GMT</pubDate>
+    <pubDate>Thu, 25 Oct 2018 14:19:49 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>rest</title>
+      <link>http://wzlovegit.github.io/2018/10/21/rest/</link>
+      <guid>http://wzlovegit.github.io/2018/10/21/rest/</guid>
+      <pubDate>Sun, 21 Oct 2018 09:26:00 GMT</pubDate>
+      <description>
+      
+        
+        
+          &lt;blockquote&gt;
+&lt;p&gt;本文翻译自 &lt;a href=&quot;https://www.restapitutorial.com/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://www.restapitutorial.com/&lt;/a&gt; ，继承协议 C
+        
+      
+      </description>
+      
+      <content:encoded><![CDATA[<blockquote><p>本文翻译自 <a href="https://www.restapitutorial.com/" target="_blank" rel="noopener">https://www.restapitutorial.com/</a> ，继承协议 Creative Commons Attribution-ShareAlike 4.0 International License.</p></blockquote><h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>与其他计算机技术一样，构建好一个 RESTful 服务也是科学与艺术的结合。互联网方兴未艾，如火如荼，采用业界最佳实践创建 REST API 变得越来越重要。由于 RESTful web 服务不遵循除 HTTP 以外的规定标准，因此根据行业最佳实践构建 RESTful API 以简化并提高客户端使用率变得非常重要。</p><p>目前没有很多可以帮助开发人员的 REST API 实践指南，RestApiTutorial.com 致力于专研 REST API 的最佳实践并且为开发人员提供资源，以便大家可以参考和自我学习。</p><h1 id="REST-简介"><a href="#REST-简介" class="headerlink" title="REST 简介"></a>REST 简介</h1><p>REST 架构包含 6 个约束，参见 <a href="https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm" target="_blank" rel="noopener">https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm</a> ：</p><ul><li><p>统一接口</p><p>统一接口用于简化和解耦客户端和服务端，以便于它们独立发展。统一接口设计的 4 个指导原则如下：</p><p><strong>基于资源</strong></p><p>请求中采用 URI 标识唯一资源。资源和返回给客户端的资源呈现是不同的，例如，服务器会将表示数据库记录的用UTF-8编码的 HTML，XML 或 JSON 数据发送给客户端，而不是将数据库返回给客户端。这里的 HTML，XML 或 JSON 等就是资源呈现，数据库真实的记录就是资源。</p><p><strong>通过资源呈现操作资源</strong></p><p>当客户端持有一个资源呈现及其附属的元数据时，它就应该具有足够多的信息在其权限允许的范围内增加、修改、删除服务器的资源。</p><p><strong>自描述消息</strong></p><p>每个消息需要包含如何处理它的足够信息，比如，采用 MIME 类型指定采用那个解析器处理消息，响应也需要明确指定它们的缓存能力。</p><p><strong>超媒体用作应用状态引擎（HATEOAS）</strong></p><p>客户端通过请求体、请求行、请求头传递状态到服务端，服务端通过响应体、响应码、响应头传递状态到客户端。这种方式称为超媒体。</p><p>除了上面的描述，HATEOAS 还意味着在必要的情况下，链接需要包含在返回的响应体重以便 URI 检索相关资源。</p><blockquote><p>统一接口是任何 REST 服务设计的基础</p></blockquote></li><li><p>Stateless</p></li><li>Cacheable</li><li>Client-Server</li><li>Layered System</li><li>Code on Demand(optional)</li></ul>]]></content:encoded>
+      
+      <comments>http://wzlovegit.github.io/2018/10/21/rest/#disqus_thread</comments>
+    </item>
     
     <item>
       <title>同步与互斥</title>
