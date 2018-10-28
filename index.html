@@ -187,7 +187,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Accueil
           </a>
         </li>
       
@@ -253,7 +253,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/10/21/rest/" itemprop="url">rest</a></h1>
+                <a class="post-title-link" href="/2018/10/21/rest/" itemprop="url">REST Introduction</a></h1>
         
 
         <div class="post-meta">
@@ -263,7 +263,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posté le</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-21T17:26:00+08:00">
                 2018-10-21
@@ -328,7 +328,7 @@
         
           
             <blockquote>
-<p>本文翻译自 <a href="https://www.restapitutorial.com/" target="_blank" rel="noopener">https://www.restapitutorial.com/</a> ，继承协议 Creative Commons Attribution-ShareAlike 4.0 International License.</p>
+<p>本文翻译自 <a href="https://www.restapitutorial.com/" target="_blank" rel="noopener">https://www.restapitutorial.com/</a> ，继承协议 Creative Commons Attribution-ShareAlike 4.0 International License。转载请注明出处。</p>
 </blockquote>
 <h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>与其他计算机技术一样，构建好一个 RESTful 服务也是科学与艺术的结合。互联网方兴未艾，如火如荼，采用业界最佳实践创建 REST API 变得越来越重要。由于 RESTful web 服务不遵循除 HTTP 以外的规定标准，因此根据行业最佳实践构建 RESTful API 以简化并提高客户端使用率变得非常重要。</p>
 <p>目前没有很多可以帮助开发人员的 REST API 实践指南，RestApiTutorial.com 致力于专研 REST API 的最佳实践并且为开发人员提供资源，以便大家可以参考和自我学习。</p>
@@ -349,14 +349,32 @@
 <p>统一接口是任何 REST 服务设计的基础</p>
 </blockquote>
 </li>
-<li><p>Stateless</p>
+<li><p>无状态</p>
+<p>REST 是 REpresentational <strong>State</strong> Transer （资源呈现状态迁移） 的简写，无状态是关键，也就是说处理当前请求所必需的状态就包含在该请求（无论是包含在 URI、查询参数、请求体、请求头）中，无需其它维系状态的手段。URI 唯一标识资源，请求体中包含资源的状态，服务器基于这两个信息处理完请求后通过响应头、响应体和状态码将结果状态返回给客户端。</p>
+<p>有过工作经历的工程师都接触过 <strong>session</strong> 用于在服务器保存跨 HTTP 请求的业务状态，然而，在 REST 结构中，客户端需要维护所有的状态信息以便提供给服务器处理该请求，即便在该业务状态需要跨越多个 HTTP 请求的情况下，依旧需要客户端多次发送状态。无状态的条件下，服务器不用维系会话状态，使得服务器易于横向扩展。另外，无状态的使得服务器在设计负载均衡的时候无需考虑会话关系。</p>
+<p>如何区分状态和资源？状态或应用状态是指服务器为了处理请求需要关注的信息，比如请求中携带的必要数据。资源或者资源状态是指资源呈现所指向的真正内容，比如数据库中的数据。每个客户端可以根据每次请求的需要更改应用状态，然而资源是在所有发起请求的客户端间是共享的常量。</p>
+<p>是否遇到过由于 web 应用需要您按照既定顺序填写内容而您没有照做引起的服务失败？这正是因为它违背了无状态原则。然而某些场景确实无法做到无状态，比如 three-legged OAuth，API调用频率限制等，在这些场景下，您就需要尽可能保证服务一次性完成，避免服务跨越多个请求才能完成。</p>
 </li>
-<li>Cacheable</li>
-<li>Client-Server</li>
-<li>Layered System</li>
-<li>Code on Demand(optional)</li>
 </ul>
-
+<ul>
+<li><p>可缓存</p>
+<p>和万维网一样，在 REST 架构中，客户端可以缓存响应，因此响应需要直接或间接的定义它们是否可以被缓存，以防止客户端在后续的请求中重用不恰当的数据。管理良好的缓存或多或少减少了客户端服务器的直接交互，更进一步提升了扩展性和性能。</p>
+</li>
+<li><p>C/S 模式</p>
+<p>统一接口将客户端和服务器分开，这样的话，客户端无需考虑数据存储，交由服务器来完成，因此提升了客户端的可移植性；服务器不用考虑用户状态，因此提升了服务器的可扩展性和简单性。只要接口不发生变更，客户端和服务器可以独立开发和升级。</p>
+</li>
+<li><p>分层系统</p>
+<p>客户端通常无法判断它是直连了终端服务器还是沿途的中间服务器，中间服务器可以通过启用负载均衡和共享缓存提供系统可伸缩性。分层机制也可以更加方面的实施安全保护措施。</p>
+</li>
+<li><p>Code on Demand(optional)</p>
+<p>服务器可以通过传输客户端可以执行的逻辑扩展或定制客户端功能，比如包含客户端脚本（例如JS）和编译组件（例如 Java applets）。</p>
+<p>符合 REST 风格，遵循上述约束可以带来诸如性能、可伸缩性、简单性、可修改性、可见性、可移植性和可靠性等诸多好处。</p>
+<blockquote>
+<p>注：Code on Demand 是唯一一个可选约束。如果违背了其他约束，那么该服务严格意义上并不是一个真正的 RESTful 服务。</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="REST-API-小贴士"><a href="#REST-API-小贴士" class="headerlink" title="REST API 小贴士"></a>REST API 小贴士</h1>
           
         
       
@@ -433,7 +451,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posté le</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-01T09:15:00+08:00">
                 2018-10-01
@@ -686,7 +704,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posté le</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-28T09:15:00+08:00">
                 2018-09-28
@@ -840,7 +858,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posté le</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-05T14:38:00+08:00">
                 2018-08-05
@@ -984,7 +1002,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posté le</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-25T21:00:00+08:00">
                 2018-07-25
@@ -1160,7 +1178,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posté le</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-23T10:34:00+08:00">
                 2018-06-23
@@ -1351,7 +1369,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posté le</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-21T16:30:00+08:00">
                 2018-05-21
@@ -1510,7 +1528,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posté le</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-15T09:15:00+08:00">
                 2018-05-15
@@ -1674,7 +1692,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posté le</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-11T18:34:00+08:00">
                 2018-05-11
@@ -1865,7 +1883,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Posté le</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-03T20:33:00+08:00">
                 2018-05-03
@@ -2035,7 +2053,7 @@
                 <a href="/archives/">
               
                   <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">posts</span>
+                  <span class="site-state-item-name">articles</span>
                 </a>
               </div>
             
@@ -2118,7 +2136,7 @@
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+  <div class="theme-info">Thème &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
