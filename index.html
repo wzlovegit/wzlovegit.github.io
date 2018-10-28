@@ -187,7 +187,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Accueil
+            Startseite
           </a>
         </li>
       
@@ -197,7 +197,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -263,7 +263,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-21T17:26:00+08:00">
                 2018-10-21
@@ -284,7 +284,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -374,7 +374,43 @@
 </blockquote>
 </li>
 </ul>
-<h1 id="REST-API-小贴士"><a href="#REST-API-小贴士" class="headerlink" title="REST API 小贴士"></a>REST API 小贴士</h1>
+<h1 id="REST-API-小贴士"><a href="#REST-API-小贴士" class="headerlink" title="REST API 小贴士"></a>REST API 小贴士</h1><p>下面介绍 6 个 REST API 设计的小贴士，不管是不是严格的 RESTful 服务，这些小贴士都会帮助您设计出更好用的服务。</p>
+<ul>
+<li><p>合理运用 HTTP 中的动词<br>API 使用者可以发送 GET、POST、PUT 和 DELETE 这些动词给服务器，这极大地增强了请求的表达能力。主要的 HTTP 动词用法如下：</p>
+<ul>
+<li><strong>GET</strong><br><strong>查</strong>：读取（查询）某个指定资源或某个指定资源的集合。</li>
+<li><strong>PUT</strong><br><strong>改</strong>：修改某个指定资源或某个自定资源的集合。如果预先知道资源标识符，PUT 也可以用于创建特定资源。</li>
+<li><strong>DELETE</strong></li>
+<li><strong>删</strong>：删除指定资源</li>
+<li><strong>POST</strong><br><strong>增</strong>：创建一个新资源。对于不适合上述三类的操作，POST 是一个万金油动词。</li>
+</ul>
+</li>
+<li><p>提供合理的资源名称<br>创建一个优秀的 API 来自于 80% 的艺术和 20% 的科学。采用层级性的 URL 用以合理表示资源是 API 设计的艺术部分。一个合理的资源名称（URL 路径，比如 /customers/12345/orders）有助于更加清晰的表达请求的内容。<br>合理的资源名称可以为服务请求提供上下文，使得 API 更易理解。URI 的层次性为 API 使用者提供友好的易于理解的资源层次结构，利于 API 在应用程序中使用。<br>下面是几个快速设计 URL （资源名称）的规则：</p>
+<ul>
+<li><strong>URL 中采用标识符代替查询字符串</strong>。查询字符串参数适合过滤但不适合用作资源名称。<br>好： /users/12345<br>差： /api?type=user&amp;id=23</li>
+<li><strong>采用 URL 的分层特性来表示资源结构</strong>。</li>
+<li><strong>面向用户设计资源名称，而非面向数据</strong>。</li>
+<li><strong>资源名称采用名词命名，用 HTTP 方法指定动作</strong>。</li>
+<li><strong>在 URL 的分层中，采用复数命名形式</strong>。使用复数可以使得 URL 在跨 HTTP 的方法保持一致。<br>好： /customers/33245/orders/8769/lineitems/1<br>坏： /customer/33245/order/8769/lineitem/1</li>
+<li><strong>避免冗余的表示集合的命名方式</strong>。比如， customer_list 可以采用复数形式替换， customers。</li>
+<li><strong>在 URL 分层中采用小写形式，使用下划线或连字符分隔单词</strong>。有些服务器大小写不敏感，因此最好保持一致性。</li>
+<li><strong>在清楚表明语义的情况下，保持 URL 短小精悍</strong>。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>采用 HTTP 响应码表明处理状态</p>
+<p>响应状态码是 HTTP 协议的一部分，它们涵盖了绝大部分常见的场景。由于 RESTful 也遵循 HTTP 规范，所以我们设计的 API 也应该返回相关的 HTTP 状态码。比如，在成功创建资源（比如来自 POST 请求）以后，API 应该返回 HTTP 状态码 201。下面是 TOP 10 常用的 HTTP 状态码列表:</p>
+<p><strong>200 OK</strong><br>普通成功状态码，用于表示成功。<br><strong>201 CREATED</strong><br>资源创建成功（通过 POST 或 PUT）。将响应头中的 Location 字段设置为标识新资源的连接，响应体可有可无。<br><strong>204 NO CONTENT</strong><br>成功，但响应正文中没有任何内容，通常用于 DELETE 和 PUT 操作。<br><strong>400 BAD REQUEST</strong><br>处理请求时出现不合法的状态时的一般错误码。比如，数据格式错误、域名解析错误等。<br><strong>401 UNAUTHORIZED</strong><br>未携带或携带了错误的鉴权 token 时的错误码。<br><strong>403 FORBIDDEN</strong><br>用户没有认证权限执行该操作，或者资源不能被访问时的错误码。<br><strong>404 NOT FOUND</strong><br>找不到指定的资源时的错误码。不管是真的不存在或者存在 401 或 403，服务出于安全方面的考虑需要屏蔽。<br><strong>405 METHOD NOT ALLOWED</strong><br>请求的 URL 存在但不支持请求中的 HTTP 方法访问。比如 POST /users/12345，API 若不支持使用 POST 方法，返回 405 是必须设置 Allow 字段，诸如 GET, PUT, DELETE。<br><strong>409 CONFLICT</strong><br>执行请求时出现资源冲突。比如尝试创建相同信息的两个用户，或者不支持级联删除时删除根对象。<br><strong>500 INTERNAL SERVER ERROR</strong><br>不要故意返回 500 错误。服务端出现问题时会抛 500 错误，这种错误客户端无法解决。</p>
+</li>
+<li><p>同时支持 JSON 和 XML（JSON 大行其道，这个有待考量）</p>
+<p>在不是很复杂的情况下，尽可能同时提供对 JSON 和 XML 的支持。理想情况下，让客户端采用 Accpet 字段指定格式，或者将 URL 上的 .xml 换成 .json 即可。<br>虽然我们建议支持 XML，但是除非必须，请尽量保持 XML 和 JSON 一样的简单实用。也就是说，XML 中也不支持架构和命名空间这些细节，只有数据和连接。如果完整支持 XML，其代价往往是高昂的。根据我们的实战经验，过去几年几乎没有使用过 XML 响应了，对于服务和客户端来讲都显得过于重了。<br>如果非要支持类似命名空间这些功能，JSON-Schema也是可以提供的。</p>
+</li>
+<li><p>创建细粒度资源</p>
+</li>
+<li>考虑连接性</li>
+</ul>
+
           
         
       
@@ -451,7 +487,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-01T09:15:00+08:00">
                 2018-10-01
@@ -472,7 +508,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -704,7 +740,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-28T09:15:00+08:00">
                 2018-09-28
@@ -725,7 +761,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -858,7 +894,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-05T14:38:00+08:00">
                 2018-08-05
@@ -879,7 +915,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1002,7 +1038,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-25T21:00:00+08:00">
                 2018-07-25
@@ -1023,7 +1059,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1178,7 +1214,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-23T10:34:00+08:00">
                 2018-06-23
@@ -1199,7 +1235,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1369,7 +1405,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-21T16:30:00+08:00">
                 2018-05-21
@@ -1390,7 +1426,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1528,7 +1564,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-15T09:15:00+08:00">
                 2018-05-15
@@ -1549,7 +1585,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1692,7 +1728,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-11T18:34:00+08:00">
                 2018-05-11
@@ -1713,7 +1749,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1883,7 +1919,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posté le</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-03T20:33:00+08:00">
                 2018-05-03
@@ -1904,7 +1940,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2053,7 +2089,7 @@
                 <a href="/archives/">
               
                   <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">articles</span>
+                  <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
             
@@ -2064,7 +2100,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">10</span>
-                  <span class="site-state-item-name">categories</span>
+                  <span class="site-state-item-name">Kategorien</span>
                 
               </div>
             
@@ -2075,7 +2111,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">tags</span>
+                  <span class="site-state-item-name">Tags</span>
                 
               </div>
             
@@ -2128,7 +2164,7 @@
 </div>
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
@@ -2136,7 +2172,7 @@
 
 
 
-  <div class="theme-info">Thème &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
