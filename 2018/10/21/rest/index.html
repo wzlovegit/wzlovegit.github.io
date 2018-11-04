@@ -91,7 +91,7 @@
 <meta property="og:site_name" content="Light">
 <meta property="og:description" content="本文翻译自 https://www.restapitutorial.com/ ，继承协议 Creative Commons Attribution-ShareAlike 4.0 International License。转载请注明出处。  背景与其他计算机技术一样，构建好一个 RESTful 服务也是科学与艺术的结合。互联网方兴未艾，如火如荼，采用业界最佳实践创建 REST API 变得越来越">
 <meta property="og:locale" content="中文">
-<meta property="og:updated_time" content="2018-10-28T14:34:08.709Z">
+<meta property="og:updated_time" content="2018-11-04T01:40:29.829Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="REST Introduction">
 <meta name="twitter:description" content="本文翻译自 https://www.restapitutorial.com/ ，继承协议 Creative Commons Attribution-ShareAlike 4.0 International License。转载请注明出处。  背景与其他计算机技术一样，构建好一个 RESTful 服务也是科学与艺术的结合。互联网方兴未艾，如火如荼，采用业界最佳实践创建 REST API 变得越来越">
@@ -405,9 +405,9 @@
 <li><p>同时支持 JSON 和 XML（JSON 大行其道，这个有待考量）</p>
 <p>在不是很复杂的情况下，尽可能同时提供对 JSON 和 XML 的支持。理想情况下，让客户端采用 Accpet 字段指定格式，或者将 URL 上的 .xml 换成 .json 即可。<br>虽然我们建议支持 XML，但是除非必须，请尽量保持 XML 和 JSON 一样的简单实用。也就是说，XML 中也不支持架构和命名空间这些细节，只有数据和连接。如果完整支持 XML，其代价往往是高昂的。根据我们的实战经验，过去几年几乎没有使用过 XML 响应了，对于服务和客户端来讲都显得过于重了。<br>如果非要支持类似命名空间这些功能，JSON-Schema也是可以提供的。</p>
 </li>
-<li><p>创建细粒度资源</p>
+<li><p>创建细粒度资源<br>在最开始最好依托于底层应用程序和数据库的API来创建具有 CRUD 功能的资源，然后再利用小的资源构建更大的资源。</p>
 </li>
-<li>考虑连接性</li>
+<li>考虑连通性<br>通过超链接实现连通性是 REST 的一个重要原则。虽然不具备连通性的时候，服务依然是可用的，但是如果在响应中带有连接，那么 API 变得更具有自我描述性。至少我们可以通过链接通知客户端如何检索数据，还有，利用 HTTP Location 头域返回客户端通过 POST （或 PUT）创建的资源的连接。在支持分页响应时，”first”，”last”，”next”和”prev”非常有用。</li>
 </ul>
 
       
