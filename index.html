@@ -187,7 +187,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -197,7 +197,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -220,6 +220,174 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/11/18/acid base cap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/18/acid base cap/" itemprop="url">一气呵成了解分布式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-18T10:26:00+08:00">
+                2018-11-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>分布式的理念已经遍地开花，无论数据库存储、大规模计算、文件系统以及大多数商用软件的后台服务器都无法绕开分布式。相比于单机系统而言，分布式无论从理解上还是管理上复杂性都提高了不止一个量级，为什么大家还要选择用分布式？分布式在解决了某些问题的时候，又给我们带来了哪些新的问题？在设计分布式应用的时候，需要遵循哪些基本原则？日常我们又用过哪些分布式系统呢？本文将围绕上述的问题展开说明。</p>
+<h1 id="分布式简介"><a href="#分布式简介" class="headerlink" title="分布式简介"></a>分布式简介</h1><h2 id="认识分布式系统"><a href="#认识分布式系统" class="headerlink" title="认识分布式系统"></a>认识分布式系统</h2><p>分布式系统将一组计算机组合起来，提供统一的服务。从使用者角度来看，分布式系统使用起来和单机系统是一样的。下面我们引用[1]中的例子进行说明。</p>
+<div class="group-picture"><div class="group-picture-container"><div class="group-picture-row"><div class="group-picture-column" style="width: 1.36986301369863%;"><</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">m</div><div class="group-picture-column" style="width: 1.36986301369863%;">g</div><div class="group-picture-column" style="width: 1.36986301369863%;"> </div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">r</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">=</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">8</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">8</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">d</div><div class="group-picture-column" style="width: 1.36986301369863%;">%</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">b</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">%</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">p</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">r</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">d</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">o</div><div class="group-picture-column" style="width: 1.36986301369863%;">n</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">l</div><div class="group-picture-column" style="width: 1.36986301369863%;">.</div><div class="group-picture-column" style="width: 1.36986301369863%;">p</div><div class="group-picture-column" style="width: 1.36986301369863%;">n</div><div class="group-picture-column" style="width: 1.36986301369863%;">g</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;"> </div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">l</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">=</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">一</div><div class="group-picture-column" style="width: 1.36986301369863%;">种</div><div class="group-picture-column" style="width: 1.36986301369863%;">传</div><div class="group-picture-column" style="width: 1.36986301369863%;">统</div><div class="group-picture-column" style="width: 1.36986301369863%;">技</div><div class="group-picture-column" style="width: 1.36986301369863%;">术</div><div class="group-picture-column" style="width: 1.36986301369863%;">栈</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">></div></div><div class="group-picture-row"><div class="group-picture-column" style="width: 1.36986301369863%;"><</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">m</div><div class="group-picture-column" style="width: 1.36986301369863%;">g</div><div class="group-picture-column" style="width: 1.36986301369863%;"> </div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">r</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">=</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">8</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">8</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">d</div><div class="group-picture-column" style="width: 1.36986301369863%;">%</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">b</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">%</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">p</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">d</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">r</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">b</div><div class="group-picture-column" style="width: 1.36986301369863%;">u</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">.</div><div class="group-picture-column" style="width: 1.36986301369863%;">p</div><div class="group-picture-column" style="width: 1.36986301369863%;">n</div><div class="group-picture-column" style="width: 1.36986301369863%;">g</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;"> </div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">l</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">=</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">一</div><div class="group-picture-column" style="width: 1.36986301369863%;">种</div><div class="group-picture-column" style="width: 1.36986301369863%;">分</div><div class="group-picture-column" style="width: 1.36986301369863%;">布</div><div class="group-picture-column" style="width: 1.36986301369863%;">式</div><div class="group-picture-column" style="width: 1.36986301369863%;">技</div><div class="group-picture-column" style="width: 1.36986301369863%;">术</div><div class="group-picture-column" style="width: 1.36986301369863%;">栈</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">></div></div></div></div>
+<img src="/2018/11/18/acid%20base%20cap/traditional.png" title="一种传统技术栈">
+<img src="/2018/11/18/acid%20base%20cap/distribute.png" title="一种分布式技术栈">
+<p>我们重点关注左右两个图的数据库架构。传统数据库安装在一个单机 OS 的文件系统上，所有与该数据库的交互（CRUD）都需要该数据库完成。右图的分布式数据库中，用户可以和所有的数据库交互而不自知。比如，通常为了分担主库读写压力，MySQL 数据库会将读取请求分发到备库，如上图中，主库中插入了一条用户数据，在备库中查询这一条用户数据，然而这一切对用户都是透明的。</p>
+<h2 id="分布式系统的成因"><a href="#分布式系统的成因" class="headerlink" title="分布式系统的成因"></a>分布式系统的成因</h2><p>相较于单机系统，开发、调试、部署、运维分布式系统的难度更大，甚至可以这样说，一个完整的运维监控平台是分布式系统商用必不可少的一部分：google 发表了 dapper 论文，facebook 开发了 zipkin 工具，spring cloud 也集成 sleuth 工具。几乎所有的商用分布式系统都有规模十分庞大的运维监控平台。那么问题来了，我们为什么要做分布式系统？</p>
+<blockquote>
+<p>此处声明一个观点：被逼的。分布式系统除了解决了单机系统面临的难题外，还引入了单机系统不存在的问题。有钱有势，我想没必要做分布式系统。想必大家在办事情的时候都遇到过“我们领导不在，你明天再来。”这种牛逼的回答。人家就是纯单机，领导不在直接不提供服务。</p>
+</blockquote>
+<p>言归正传，分布式系统解决了单机系统以下几个问题：</p>
+<ol>
+<li><p>水平扩展能力</p>
+<p>想象一个情况，随着用户量变大，需求愈加复杂，有一天突然 CPU 90%，free -m 为10，投诉纷至沓来。正在老板焦头烂额之际，很多人提出了两个方案：1， 让码农加班优化；2，买主频更高的 CPU ，换更大的内存。第一种方案，等你优化完，项目组都解散了；第二种方案，多高算高，多大算大，臣妾做不到。这个时候大家就发现，单机系统有一个问题，用户量变大，会让系统瘫痪，而且是个绝症。然而我们做系统的目标就是让用户量变大，这违背了我们的初衷。<br>分布式很好地解决了上述问题。如右图所示，我们可以将数据库的读操作放到备库，在很多备库的情况下（即使这些备库只是普通计算机，而非超级计算机），查询的性能问题便能很好的解决。</p>
+</li>
+<li><p>更高的可用性</p>
+<p>没有最坏，只有更坏。不幸的事情又发生了，数据库服务器的硬盘坏了，与某些情况下一样，不可恢复。灾难，用户数据一夜清零，从删库到跑路已经完成。这种涉及公司生死存亡的事故更是不允许的。<br>分布式也可以解决这种问题。如右图所示，主库不幸牺牲，备库中保存了全量的数据。这么多台主机，硬盘同时坏掉的可能性已经比全球断电、断网不高了。一台主机硬盘在某一时刻坏掉的可能性为 1/1000。根据概率论的知识可知 n 台主机在某一时刻同时坏掉的可能性为 (1/1000) ^ n。在 n &gt; 1 的情况下，分布式是可以保证比单机更高的可用性的。</p>
+</li>
+<li><p>更小的延迟</p>
+<p>还是看右图，由于读取业务落到了多个备库，在大业务量处理时响应速度更快。由于备库部署到多个地域，用户访问的网络延时减少。所以利用分布式通常可以提供更小的延迟。</p>
+</li>
+</ol>
+<h1 id="分布式理论"><a href="#分布式理论" class="headerlink" title="分布式理论"></a>分布式理论</h1><p>看完上面的介绍，是不是觉得分布式是完美的？然而事情总是具有两面性，分布式系统在解决单机系统出现的问题的同时，也引入了单机系统没有的问题。但分布式系统引入的问题比起拒绝服务来讲，对用户是比较友好的。</p>
+<h2 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h2><p>CAP 是 Con</p>
+<h2 id="ACID-VS-BASE"><a href="#ACID-VS-BASE" class="headerlink" title="ACID VS BASE"></a>ACID VS BASE</h2><h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><blockquote>
+<p>[1] <a href="https://hackernoon.com/a-thorough-introduction-to-distributed-systems-3b91562c9b3c" target="_blank" rel="noopener">https://hackernoon.com/a-thorough-introduction-to-distributed-systems-3b91562c9b3c</a><br>[2] <a href="https://www.dummies.com/programming/big-data/hadoop/acid-versus-base-data-stores/" target="_blank" rel="noopener">https://www.dummies.com/programming/big-data/hadoop/acid-versus-base-data-stores/</a><br>[3] <a href="https://queue.acm.org/detail.cfm?id=1394128" target="_blank" rel="noopener">https://queue.acm.org/detail.cfm?id=1394128</a><br>[4] <a href="https://www.johndcook.com/blog/2009/07/06/brewer-cap-theorem-base/" target="_blank" rel="noopener">https://www.johndcook.com/blog/2009/07/06/brewer-cap-theorem-base/</a></p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -263,7 +431,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-21T17:26:00+08:00">
                 2018-10-21
@@ -284,7 +452,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -487,7 +655,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-01T09:15:00+08:00">
                 2018-10-01
@@ -508,7 +676,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -740,7 +908,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-28T09:15:00+08:00">
                 2018-09-28
@@ -761,7 +929,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -894,7 +1062,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-05T14:38:00+08:00">
                 2018-08-05
@@ -915,7 +1083,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1038,7 +1206,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-25T21:00:00+08:00">
                 2018-07-25
@@ -1059,7 +1227,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1214,7 +1382,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-23T10:34:00+08:00">
                 2018-06-23
@@ -1235,7 +1403,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1405,7 +1573,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-21T16:30:00+08:00">
                 2018-05-21
@@ -1426,7 +1594,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1564,7 +1732,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-15T09:15:00+08:00">
                 2018-05-15
@@ -1585,7 +1753,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1728,7 +1896,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-11T18:34:00+08:00">
                 2018-05-11
@@ -1749,7 +1917,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1877,167 +2045,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/05/03/Java thread/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="王哲">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Light">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/03/Java thread/" itemprop="url">Java多线程服务启动和停止</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-03T20:33:00+08:00">
-                2018-05-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/多线程/" itemprop="url" rel="index">
-                    <span itemprop="name">多线程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文从多线程服务的启动，运行，停止着手，深入了解Java多线程编程框架以及不同场景的解决方案。</p>
-<h1 id="1-Java多线程服务启动和停止"><a href="#1-Java多线程服务启动和停止" class="headerlink" title="1 Java多线程服务启动和停止"></a>1 Java多线程服务启动和停止</h1><p>Java如何编写多线程代码？绝大部分人会想起Java的Excutor框架。如何管理多线程服务的生命周期？大家又会推荐ExcutorService。如何用好它们？哪些场景需要拓展它们？</p>
-<h1 id="2-基础介绍"><a href="#2-基础介绍" class="headerlink" title="2 基础介绍"></a>2 基础介绍</h1><p>见Java多线程模型和Executor框架。</p>
-<h1 id="3-服务启动"><a href="#3-服务启动" class="headerlink" title="3 服务启动"></a>3 服务启动</h1><p>线程启动，只需要start一下就可以启动线程，此处写服务启动，主要是为了介绍任务抽象。由2我们已经清楚了线程池的工作机制，那么通常我们会怎么抽象任务呢？</p>
-<h2 id="3-1-Runnable任务"><a href="#3-1-Runnable任务" class="headerlink" title="3.1 Runnable任务"></a>3.1 Runnable任务</h2><p>Runnable任务用于无返回值不抛异常的任务。实践当中，我们会在run当中捕获各种异常，以免线程退出。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">private void hiWork(int i) &#123;</span><br><span class="line">    System.out.println(&quot;hi : &quot; + i);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class HiWorkRunnable implements Runnable &#123;</span><br><span class="line"></span><br><span class="line">    private int i;</span><br><span class="line"></span><br><span class="line">    HiWorkRunnable(int i) &#123;</span><br><span class="line">        this.i = i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        hiWork(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="3-2-Callable任务"><a href="#3-2-Callable任务" class="headerlink" title="3.2 Callable任务"></a>3.2 Callable任务</h2><p>Callable任务带有返回值，并且可以抛出异常。它是Runnable任务一个非常好的补充。通常情况下，Callable任务的返回值并不期待立即返回，我们可以用一个Future对象来保存Callable的返回值。当Callable执行完毕，会将结果回填到对应的Future对象中。通过Future的get方法可以获取值。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">private String callHiWork(int i) &#123;</span><br><span class="line">    return &quot;call hi : &quot; + i;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class HiWorkCallable implements Callable &#123;</span><br><span class="line">    private int i;</span><br><span class="line"></span><br><span class="line">    HiWorkCallable(int i) &#123;</span><br><span class="line">        this.i = i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String call() throws Exception &#123;</span><br><span class="line">        return callHiWork(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="4-服务停止"><a href="#4-服务停止" class="headerlink" title="4 服务停止"></a>4 服务停止</h1><p>服务停止，我们首先想到的是调用ExecutorService的shutdown和shutdownNow方法。</p>
-<p>shutdown：平滑关闭ExecutorService，即等待Executor队列中的任务全部执行完毕，关闭线程池。<br>shutdownNow：立即关闭ExecutorService，即直接关闭线程池，Executor队列中的任务丢弃。</p>
-<p>但有些场景下，我们已经执行了shutdown设置shutdownNow，可是任务就是关闭不掉。这是为什么呢？shutdown和shutdownNow本质上都是调用线程池中线程的interrupt方法，用于中断线程；不同点在于，shutdown等待任务执行完获取锁，即只调用空闲线程的interrupt方法，用于终止线程；而shutdownNow直接调用interrupt，不管是否处于空闲状态。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">shutdown退出线程</span><br><span class="line"></span><br><span class="line">    private void interruptIdleWorkers(boolean onlyOne) &#123;</span><br><span class="line">        final ReentrantLock mainLock = this.mainLock;</span><br><span class="line">        mainLock.lock();</span><br><span class="line">        try &#123;</span><br><span class="line">            for (Worker w : workers) &#123;</span><br><span class="line">            	//遍历worker，获取线程池中的线程</span><br><span class="line">                Thread t = w.thread;</span><br><span class="line">                //如果线程处于非中断状态，则尝试获取锁，锁在线程执行完任务后可以获取成功</span><br><span class="line">                if (!t.isInterrupted() &amp;&amp; w.tryLock()) &#123;</span><br><span class="line">                    try &#123;</span><br><span class="line">                    	//执行线程中断方法</span><br><span class="line">                        t.interrupt();</span><br><span class="line">                    &#125; catch (SecurityException ignore) &#123;</span><br><span class="line">                    &#125; finally &#123;</span><br><span class="line">                        w.unlock();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                if (onlyOne)</span><br><span class="line">                    break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            mainLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">shutdownNow强制退出线程</span><br><span class="line">    /**</span><br><span class="line">     * Interrupts all threads, even if active. Ignores SecurityExceptions</span><br><span class="line">     * (in which case some threads may remain uninterrupted).</span><br><span class="line">     */</span><br><span class="line">    private void interruptWorkers() &#123;</span><br><span class="line">        final ReentrantLock mainLock = this.mainLock;</span><br><span class="line">        mainLock.lock();</span><br><span class="line">        try &#123;</span><br><span class="line">            // 遍历所有worker线程，对于运行中的线程执行中断函数</span><br><span class="line">            for (Worker w : workers)</span><br><span class="line">                w.interruptIfStarted();</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            mainLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>为什么触发了线程本身的interrupt方法，还是无法中断线程呢？interrupt方法只是标记线程状态为中断状态，并不会立即杀死线程。线程运行过程中如果有响应中断的函数，则会终止，如果没有，则无法终止。</p>
-<p>这里就需要我们注意：</p>
-<ol>
-<li>同步socket I/O</li>
-<li>等待锁<br>这两种阻塞无法响应中断。如果我们采用Future对象来管理任务的生命周期，则可以通过复写ThreadPoolExecutor的NewTaskFor方法来制定自己的RunnableFuture对象。</li>
-</ol>
-<h1 id="5-小结"><a href="#5-小结" class="headerlink" title="5 小结"></a>5 小结</h1><p>响应中断的位置有很多，通常情况下，我们希望在循环入口处响应，这样我们可以完整执行完一个任务。<br>对于大部分任务，通过在循环入口处检查线程中断状态或者循环入口处设置boolean型变量均可以完成线程的正常退出。<br>对于部分复杂任务，则需要考虑到shutdown和shutdownNow的局限性。通过复写ThreadPoolExecutor的NewTaskFor方法，更加针对性的控制任务生命周期。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2089,8 +2096,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
@@ -2101,7 +2108,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">10</span>
-                  <span class="site-state-item-name">Kategorien</span>
+                  <span class="site-state-item-name">categories</span>
                 
               </div>
             
@@ -2111,8 +2118,8 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">Tags</span>
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">tags</span>
                 
               </div>
             
@@ -2165,7 +2172,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
