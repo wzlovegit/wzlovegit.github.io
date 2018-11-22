@@ -187,7 +187,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -197,7 +197,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -263,7 +263,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-18T10:26:00+08:00">
                 2018-11-18
@@ -284,7 +284,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -330,8 +330,6 @@
             <p>分布式的理念已经遍地开花，无论数据库存储、大规模计算、文件系统以及大多数商用软件的后台服务器都无法绕开分布式。相比于单机系统而言，分布式无论从理解上还是管理上复杂性都提高了不止一个量级，为什么大家还要选择用分布式？分布式在解决了某些问题的时候，又给我们带来了哪些新的问题？在设计分布式应用的时候，需要遵循哪些基本原则？日常我们又用过哪些分布式系统呢？本文将围绕上述的问题展开说明。</p>
 <h1 id="分布式简介"><a href="#分布式简介" class="headerlink" title="分布式简介"></a>分布式简介</h1><h2 id="认识分布式系统"><a href="#认识分布式系统" class="headerlink" title="认识分布式系统"></a>认识分布式系统</h2><p>分布式系统将一组计算机组合起来，提供统一的服务。从使用者角度来看，分布式系统使用起来和单机系统是一样的。下面我们引用[1]中的例子进行说明。</p>
 <div class="group-picture"><div class="group-picture-container"><div class="group-picture-row"><div class="group-picture-column" style="width: 1.36986301369863%;"><</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">m</div><div class="group-picture-column" style="width: 1.36986301369863%;">g</div><div class="group-picture-column" style="width: 1.36986301369863%;"> </div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">r</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">=</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">8</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">8</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">d</div><div class="group-picture-column" style="width: 1.36986301369863%;">%</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">b</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">%</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">p</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">r</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">d</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">o</div><div class="group-picture-column" style="width: 1.36986301369863%;">n</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">l</div><div class="group-picture-column" style="width: 1.36986301369863%;">.</div><div class="group-picture-column" style="width: 1.36986301369863%;">p</div><div class="group-picture-column" style="width: 1.36986301369863%;">n</div><div class="group-picture-column" style="width: 1.36986301369863%;">g</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;"> </div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">l</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">=</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">一</div><div class="group-picture-column" style="width: 1.36986301369863%;">种</div><div class="group-picture-column" style="width: 1.36986301369863%;">传</div><div class="group-picture-column" style="width: 1.36986301369863%;">统</div><div class="group-picture-column" style="width: 1.36986301369863%;">技</div><div class="group-picture-column" style="width: 1.36986301369863%;">术</div><div class="group-picture-column" style="width: 1.36986301369863%;">栈</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">></div></div><div class="group-picture-row"><div class="group-picture-column" style="width: 1.36986301369863%;"><</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">m</div><div class="group-picture-column" style="width: 1.36986301369863%;">g</div><div class="group-picture-column" style="width: 1.36986301369863%;"> </div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">r</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">=</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">8</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">8</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">d</div><div class="group-picture-column" style="width: 1.36986301369863%;">%</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">b</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">%</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">p</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">d</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">r</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">b</div><div class="group-picture-column" style="width: 1.36986301369863%;">u</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">.</div><div class="group-picture-column" style="width: 1.36986301369863%;">p</div><div class="group-picture-column" style="width: 1.36986301369863%;">n</div><div class="group-picture-column" style="width: 1.36986301369863%;">g</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;"> </div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">l</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">=</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">一</div><div class="group-picture-column" style="width: 1.36986301369863%;">种</div><div class="group-picture-column" style="width: 1.36986301369863%;">分</div><div class="group-picture-column" style="width: 1.36986301369863%;">布</div><div class="group-picture-column" style="width: 1.36986301369863%;">式</div><div class="group-picture-column" style="width: 1.36986301369863%;">技</div><div class="group-picture-column" style="width: 1.36986301369863%;">术</div><div class="group-picture-column" style="width: 1.36986301369863%;">栈</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">></div></div></div></div>
-<img src="/2018/11/18/acid%20base%20cap/traditional.png" title="一种传统技术栈">
-<img src="/2018/11/18/acid%20base%20cap/distribute.png" title="一种分布式技术栈">
 <p>我们重点关注左右两个图的数据库架构。传统数据库安装在一个单机 OS 的文件系统上，所有与该数据库的交互（CRUD）都需要该数据库完成。右图的分布式数据库中，用户可以和所有的数据库交互而不自知。比如，通常为了分担主库读写压力，MySQL 数据库会将读取请求分发到备库，如上图中，主库中插入了一条用户数据，在备库中查询这一条用户数据，然而这一切对用户都是透明的。</p>
 <h2 id="分布式系统的成因"><a href="#分布式系统的成因" class="headerlink" title="分布式系统的成因"></a>分布式系统的成因</h2><p>相较于单机系统，开发、调试、部署、运维分布式系统的难度更大，甚至可以这样说，一个完整的运维监控平台是分布式系统商用必不可少的一部分：google 发表了 dapper 论文，facebook 开发了 zipkin 工具，spring cloud 也集成 sleuth 工具。几乎所有的商用分布式系统都有规模十分庞大的运维监控平台。那么问题来了，我们为什么要做分布式系统？</p>
 <blockquote>
@@ -350,7 +348,7 @@
 </li>
 </ol>
 <h1 id="分布式理论"><a href="#分布式理论" class="headerlink" title="分布式理论"></a>分布式理论</h1><p>看完上面的介绍，是不是觉得分布式是完美的？然而事情总是具有两面性，分布式系统在解决单机系统出现的问题的同时，也引入了单机系统没有的问题。但分布式系统引入的问题比起拒绝服务来讲，对用户是比较友好的。</p>
-<h2 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h2><p>CAP 是 Con</p>
+<h2 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h2><p>CAP (Conc)</p>
 <h2 id="ACID-VS-BASE"><a href="#ACID-VS-BASE" class="headerlink" title="ACID VS BASE"></a>ACID VS BASE</h2><h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><blockquote>
 <p>[1] <a href="https://hackernoon.com/a-thorough-introduction-to-distributed-systems-3b91562c9b3c" target="_blank" rel="noopener">https://hackernoon.com/a-thorough-introduction-to-distributed-systems-3b91562c9b3c</a><br>[2] <a href="https://www.dummies.com/programming/big-data/hadoop/acid-versus-base-data-stores/" target="_blank" rel="noopener">https://www.dummies.com/programming/big-data/hadoop/acid-versus-base-data-stores/</a><br>[3] <a href="https://queue.acm.org/detail.cfm?id=1394128" target="_blank" rel="noopener">https://queue.acm.org/detail.cfm?id=1394128</a><br>[4] <a href="https://www.johndcook.com/blog/2009/07/06/brewer-cap-theorem-base/" target="_blank" rel="noopener">https://www.johndcook.com/blog/2009/07/06/brewer-cap-theorem-base/</a></p>
 </blockquote>
@@ -431,7 +429,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-21T17:26:00+08:00">
                 2018-10-21
@@ -452,7 +450,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -655,7 +653,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-01T09:15:00+08:00">
                 2018-10-01
@@ -676,7 +674,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -908,7 +906,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-28T09:15:00+08:00">
                 2018-09-28
@@ -929,7 +927,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1062,7 +1060,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-05T14:38:00+08:00">
                 2018-08-05
@@ -1083,7 +1081,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1206,7 +1204,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-25T21:00:00+08:00">
                 2018-07-25
@@ -1227,7 +1225,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1382,7 +1380,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-23T10:34:00+08:00">
                 2018-06-23
@@ -1403,7 +1401,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1573,7 +1571,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-21T16:30:00+08:00">
                 2018-05-21
@@ -1594,7 +1592,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1732,7 +1730,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-15T09:15:00+08:00">
                 2018-05-15
@@ -1753,7 +1751,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1896,7 +1894,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-11T18:34:00+08:00">
                 2018-05-11
@@ -1917,7 +1915,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -2097,7 +2095,7 @@
                 <a href="/archives/">
               
                   <span class="site-state-item-count">14</span>
-                  <span class="site-state-item-name">posts</span>
+                  <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
             
@@ -2108,7 +2106,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">10</span>
-                  <span class="site-state-item-name">categories</span>
+                  <span class="site-state-item-name">Kategorien</span>
                 
               </div>
             
@@ -2119,7 +2117,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">tags</span>
+                  <span class="site-state-item-name">Tags</span>
                 
               </div>
             
@@ -2172,7 +2170,7 @@
 </div>
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
