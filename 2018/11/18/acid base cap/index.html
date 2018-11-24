@@ -91,10 +91,13 @@
 <meta property="og:site_name" content="Light">
 <meta property="og:description" content="分布式的理念已经遍地开花，无论数据库存储、大规模计算、文件系统以及大多数商用软件的后台服务器都无法绕开分布式。相比于单机系统而言，分布式无论从理解上还是管理上复杂性都提高了不止一个量级，为什么大家还要选择用分布式？分布式在解决了某些问题的时候，又给我们带来了哪些新的问题？在设计分布式应用的时候，需要遵循哪些基本原则？日常我们又用过哪些分布式系统呢？本文将围绕上述的问题展开说明。 分布式简介认识分布">
 <meta property="og:locale" content="中文">
-<meta property="og:updated_time" content="2018-11-22T13:26:27.788Z">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/11/18/acid%20base%20cap/traditional&distribute.png">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/11/18/acid%20base%20cap/cap.png">
+<meta property="og:updated_time" content="2018-11-24T13:49:45.107Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一气呵成了解分布式">
 <meta name="twitter:description" content="分布式的理念已经遍地开花，无论数据库存储、大规模计算、文件系统以及大多数商用软件的后台服务器都无法绕开分布式。相比于单机系统而言，分布式无论从理解上还是管理上复杂性都提高了不止一个量级，为什么大家还要选择用分布式？分布式在解决了某些问题的时候，又给我们带来了哪些新的问题？在设计分布式应用的时候，需要遵循哪些基本原则？日常我们又用过哪些分布式系统呢？本文将围绕上述的问题展开说明。 分布式简介认识分布">
+<meta name="twitter:image" content="http://wzlovegit.github.io/2018/11/18/acid%20base%20cap/traditional&distribute.png">
 
 
 
@@ -232,7 +235,7 @@
   
   
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-picture" itemscope itemtype="http://schema.org/Article">
   
   
   
@@ -250,72 +253,6 @@
     </span>
 
     
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">一气呵成了解分布式</h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-18T10:26:00+08:00">
-                2018-11-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/base/" itemprop="url" rel="index">
-                    <span itemprop="name">base</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
 
     
     
@@ -328,27 +265,65 @@
       
         <p>分布式的理念已经遍地开花，无论数据库存储、大规模计算、文件系统以及大多数商用软件的后台服务器都无法绕开分布式。相比于单机系统而言，分布式无论从理解上还是管理上复杂性都提高了不止一个量级，为什么大家还要选择用分布式？分布式在解决了某些问题的时候，又给我们带来了哪些新的问题？在设计分布式应用的时候，需要遵循哪些基本原则？日常我们又用过哪些分布式系统呢？本文将围绕上述的问题展开说明。</p>
 <h1 id="分布式简介"><a href="#分布式简介" class="headerlink" title="分布式简介"></a>分布式简介</h1><h2 id="认识分布式系统"><a href="#认识分布式系统" class="headerlink" title="认识分布式系统"></a>认识分布式系统</h2><p>分布式系统将一组计算机组合起来，提供统一的服务。从使用者角度来看，分布式系统使用起来和单机系统是一样的。下面我们引用[1]中的例子进行说明。</p>
-<div class="group-picture"><div class="group-picture-container"><div class="group-picture-row"><div class="group-picture-column" style="width: 1.36986301369863%;"><</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">m</div><div class="group-picture-column" style="width: 1.36986301369863%;">g</div><div class="group-picture-column" style="width: 1.36986301369863%;"> </div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">r</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">=</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">8</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">8</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">d</div><div class="group-picture-column" style="width: 1.36986301369863%;">%</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">b</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">%</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">p</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">r</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">d</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">o</div><div class="group-picture-column" style="width: 1.36986301369863%;">n</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">l</div><div class="group-picture-column" style="width: 1.36986301369863%;">.</div><div class="group-picture-column" style="width: 1.36986301369863%;">p</div><div class="group-picture-column" style="width: 1.36986301369863%;">n</div><div class="group-picture-column" style="width: 1.36986301369863%;">g</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;"> </div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">l</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">=</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">一</div><div class="group-picture-column" style="width: 1.36986301369863%;">种</div><div class="group-picture-column" style="width: 1.36986301369863%;">传</div><div class="group-picture-column" style="width: 1.36986301369863%;">统</div><div class="group-picture-column" style="width: 1.36986301369863%;">技</div><div class="group-picture-column" style="width: 1.36986301369863%;">术</div><div class="group-picture-column" style="width: 1.36986301369863%;">栈</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">></div></div><div class="group-picture-row"><div class="group-picture-column" style="width: 1.36986301369863%;"><</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">m</div><div class="group-picture-column" style="width: 1.36986301369863%;">g</div><div class="group-picture-column" style="width: 1.36986301369863%;"> </div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">r</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">=</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">8</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">1</div><div class="group-picture-column" style="width: 1.36986301369863%;">8</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">d</div><div class="group-picture-column" style="width: 1.36986301369863%;">%</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">b</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">%</div><div class="group-picture-column" style="width: 1.36986301369863%;">2</div><div class="group-picture-column" style="width: 1.36986301369863%;">0</div><div class="group-picture-column" style="width: 1.36986301369863%;">c</div><div class="group-picture-column" style="width: 1.36986301369863%;">a</div><div class="group-picture-column" style="width: 1.36986301369863%;">p</div><div class="group-picture-column" style="width: 1.36986301369863%;">/</div><div class="group-picture-column" style="width: 1.36986301369863%;">d</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">s</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">r</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">b</div><div class="group-picture-column" style="width: 1.36986301369863%;">u</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">.</div><div class="group-picture-column" style="width: 1.36986301369863%;">p</div><div class="group-picture-column" style="width: 1.36986301369863%;">n</div><div class="group-picture-column" style="width: 1.36986301369863%;">g</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;"> </div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">i</div><div class="group-picture-column" style="width: 1.36986301369863%;">t</div><div class="group-picture-column" style="width: 1.36986301369863%;">l</div><div class="group-picture-column" style="width: 1.36986301369863%;">e</div><div class="group-picture-column" style="width: 1.36986301369863%;">=</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">一</div><div class="group-picture-column" style="width: 1.36986301369863%;">种</div><div class="group-picture-column" style="width: 1.36986301369863%;">分</div><div class="group-picture-column" style="width: 1.36986301369863%;">布</div><div class="group-picture-column" style="width: 1.36986301369863%;">式</div><div class="group-picture-column" style="width: 1.36986301369863%;">技</div><div class="group-picture-column" style="width: 1.36986301369863%;">术</div><div class="group-picture-column" style="width: 1.36986301369863%;">栈</div><div class="group-picture-column" style="width: 1.36986301369863%;">"</div><div class="group-picture-column" style="width: 1.36986301369863%;">></div></div></div></div>
-<p>我们重点关注左右两个图的数据库架构。传统数据库安装在一个单机 OS 的文件系统上，所有与该数据库的交互（CRUD）都需要该数据库完成。右图的分布式数据库中，用户可以和所有的数据库交互而不自知。比如，通常为了分担主库读写压力，MySQL 数据库会将读取请求分发到备库，如上图中，主库中插入了一条用户数据，在备库中查询这一条用户数据，然而这一切对用户都是透明的。</p>
-<h2 id="分布式系统的成因"><a href="#分布式系统的成因" class="headerlink" title="分布式系统的成因"></a>分布式系统的成因</h2><p>相较于单机系统，开发、调试、部署、运维分布式系统的难度更大，甚至可以这样说，一个完整的运维监控平台是分布式系统商用必不可少的一部分：google 发表了 dapper 论文，facebook 开发了 zipkin 工具，spring cloud 也集成 sleuth 工具。几乎所有的商用分布式系统都有规模十分庞大的运维监控平台。那么问题来了，我们为什么要做分布式系统？</p>
+<img src="/2018/11/18/acid%20base%20cap/traditional&distribute.png">
+<p>传统的数据库安装在一个单机 OS 的文件系统上，所有与该数据库的交互（CRUD）都在该数据库完成。而在分布式数据库部署中，用户通常会和多个数据库服务器交互。从上图可以看出，采用分布式数据库部署之后，第一可以将读写数据库操作分离；第二可以进行数据备份；第三可以进行主从切换。</p>
+<h2 id="分布式系统的成因"><a href="#分布式系统的成因" class="headerlink" title="分布式系统的成因"></a>分布式系统的成因</h2><p>相较于单机系统，开发、调试、部署、运维分布式系统的难度更大。甚至可以这样说，一个完整的运维监控平台是分布式系统进入商用阶段必不可少的一部分（ google 发表了 dapper 论文，facebook 开发了 zipkin 工具，spring cloud 也集成 sleuth ）。商用分布式系统意味着规模庞大的运维监控管理平台。既然如此，我们为什么还要做分布式系统？</p>
 <blockquote>
 <p>此处声明一个观点：被逼的。分布式系统除了解决了单机系统面临的难题外，还引入了单机系统不存在的问题。有钱有势，我想没必要做分布式系统。想必大家在办事情的时候都遇到过“我们领导不在，你明天再来。”这种牛逼的回答。人家就是纯单机，领导不在直接不提供服务。</p>
 </blockquote>
-<p>言归正传，分布式系统解决了单机系统以下几个问题：</p>
+<p>显然分布式系统并非智力游戏，它提供了单机系统所不具备的几个重要的影响用户体验的能力：</p>
 <ol>
-<li><p>水平扩展能力</p>
-<p>想象一个情况，随着用户量变大，需求愈加复杂，有一天突然 CPU 90%，free -m 为10，投诉纷至沓来。正在老板焦头烂额之际，很多人提出了两个方案：1， 让码农加班优化；2，买主频更高的 CPU ，换更大的内存。第一种方案，等你优化完，项目组都解散了；第二种方案，多高算高，多大算大，臣妾做不到。这个时候大家就发现，单机系统有一个问题，用户量变大，会让系统瘫痪，而且是个绝症。然而我们做系统的目标就是让用户量变大，这违背了我们的初衷。<br>分布式很好地解决了上述问题。如右图所示，我们可以将数据库的读操作放到备库，在很多备库的情况下（即使这些备库只是普通计算机，而非超级计算机），查询的性能问题便能很好的解决。</p>
+<li><p><strong>水平扩展能力</strong><br>水平扩展指若一个服务节点可以为 m 个用户提供正常服务，那么 n 个服务节点可以为 n * m 个用户提供正常服务。也就是说系统可服务的用户数可随着服务节点个数线性增长。<br>通常我们达不到如此理想的水平扩展能力，因为随着节点个数增多，节点间信息同步、路由用户到某节点等开销都会增大。所以只要在 n = max_user_num / m 的范围内（其中 max_usr_num 为预估用户最大值）满足水平扩展，我们就可以认为该系统具有水平扩展能力。<br>与水平扩展相呼应的的扩展方式叫做垂直扩展，垂直扩展通常指提高单机硬件设备处理能力。垂直扩展对于大业务量的服务器来讲通常是杯水车薪。</p>
+<blockquote>
+<p>想象一个场景，随着用户量的变大和需求的愈加复杂，有一天突然节点 CPU 80%，free -m 为100，投诉纷至沓来。正在老板焦头烂额之际，很多人提出了两个方案：1， 让码农加班优化；2，买主频更高的 CPU ，换更大的内存。第一种方案，等你优化完，项目组都解散了；第二种方案，即使是目前最好的 CPU，它的处理能力也是有限的；可扩展内存的数量也是非常有限的。此时若只需要在云端扩充几个一模一样的节点就可以迅速恢复服务将会是最快速稳妥的方案。</p>
+</blockquote>
 </li>
-<li><p>更高的可用性</p>
-<p>没有最坏，只有更坏。不幸的事情又发生了，数据库服务器的硬盘坏了，与某些情况下一样，不可恢复。灾难，用户数据一夜清零，从删库到跑路已经完成。这种涉及公司生死存亡的事故更是不允许的。<br>分布式也可以解决这种问题。如右图所示，主库不幸牺牲，备库中保存了全量的数据。这么多台主机，硬盘同时坏掉的可能性已经比全球断电、断网不高了。一台主机硬盘在某一时刻坏掉的可能性为 1/1000。根据概率论的知识可知 n 台主机在某一时刻同时坏掉的可能性为 (1/1000) ^ n。在 n &gt; 1 的情况下，分布式是可以保证比单机更高的可用性的。</p>
+<li><p><strong>更高的可用性</strong></p>
+<p>假设一台主机在某一时刻发生不可恢复的故障的可能性为 1/1000。根据概率论的知识可知 n 台主机在某一时刻同时故障的概率为 (1/1000) ^ n。在 n &gt; 1 的情况下，分布式比单机系统提供了更高的可用性的。</p>
 </li>
-<li><p>更小的延迟</p>
-<p>还是看右图，由于读取业务落到了多个备库，在大业务量处理时响应速度更快。由于备库部署到多个地域，用户访问的网络延时减少。所以利用分布式通常可以提供更小的延迟。</p>
+<li><p><strong>更小的延迟</strong></p>
+<p>第一由于分散了服务节点压力，服务节点可以更快的响应用户；第二若多地域部署分布式系统，用户可以选择就近接入，提高响应速度。</p>
 </li>
 </ol>
-<h1 id="分布式理论"><a href="#分布式理论" class="headerlink" title="分布式理论"></a>分布式理论</h1><p>看完上面的介绍，是不是觉得分布式是完美的？然而事情总是具有两面性，分布式系统在解决单机系统出现的问题的同时，也引入了单机系统没有的问题。但分布式系统引入的问题比起拒绝服务来讲，对用户是比较友好的。</p>
-<h2 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h2><p>CAP 是 Con</p>
-<h2 id="ACID-VS-BASE"><a href="#ACID-VS-BASE" class="headerlink" title="ACID VS BASE"></a>ACID VS BASE</h2><h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><blockquote>
+<h1 id="分布式理论"><a href="#分布式理论" class="headerlink" title="分布式理论"></a>分布式理论</h1><p>事物总是具有两面性，分布式系统在解决单机系统出现的问题的同时也引入了单机系统没有的多节点数据一致性问题。下面我们首先介绍产生该问题的原因（CAP），然后介绍两种解决数据一致性问题的实践。</p>
+<h2 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h2><p>CAP （Consistency、Availability、Partition Tolerance)是指在现在基础设施条件下，一个分布式系统无法同时满足一致性、可用性和分区容忍性。</p>
+<img src="/2018/11/18/acid%20base%20cap/cap.png">
+<ul>
+<li><p><strong>一致性（Consistency）</strong> ： 所有节点访问同一份最新的数据副本</p>
+</li>
+<li><p><strong>可用性（Availability）</strong> ：每次请求都能获取到非错的响应——但是不保证获取的数据为最新数据</p>
+</li>
+<li><p><strong>分区容忍性(Partition Tolerance)</strong> ： 以实际效果而言，分区相当于对通信的时限要求。系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在C和A之间做出选择。</p>
+</li>
+</ul>
+<p>就现在基础设施而言，网络是不可靠的，分区是必然的。如果我们保证了一致性，那么在分布式系统数据未达成一致的时间内，是不能提供访问的，即不具备可用性。如果我们保证了可用性，那么在分布式系统数据未达成一致的时间内，我们提供的数据不是最新数据，即不保证一致性。</p>
+<blockquote>
+<p>AP 和 CP 均有商用分布式系统采用，就数据库而言，Cassandra 是 AP，MySQL 事务则是 CP。</p>
+</blockquote>
+<h2 id="ACID-VS-BASE"><a href="#ACID-VS-BASE" class="headerlink" title="ACID VS BASE"></a>ACID VS BASE</h2><h3 id="事务-ACID"><a href="#事务-ACID" class="headerlink" title="事务 ACID"></a>事务 ACID</h3><ul>
+<li><strong>原子性（Atomicity）</strong> : 数据库事务要么完整的执行完毕，要么就恢复执行之前的状态。不允许出现执行一部分的状态。</li>
+<li><strong>一致性（Consistency)</strong> : 事务将数据库从一个合法状态转移到另一个合法状态。比如银行转账，A转给B 500，那么事务执行成功后必须是 A 减少 500，B增加 500 ，不能出现 A 减少 500 ，B 没变的情况。</li>
+<li><p><strong>隔离性（Isolation）</strong> : 多个客户端生成的多个事务是互相隔离执行。隔离级别分为 4 类：脏读、不可重复读、幻读、串行。</p>
+<blockquote>
+<ol>
+<li>脏读： A B 事务并行执行，A 事务写入的未提交的数据被 B 事务读取到</li>
+<li>不可重复读： A B 事务并行执行，A 事务写入的已提交的数据被 B 事务读取到</li>
+<li>幻读： A B 事务并行执行，A 向表中添加了一条数据，B 通过查询全部记录条数统计到该数据，但却无法检索出来。</li>
+<li>串行： A B 事务并行执行， B 事务必须等 A 事务执行完毕才能执行。</li>
+</ol>
+</blockquote>
+</li>
+<li><strong>持久性（Durability）</strong> : 事务的数据操作必须反映在非易失性存储中（比如硬盘）并在事务成功完成后保持不变。事务失败则不能使数据处于部分提交状态。</li>
+</ul>
+<p>由此可见事务为了保证一致性，但牺牲了可用性。即若不能达成一致性，则拒绝提供服务，直到全部成功或全部失败。</p>
+<h3 id="BASE"><a href="#BASE" class="headerlink" title="BASE"></a>BASE</h3><ul>
+<li><strong>基本可用（BasicallyAvailable）</strong> ：系统总是可以给用户一个响应</li>
+<li><strong>可变状态（Soft State）</strong> : 系统中存储的值可能在返回给用户之后又发生了变化</li>
+<li><strong>最终一致性（Eventually Consistent）</strong> : 当数据添加到系统后，系统会将数据逐渐复制到其他节点。也正是由于最终一致性要求，会产生可变状态。</li>
+</ul>
+<p>由此可见 BASE 理论采用可变状态 + 最终一致性减弱了一致性约束。它倾向于 AP。</p>
+<p>我们知道，为了保证事务的 ACID 特性，关系型数据库通过 MVCC 做了大量的工作。然而在很多应用场景中，强一致性并没有可用性那么重要。比如，线上抢购系统，在10000个人同时抢购的时候，显示还有 1000 台， 最终可定有 9000 个用户没抢上，再下单时台数已经为 0。然而用户是可以接受这种现象的。但是如果为了强一致性要求，而使得网站拒绝服务，则会让用户反感。</p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><blockquote>
 <p>[1] <a href="https://hackernoon.com/a-thorough-introduction-to-distributed-systems-3b91562c9b3c" target="_blank" rel="noopener">https://hackernoon.com/a-thorough-introduction-to-distributed-systems-3b91562c9b3c</a><br>[2] <a href="https://www.dummies.com/programming/big-data/hadoop/acid-versus-base-data-stores/" target="_blank" rel="noopener">https://www.dummies.com/programming/big-data/hadoop/acid-versus-base-data-stores/</a><br>[3] <a href="https://queue.acm.org/detail.cfm?id=1394128" target="_blank" rel="noopener">https://queue.acm.org/detail.cfm?id=1394128</a><br>[4] <a href="https://www.johndcook.com/blog/2009/07/06/brewer-cap-theorem-base/" target="_blank" rel="noopener">https://www.johndcook.com/blog/2009/07/06/brewer-cap-theorem-base/</a></p>
 </blockquote>
 
@@ -557,7 +532,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式简介"><span class="nav-number">1.</span> <span class="nav-text">分布式简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#认识分布式系统"><span class="nav-number">1.1.</span> <span class="nav-text">认识分布式系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式系统的成因"><span class="nav-number">1.2.</span> <span class="nav-text">分布式系统的成因</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式理论"><span class="nav-number">2.</span> <span class="nav-text">分布式理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CAP"><span class="nav-number">2.1.</span> <span class="nav-text">CAP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ACID-VS-BASE"><span class="nav-number">2.2.</span> <span class="nav-text">ACID VS BASE</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文章"><span class="nav-number">3.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式简介"><span class="nav-number">1.</span> <span class="nav-text">分布式简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#认识分布式系统"><span class="nav-number">1.1.</span> <span class="nav-text">认识分布式系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式系统的成因"><span class="nav-number">1.2.</span> <span class="nav-text">分布式系统的成因</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式理论"><span class="nav-number">2.</span> <span class="nav-text">分布式理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CAP"><span class="nav-number">2.1.</span> <span class="nav-text">CAP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ACID-VS-BASE"><span class="nav-number">2.2.</span> <span class="nav-text">ACID VS BASE</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#事务-ACID"><span class="nav-number">2.2.1.</span> <span class="nav-text">事务 ACID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BASE"><span class="nav-number">2.2.2.</span> <span class="nav-text">BASE</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文章"><span class="nav-number">3.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
             
 
           </div>
