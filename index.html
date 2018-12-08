@@ -387,7 +387,13 @@
 </ul>
 <p>由此可见 BASE 理论采用可变状态 + 最终一致性减弱了一致性约束。它倾向于 AP。</p>
 <p>我们知道，为了保证事务的 ACID 特性，关系型数据库通过 MVCC 做了大量的工作。然而在很多应用场景中，强一致性并没有可用性那么重要。比如，线上抢购系统，在10000个人同时抢购的时候，显示还有 1000 台， 最终可定有 9000 个用户没抢上，再下单时台数已经为 0。然而用户是可以接受这种现象的。但是如果为了强一致性要求，而使得网站拒绝服务，则会让用户反感。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><blockquote>
+<h1 id="分布式模型"><a href="#分布式模型" class="headerlink" title="分布式模型"></a>分布式模型</h1><p>虽然都是分布式服务，但是提供服务的方式不尽相同，下面介绍两种常见的分布式模型。</p>
+<h2 id="主备模型"><a href="#主备模型" class="headerlink" title="主备模型"></a>主备模型</h2><p>主备模型多见于持有状态的服务，比如数据库、消息队列、任务调度等。比如在写入比例远小于查询比例的场景中，MySQL 部署方式采用的是一主多备，主库写入，备库读取；Kafka 的 partition 在各 Kafka 的物理机上分布的时候也是一主多备，在主 partition 故障之后，备 partiton 继续提供数据；分布式调度框架通常也采用一主多备的形式，主调度负责下发任务，在主调度故障之后，由备调度继续下发任务。</p>
+<p>对于 Kafka 来讲只是数据上的主备，处理上采用的是多活模型，因此支持水平扩展。对于 MySQL 来讲，处理上就采用的主从模型，即只有主库具有写入权限，备库只支持查询。这个时候的水平扩展给我们带来另外一个话题：客户端协作。</p>
+<h3 id="客户端协作"><a href="#客户端协作" class="headerlink" title="客户端协作"></a>客户端协作</h3><p><strong>服务器分片</strong>，比如 redis-cluster 系统，在客户端向 cluster 中的节点 A 发起请求的时候，若请求的结果在节点 A 上，那么 redis-cluster 会将结果直接返回，如果在 B 节点， redis-cluster 会给客户端回复一个重定向命令，客户端会将请求发往 B 节点，从而完成分布式操作。这是 redis-cluster 是可以支持水平扩展的。<br><strong>客户端分片</strong>，比如 mycat 服务用来支持 MySQL 的水平扩展。在客户端发起请求的时候，由客户端对请求进行路由，分发到不同的 MySQL 服务器。</p>
+<h2 id="多活模型"><a href="#多活模型" class="headerlink" title="多活模型"></a>多活模型</h2><p>多活模型通常用于业务应用开发，业务应用的状态全部存储在缓存、消息队列、数据库等服务中，业务应用本身无状态。业务应用提供无差别服务。<br>我们知道，多活模型通常有两种方法来导流客户端请求：<strong>服务器路由</strong> VS <strong>客户端路由</strong>。<br>在 Spring Cloud 的微服务架构中采用<strong>客户端路由</strong>。服务端注册到 Eureka-Server 并提供 RESTful 接口（无状态接口），客户端（Ribbon 、 Hystrix 、 Feign）通过 Eureka-Server 提供的接口发现服务，并采用既定的路由规则进行路由。Ribbon 提供了多种路由，IRule 接口提供了服务发现的规则（包括轮询、加权、区域亲和等），chooseServer 接口提供了选择服务的规则，在这两种策略的配合下，为客户端选择出指定的服务器。</p>
+<p>对于对外提供的接口（整个系统之外），则需要用到<strong>服务器路由</strong>，通常采用 Zuul、Nginx 等负载均衡工具，针对服务器的使用情况进行负载均衡。</p>
+<h1 id="分布式问题"><a href="#分布式问题" class="headerlink" title="分布式问题"></a>分布式问题</h1><h2 id="最终一致性"><a href="#最终一致性" class="headerlink" title="最终一致性"></a>最终一致性</h2><h2 id="脑裂问题"><a href="#脑裂问题" class="headerlink" title="脑裂问题"></a>脑裂问题</h2><h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><blockquote>
 <p>[1] <a href="https://hackernoon.com/a-thorough-introduction-to-distributed-systems-3b91562c9b3c" target="_blank" rel="noopener">https://hackernoon.com/a-thorough-introduction-to-distributed-systems-3b91562c9b3c</a><br>[2] <a href="https://www.dummies.com/programming/big-data/hadoop/acid-versus-base-data-stores/" target="_blank" rel="noopener">https://www.dummies.com/programming/big-data/hadoop/acid-versus-base-data-stores/</a><br>[3] <a href="https://queue.acm.org/detail.cfm?id=1394128" target="_blank" rel="noopener">https://queue.acm.org/detail.cfm?id=1394128</a><br>[4] <a href="https://www.johndcook.com/blog/2009/07/06/brewer-cap-theorem-base/" target="_blank" rel="noopener">https://www.johndcook.com/blog/2009/07/06/brewer-cap-theorem-base/</a></p>
 </blockquote>
 
