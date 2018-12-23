@@ -8,8 +8,28 @@
     <atom:link href="/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>分享 交流</description>
-    <pubDate>Sat, 08 Dec 2018 11:15:14 GMT</pubDate>
+    <pubDate>Sun, 23 Dec 2018 09:36:20 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>ribbon</title>
+      <link>http://wzlovegit.github.io/2018/12/18/ribbon/</link>
+      <guid>http://wzlovegit.github.io/2018/12/18/ribbon/</guid>
+      <pubDate>Tue, 18 Dec 2018 11:31:00 GMT</pubDate>
+      <description>
+      
+        
+        
+          &lt;blockquote&gt;
+&lt;p&gt;本文只对 Ribbon 的概要设计进行描述，从客户端负载均衡器的角度认识 Ribbon，便于自己设计和实现客户端负载均衡器，或者为 Ribbon 做插件满足自身业务需求（最近项目中我们给 Ribbon 做了个小插件完成 A/B 测试能力）。源代码分
+        
+      
+      </description>
+      
+      <content:encoded><![CDATA[<blockquote><p>本文只对 Ribbon 的概要设计进行描述，从客户端负载均衡器的角度认识 Ribbon，便于自己设计和实现客户端负载均衡器，或者为 Ribbon 做插件满足自身业务需求（最近项目中我们给 Ribbon 做了个小插件完成 A/B 测试能力）。源代码分析可以自行深入或者配合博客书籍自己阅读。</p></blockquote><p>Ribbon 是一款非常优秀的客户端负载均衡工具，在 Spring Cloud 的微服务架构中起了至关重要的作用。近来由于项目的需要，对 Ribbon 的原理进行了深入学习，同时在 Ribbon 的基础上扩展了几个点，所以对 Ribbon 有了更新的认识。</p><h1 id="客户端负载均衡和服务端负载均衡"><a href="#客户端负载均衡和服务端负载均衡" class="headerlink" title="客户端负载均衡和服务端负载均衡"></a>客户端负载均衡和服务端负载均衡</h1><p>之前介绍 REST 的时候介绍过为了降低服务器开发的复杂性，REST 的设计理念当中，HTTP 请求需要客户端负载均衡，Ribbon 就是 HTTP 客户端负载均衡工具；不过想必大家也听说过诸如 Nginx 、 Zuul 这些具有服务器负载均衡能力的网关。那么问题来了：为什么既有客户端负载又要有服务端负载均衡呢？</p><img src="/2018/12/18/ribbon/loadbalancer.png"><p>从功能上来讲，服务端负载均衡通常出现在服务网关中，网关隔离外部客户端和内部服务，这个外部客户端如同用户和服务的中介。比如：小明在 APP 点击下单，此时 APP 会将下单的请求发送到淘宝的网关，再由网关转到对应的服务。网关在隔离 APP 和服务的同时，为服务提供负载均衡的能力。客户端负载均衡通常出现在内部服务的交互中，在微服务架构中尤为常见。比如服务 A 查询服务 B 中某用户是否在黑名单，从而进一步决定自己的业务流向。上图中红色部分为服务端负载均衡，绿色部分为客户端负载均衡。</p><h1 id="Ribbon-的工作方式"><a href="#Ribbon-的工作方式" class="headerlink" title="Ribbon 的工作方式"></a>Ribbon 的工作方式</h1><p>Ribbon 通过在 RestTemplate 上面添加 @LoadBalancer 实现。RestTemplate 是 Spring 为我们封装的 HTTP 请求工具，借助 @LoadBalancer 可以为 RestTemplate 设置请求前拦截器，用以拦截请求，根据策略为该请求选择合适的实例，并将请求转发出去。<br>我们不妨从一个设计者的角度出发去思考如何设计一个客户端负载均衡器。第一步，需要我们获取服务实例状态；第二步需要根据服务实例状态按照某种策略选择一个实例；第三部需要将请求发送到该实例。其实这也是 Ribbon 的总体设计。</p><img src="/2018/12/18/ribbon/ribbonmodule.png"><p>如上图所示，Ribbon 通过 ServerList 提供的方法获取实例状态。 ServerListUpdater 采用周期性拉取服务器实例或者经由注册中心发布服务器实例状态变更信息。ServerListFilter 按照规则过滤出符合规则的服务器实例，提供了更多的个性化能力。IPing 用于测试服务器实例是否正常。这些信息足够我们获取全部实例的状态。在全部实例状态的基础上，IRule 提供了众多的实例选取策略，比如轮询、随机、权重等。在我们选择了一个实例以后，就可以将请求发送到服务实例。</p><h2 id="获取服务实例状态"><a href="#获取服务实例状态" class="headerlink" title="获取服务实例状态"></a>获取服务实例状态</h2><p>Ribbon 可以通过配置读取服务器实例状态，也可以通过 Eureka-Client 等服务发现客户端从服务注册中心获取全量服务器实例状态。通常情况下，Ribbon 提供的这两种方式足以满足我们的业务需求。但是有些情况下我们想让 Ribbon 按照我们指定的策略获取服务器实例信息，怎么处理呢？</p><p>从上面的介绍可知， ServerListFilter 可以从全部实例中按照规则过滤服务器实例，所以此处我们是可以自定义 ServerListFilter 规则，并在配置文件中指定我们的 ServerListFilter 为 Ribbon 过滤服务器的策略。同学们可能想知道，为什么指定了自己的 ServerListFilter 类它就会认识呢？</p><p>Springboot 工程提倡约定大于配置，但是并不是去配置化的，从 Ribbon 的 PropertiesFactory 中我们可以看到， Spring 启动 Ribbon 的时候，会首先从配置文件中读取配置，如果没有配置，则采用默认返回；否则采用配置文件中指定的值。</p><h2 id="选择指定类型的服务实例"><a href="#选择指定类型的服务实例" class="headerlink" title="选择指定类型的服务实例"></a>选择指定类型的服务实例</h2><p>Zuul 网关在实现的时候直接集成了 Ribbon 和 Hystrix（模块化做的太好了），直接在网关上面集成了负载均衡的能力。那么如果有些时候，我们希望请求选择我们指定类型的服务器实例，怎么处理呢？</p><p>有些同学可能觉得可以通过 ServerListFilter 来完成，但是其实是做不到的。因为 ServerListFilter 的执行时机是 ServerListUpdater 触发的时候，通常我们采用周期性触发策略。对于进入 Zuul 的请求，每一个都需要正确选取我们指定的实例。我们可以通过 ILoadBalancer 来做，通过这里选择自己指定的实例，这样每个请求在执行 chooseServer 的时候，都会按照我们指定的规则选择实例。</p>]]></content:encoded>
+      
+      <comments>http://wzlovegit.github.io/2018/12/18/ribbon/#disqus_thread</comments>
+    </item>
     
     <item>
       <title>一气呵成了解分布式</title>
