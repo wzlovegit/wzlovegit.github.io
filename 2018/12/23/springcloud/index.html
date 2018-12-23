@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="hello,world," />
+  <meta name="keywords" content="spring," />
 
 
 
@@ -81,18 +81,20 @@
 
 
 
-<meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
-<meta name="keywords" content="hello,world">
+<meta name="description" content="本文讲述如何使用 spring cloud 中的部分基础设施构建一套微服务脚手架，基于该脚手架工程丰富自己的业务，而无需关注过多基础设施的开发。  结构开源社区有很多能量很大的工程师，优秀地抽象了基础设施具备的能力。Spring 提供了 IoC 、 AOP 基础能力，基于此基础能力，很多基础设施又都方便得集成到了 Spring 上面，从而构成了大而全的 Spring Cloud 项目，而且还在不">
+<meta name="keywords" content="spring">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://wzlovegit.github.io/2018/03/11/hello-world/index.html">
+<meta property="og:title" content="springcloud">
+<meta property="og:url" content="http://wzlovegit.github.io/2018/12/23/springcloud/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta property="og:description" content="本文讲述如何使用 spring cloud 中的部分基础设施构建一套微服务脚手架，基于该脚手架工程丰富自己的业务，而无需关注过多基础设施的开发。  结构开源社区有很多能量很大的工程师，优秀地抽象了基础设施具备的能力。Spring 提供了 IoC 、 AOP 基础能力，基于此基础能力，很多基础设施又都方便得集成到了 Spring 上面，从而构成了大而全的 Spring Cloud 项目，而且还在不">
 <meta property="og:locale" content="中文">
-<meta property="og:updated_time" content="2018-03-11T09:46:58.016Z">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/12/23/springcloud/springcloud.png">
+<meta property="og:updated_time" content="2018-12-23T12:39:13.664Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta name="twitter:title" content="springcloud">
+<meta name="twitter:description" content="本文讲述如何使用 spring cloud 中的部分基础设施构建一套微服务脚手架，基于该脚手架工程丰富自己的业务，而无需关注过多基础设施的开发。  结构开源社区有很多能量很大的工程师，优秀地抽象了基础设施具备的能力。Spring 提供了 IoC 、 AOP 基础能力，基于此基础能力，很多基础设施又都方便得集成到了 Spring 上面，从而构成了大而全的 Spring Cloud 项目，而且还在不">
+<meta name="twitter:image" content="http://wzlovegit.github.io/2018/12/23/springcloud/springcloud.png">
 
 
 
@@ -122,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://wzlovegit.github.io/2018/03/11/hello-world/"/>
+  <link rel="canonical" href="http://wzlovegit.github.io/2018/12/23/springcloud/"/>
 
 
 
 
 
-  <title>Hello World | Light</title>
+  <title>springcloud | Light</title>
   
 
 
@@ -235,7 +237,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/03/11/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/12/23/springcloud/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王哲">
@@ -252,7 +254,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Hello World</h1>
+          <h1 class="post-title" itemprop="name headline">springcloud</h1>
         
 
         <div class="post-meta">
@@ -264,8 +266,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-11T17:46:00+08:00">
-                2018-03-11
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-23T20:30:00+08:00">
+                2018-12-23
               </time>
             
 
@@ -287,8 +289,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/test/" itemprop="url" rel="index">
-                    <span itemprop="name">test</span>
+                  <a href="/categories/spring/" itemprop="url" rel="index">
+                    <span itemprop="name">spring</span>
                   </a>
                 </span>
 
@@ -324,7 +326,13 @@
       
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+        <blockquote>
+<p>本文讲述如何使用 spring cloud 中的部分基础设施构建一套微服务脚手架，基于该脚手架工程丰富自己的业务，而无需关注过多基础设施的开发。</p>
+</blockquote>
+<h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1><p>开源社区有很多能量很大的工程师，优秀地抽象了基础设施具备的能力。Spring 提供了 IoC 、 AOP 基础能力，基于此基础能力，很多基础设施又都方便得集成到了 Spring 上面，从而构成了大而全的 Spring Cloud 项目，而且还在不断地发展。Spring Cloud 是一套完整的微服务基础设施方案，我们通常采用如下方式构建项目：</p>
+<img src="/2018/12/23/springcloud/springcloud.png">
+<p>Zuul 被用作 API 网关，同时借助 Ribbon 和 Hystrix 提供可监控的服务器负载均衡能力。Zuul 服务通常采用 Eureka-Client 注册到 Eureka-Server，用于获取内部服务的状态，并将请求转发给对应的服务。内部服务通过 Ribbon、Hystrix、Feign 完成微服务间调用。通过 Sleuth 监控微服务调用的依赖关系和性能，将监控到的元数据 SPAN 发布到离线消息队列 KAFKA，用 Zipkin 展示微服务调用的依赖关系和性能。Actuator 用于检查服务本身的运行状态：CPU状况、内存状况等。</p>
+<h1 id="微服务和SOA"><a href="#微服务和SOA" class="headerlink" title="微服务和SOA"></a>微服务和SOA</h1><p>上图中提供了一套微服务的基础设施，然而，在历史包袱的情况下，我们是不能一步到位将所有服务都转型为微服务的架构。那么整个的微服务模块可以作为一个整体对外提供服务，也就是 SOA 结构。</p>
 
       
     </div>
@@ -366,9 +374,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/hello/" rel="tag"># hello</a>
-          
-            <a href="/tags/world/" rel="tag"># world</a>
+            <a href="/tags/spring/" rel="tag"># spring</a>
           
         </div>
       
@@ -381,15 +387,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2018/12/18/ribbon/" rel="next" title="ribbon">
+                <i class="fa fa-chevron-left"></i> ribbon
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/03/24/Java executor/" rel="prev" title="Java多线程模型和Executor框架">
-                Java多线程模型和Executor框架 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -446,8 +452,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -514,6 +529,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#结构"><span class="nav-number">1.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#微服务和SOA"><span class="nav-number">2.</span> <span class="nav-text">微服务和SOA</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
