@@ -73,6 +73,8 @@
 
 
 
+  
+
 
   <link rel="alternate" href="/rss2.xml" title="Light" type="application/atom+xml" />
 
@@ -91,7 +93,7 @@
 <meta property="og:locale" content="中文">
 <meta property="og:image" content="http://wzlovegit.github.io/2018/12/18/ribbon/loadbalancer.png">
 <meta property="og:image" content="http://wzlovegit.github.io/2018/12/18/ribbon/ribbonmodule.png">
-<meta property="og:updated_time" content="2018-12-23T09:36:20.843Z">
+<meta property="og:updated_time" content="2018-12-23T10:17:15.058Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ribbon">
 <meta name="twitter:description" content="本文只对 Ribbon 的概要设计进行描述，从客户端负载均衡器的角度认识 Ribbon，便于自己设计和实现客户端负载均衡器，或者为 Ribbon 做插件满足自身业务需求（最近项目中我们给 Ribbon 做了个小插件完成 A/B 测试能力）。源代码分析可以自行深入或者配合博客书籍自己阅读。  Ribbon 是一款非常优秀的客户端负载均衡工具，在 Spring Cloud 的微服务架构中起了至关重要">
@@ -191,7 +193,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -201,7 +203,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -265,7 +267,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-18T19:31:00+08:00">
                 2018-12-18
@@ -286,7 +288,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -338,10 +340,17 @@
 <img src="/2018/12/18/ribbon/ribbonmodule.png">
 <p>如上图所示，Ribbon 通过 ServerList 提供的方法获取实例状态。 ServerListUpdater 采用周期性拉取服务器实例或者经由注册中心发布服务器实例状态变更信息。ServerListFilter 按照规则过滤出符合规则的服务器实例，提供了更多的个性化能力。IPing 用于测试服务器实例是否正常。这些信息足够我们获取全部实例的状态。在全部实例状态的基础上，IRule 提供了众多的实例选取策略，比如轮询、随机、权重等。在我们选择了一个实例以后，就可以将请求发送到服务实例。</p>
 <h2 id="获取服务实例状态"><a href="#获取服务实例状态" class="headerlink" title="获取服务实例状态"></a>获取服务实例状态</h2><p>Ribbon 可以通过配置读取服务器实例状态，也可以通过 Eureka-Client 等服务发现客户端从服务注册中心获取全量服务器实例状态。通常情况下，Ribbon 提供的这两种方式足以满足我们的业务需求。但是有些情况下我们想让 Ribbon 按照我们指定的策略获取服务器实例信息，怎么处理呢？</p>
-<p>从上面的介绍可知， ServerListFilter 可以从全部实例中按照规则过滤服务器实例，所以此处我们是可以自定义 ServerListFilter 规则，并在配置文件中指定我们的 ServerListFilter 为 Ribbon 过滤服务器的策略。同学们可能想知道，为什么指定了自己的 ServerListFilter 类它就会认识呢？</p>
-<p>Springboot 工程提倡约定大于配置，但是并不是去配置化的，从 Ribbon 的 PropertiesFactory 中我们可以看到， Spring 启动 Ribbon 的时候，会首先从配置文件中读取配置，如果没有配置，则采用默认返回；否则采用配置文件中指定的值。</p>
-<h2 id="选择指定类型的服务实例"><a href="#选择指定类型的服务实例" class="headerlink" title="选择指定类型的服务实例"></a>选择指定类型的服务实例</h2><p>Zuul 网关在实现的时候直接集成了 Ribbon 和 Hystrix（模块化做的太好了），直接在网关上面集成了负载均衡的能力。那么如果有些时候，我们希望请求选择我们指定类型的服务器实例，怎么处理呢？</p>
-<p>有些同学可能觉得可以通过 ServerListFilter 来完成，但是其实是做不到的。因为 ServerListFilter 的执行时机是 ServerListUpdater 触发的时候，通常我们采用周期性触发策略。对于进入 Zuul 的请求，每一个都需要正确选取我们指定的实例。我们可以通过 ILoadBalancer 来做，通过这里选择自己指定的实例，这样每个请求在执行 chooseServer 的时候，都会按照我们指定的规则选择实例。</p>
+<p>从上面的介绍可知， ServerListFilter 可以从全部实例中按照规则过滤服务器实例，所以此处我们是可以自定义 ServerListFilter 规则，并在配置文件中指定我们的 ServerListFilter 为 Ribbon 过滤服务器的策略，这样在每次 ServerListUpdater 触发执行的时候，都会按照我们指定的 ServerListFilter 选择服务器实例。</p>
+<p>Ribbon 在 ServerListFilter 也提供了众多的方案，比如 Zone亲和、动态获取等。</p>
+<h2 id="选择指定类型的服务实例"><a href="#选择指定类型的服务实例" class="headerlink" title="选择指定类型的服务实例"></a>选择指定类型的服务实例</h2><p>Zuul 网关在实现的时候直接集成了 Ribbon 和 Hystrix（模块化做的太好了），直接在网关上面集成了负载均衡的能力。假设我们需要为每个请求选择指定类型的服务器实例，请求 reqA 选择 A 类型的服务实例，请求 reqB 选择 B 类型的服务实例，怎么处理呢？</p>
+<p>乍一看我们可以通过 ServerListFilter 来完成，但是其实是做不到的。因为 ServerListFilter 的执行时机是 ServerListUpdater 触发的时候，与 HTTP 请求的生命周期是没有任何关系的。即使没有请求 ServerListFilter 依旧会被 ServerListUpdater 触发；请求到来也不会触发 ServerListFilter。因此我们无法通过 ServerListFilter 为每个请求选择服务实例。我们可以通过扩展 ILoadBalancer 来根据请求内容变换 ILoadBalancer 的服务器实例信息。因为请求到来后，必然会执行 IRule 的 chooseServer 方法， chooseServer 方法会从负载均衡状态对象中获取服务器实例状态，在返回这些状态的时候，我们可以通过 req 携带的 A 或者 B 信息筛选服务器实例，并传递给 IRule。 IRule 只会从这些返回实例中根据路由规则获取一个实例。可以看一下 Ribbon 的 chooseServer 实现方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 可以看到我们把 ILoadBalancer 传递进去了，他会提供 getReachableServers getAllServers 等信息给 IRule 让其选择一个实例</span><br><span class="line"> */</span><br><span class="line">public Server choose(ILoadBalancer lb, Object key) &#123;</span><br><span class="line">    if (lb == null) &#123;</span><br><span class="line">        log.warn(&quot;no load balancer&quot;);</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Server server = null;</span><br><span class="line">    int count = 0;</span><br><span class="line">    while (server == null &amp;&amp; count++ &lt; 10) &#123;</span><br><span class="line">        List&lt;Server&gt; reachableServers = lb.getReachableServers();</span><br><span class="line">        List&lt;Server&gt; allServers = lb.getAllServers();</span><br><span class="line">        int upCount = reachableServers.size();</span><br><span class="line">        int serverCount = allServers.size();</span><br><span class="line"></span><br><span class="line">        if ((upCount == 0) || (serverCount == 0)) &#123;</span><br><span class="line">            log.warn(&quot;No up servers available from load balancer: &quot; + lb);</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int nextServerIndex = incrementAndGetModulo(serverCount);</span><br><span class="line">        server = allServers.get(nextServerIndex);</span><br><span class="line"></span><br><span class="line">        if (server == null) &#123;</span><br><span class="line">            /* Transient. */</span><br><span class="line">            Thread.yield();</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (server.isAlive() &amp;&amp; (server.isReadyToServe())) &#123;</span><br><span class="line">            return (server);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // Next.</span><br><span class="line">        server = null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (count &gt;= 10) &#123;</span><br><span class="line">        log.warn(&quot;No available alive servers after 10 tries from load balancer: &quot;</span><br><span class="line">                + lb);</span><br><span class="line">    &#125;</span><br><span class="line">    return server;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="约定大于配置"><a href="#约定大于配置" class="headerlink" title="约定大于配置"></a>约定大于配置</h2><p>或许有些朋友好奇为什么指定了我们自己提供扩展，Ribbon 就会使用我们提供的扩展而不是使用期默认的实现。Springboot 的约定大于配置并非废弃配置，只是提供了一种便捷的配置方案。下面举例说明 Ribbon 是如何实现的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line">	@ConditionalOnMissingBean</span><br><span class="line">	@SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">	public ServerListFilter ribbonServerListFilter(IClientConfig config) &#123;</span><br><span class="line">		if (this.propertiesFactory.isSet(ServerListFilter.class, name)) &#123;</span><br><span class="line">			return this.propertiesFactory.get(ServerListFilter.class, config, name);</span><br><span class="line">		&#125;</span><br><span class="line">		ZonePreferenceServerListFilter filter = new ZonePreferenceServerListFilter();</span><br><span class="line">		filter.initWithNiwsConfig(config);</span><br><span class="line">		return filter;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>从 RibbonClientConfiguration.java 的ServerListFilter 这段代码中可知， Spring 在装配 Ribbon 的 ServerListFilter 的时候，会先从 propertiesFactory 查询是否已经配置，如果是，则返回配置的 filter，否则创建 ZonePreferenceServerListFilter， 初始化之后返回。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 读取配置文件获取类</span><br><span class="line"> */</span><br><span class="line">public String getClassName(Class clazz, String name) &#123;</span><br><span class="line">	if (this.classToProperty.containsKey(clazz)) &#123;</span><br><span class="line">		String classNameProperty = this.classToProperty.get(clazz);</span><br><span class="line">		String className = environment.getProperty(name + &quot;.&quot; + NAMESPACE + &quot;.&quot; + classNameProperty);</span><br><span class="line">		return className;</span><br><span class="line">	&#125;</span><br><span class="line">	return null;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 如果类存在则实例化该类，并返回</span><br><span class="line"> * 否则返回 null</span><br><span class="line"> */</span><br><span class="line">public  C get(Class clazz, IClientConfig config, String name) &#123;</span><br><span class="line">	String className = getClassName(clazz, name);</span><br><span class="line">	if (StringUtils.hasText(className)) &#123;</span><br><span class="line">		try &#123;</span><br><span class="line">			Class toInstantiate = Class.forName(className);</span><br><span class="line">			return (C) instantiateWithConfig(toInstantiate, config);</span><br><span class="line">		&#125; catch (ClassNotFoundException e) &#123;</span><br><span class="line">			throw new IllegalArgumentException(&quot;Unknown class to load &quot;+className+&quot; for class &quot; + clazz + &quot; named &quot; + name);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果 getClassName 从配置文件中读到了配置的类，则通过 Class.forName 和 instantiateWithConfig 初始化一个 ServerListFilter 实例，并返回给 Spring 容器，后续状态整个负载均衡器的时候，采用 ServerListFilter 装配。</p>
+<p>所以我们在提供 starter 的时候，也可以采用这种方式实现，提供更加灵活的配置。</p>
 
       
     </div>
@@ -463,10 +472,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
+            Inhaltsverzeichnis
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
+            Übersicht
           </li>
         </ul>
       
@@ -487,7 +496,7 @@
                 <a href="/archives/">
               
                   <span class="site-state-item-count">15</span>
-                  <span class="site-state-item-name">posts</span>
+                  <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
             
@@ -498,7 +507,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">10</span>
-                  <span class="site-state-item-name">categories</span>
+                  <span class="site-state-item-name">Kategorien</span>
                 
               </div>
             
@@ -509,7 +518,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">14</span>
-                  <span class="site-state-item-name">tags</span>
+                  <span class="site-state-item-name">Tags</span>
                 
               </div>
             
@@ -548,7 +557,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#客户端负载均衡和服务端负载均衡"><span class="nav-number">1.</span> <span class="nav-text">客户端负载均衡和服务端负载均衡</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ribbon-的工作方式"><span class="nav-number">2.</span> <span class="nav-text">Ribbon 的工作方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取服务实例状态"><span class="nav-number">2.1.</span> <span class="nav-text">获取服务实例状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选择指定类型的服务实例"><span class="nav-number">2.2.</span> <span class="nav-text">选择指定类型的服务实例</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#客户端负载均衡和服务端负载均衡"><span class="nav-number">1.</span> <span class="nav-text">客户端负载均衡和服务端负载均衡</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Ribbon-的工作方式"><span class="nav-number">2.</span> <span class="nav-text">Ribbon 的工作方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#获取服务实例状态"><span class="nav-number">2.1.</span> <span class="nav-text">获取服务实例状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选择指定类型的服务实例"><span class="nav-number">2.2.</span> <span class="nav-text">选择指定类型的服务实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#约定大于配置"><span class="nav-number">2.3.</span> <span class="nav-text">约定大于配置</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -578,7 +587,7 @@
 </div>
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
