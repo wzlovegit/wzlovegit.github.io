@@ -85,16 +85,16 @@
 <meta name="keywords" content="base distribute system">
 <meta property="og:type" content="article">
 <meta property="og:title" content="consensus 共识">
-<meta property="og:url" content="http://wzlovegit.github.io/2018/01/12/consensus/index.html">
+<meta property="og:url" content="http://wzlovegit.github.io/2019/01/12/consensus/index.html">
 <meta property="og:site_name" content="Light">
 <meta property="og:description" content="一气呵成了解分布式介绍了入门分布式系统的一点基本理论。在现有的网络基础设施条件下，CAP 理论中的 P 是不可避免的，因此我们需要在 C 和 A 中做选择。Base 理论选择了 AP，强调基本可用、最终一致性，后面我们讨论工业界常见的达到最终一致性的方案。在有些常见的系统中，选择 CP，如果获取不到一致性的值，则会直接导致不可用，本文从 paxos 入手介绍分布式共识算法。 分布式共识模型分布式共">
 <meta property="og:locale" content="中文">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/01/12/consensus/paxos1.jpg">
-<meta property="og:updated_time" content="2019-01-12T06:09:21.780Z">
+<meta property="og:image" content="http://wzlovegit.github.io/2019/01/12/consensus/paxos1.jpg">
+<meta property="og:updated_time" content="2019-01-12T06:13:26.833Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="consensus 共识">
 <meta name="twitter:description" content="一气呵成了解分布式介绍了入门分布式系统的一点基本理论。在现有的网络基础设施条件下，CAP 理论中的 P 是不可避免的，因此我们需要在 C 和 A 中做选择。Base 理论选择了 AP，强调基本可用、最终一致性，后面我们讨论工业界常见的达到最终一致性的方案。在有些常见的系统中，选择 CP，如果获取不到一致性的值，则会直接导致不可用，本文从 paxos 入手介绍分布式共识算法。 分布式共识模型分布式共">
-<meta name="twitter:image" content="http://wzlovegit.github.io/2018/01/12/consensus/paxos1.jpg">
+<meta name="twitter:image" content="http://wzlovegit.github.io/2019/01/12/consensus/paxos1.jpg">
 
 
 
@@ -110,7 +110,7 @@
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
-      author: 'Penulis'
+      author: 'Author'
     },
     algolia: {
       applicationID: '',
@@ -124,7 +124,7 @@
 
 
 
-  <link rel="canonical" href="http://wzlovegit.github.io/2018/01/12/consensus/"/>
+  <link rel="canonical" href="http://wzlovegit.github.io/2019/01/12/consensus/"/>
 
 
 
@@ -190,7 +190,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Beranda
+            Home
           </a>
         </li>
       
@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Arsip
+            Archives
           </a>
         </li>
       
@@ -237,7 +237,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/01/12/consensus/">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/01/12/consensus/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王哲">
@@ -264,10 +264,10 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Diposting di</span>
+                <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-12T13:17:00+08:00">
-                2018-01-12
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-12T13:17:00+08:00">
+                2019-01-12
               </time>
             
 
@@ -285,7 +285,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Di</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -332,7 +332,7 @@
 <p>如果我们不做数据内核相关的工作，目前对该类算法不感兴趣并不影响我们日常的工作，然而简单了解一下却可以帮助我们了解到类似 zookeeper 这些分布式协调服务的能力边界，不至于认为它可以顺利解决所有分布式问题。</p>
 </blockquote>
 <h2 id="形象化描述"><a href="#形象化描述" class="headerlink" title="形象化描述"></a>形象化描述</h2><p>你和其余4个朋友共 5 人，相约每周日要去球馆打篮球。市区内有 30 个球馆在周日提供服务。现在你们周日要去打球了，你们几个通过手机相互联系，怎么确定最终大家都能选中同一个球馆呢？</p>
-<h2 id="PAXOS-算法"><a href="#PAXOS-算法" class="headerlink" title="PAXOS 算法"></a>PAXOS 算法</h2><img src="/2018/01/12/consensus/paxos1.jpg">
+<h2 id="PAXOS-算法"><a href="#PAXOS-算法" class="headerlink" title="PAXOS 算法"></a>PAXOS 算法</h2><img src="/2019/01/12/consensus/paxos1.jpg">
 
       
     </div>
@@ -387,15 +387,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2019/01/01/2018/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/03/11/hello-world/" rel="prev" title="Hello World">
-                Hello World <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -454,10 +454,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Daftar Isi
+            Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Ikhtisar
+            Overview
           </li>
         </ul>
       
@@ -478,7 +478,7 @@
                 <a href="/archives/">
               
                   <span class="site-state-item-count">18</span>
-                  <span class="site-state-item-name">posting</span>
+                  <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
@@ -489,7 +489,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">11</span>
-                  <span class="site-state-item-name">kategori</span>
+                  <span class="site-state-item-name">categories</span>
                 
               </div>
             
@@ -577,7 +577,7 @@
 
 
 
-  <div class="theme-info">Tema &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
