@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="协议 物联网," />
+  <meta name="keywords" content="base distribute system," />
 
 
 
@@ -81,20 +81,20 @@
 
 
 
-<meta name="description" content="1 概述Mosquitto是实现了MQTT协议3.1和3.1.1版本的一个消息服务器的开源实现。Mosquitto是轻量级的，它的应用平台囊括从低电量的单片机到所有服务器。 MQTT协议基于publish/subscribe(发布/订阅)模型提供了轻量级的携带消息的方法。这就为传感器、移动设备（比如手机）、嵌入式设备接入互联网提供了可能。 Mosquitto提供了实现MQTT客户端的C库，并且提供">
-<meta name="keywords" content="协议 物联网">
+<meta name="description" content="一气呵成了解分布式介绍了入门分布式系统的一点基本理论。在现有的网络基础设施条件下，CAP 理论中的 P 是不可避免的，因此我们需要在 C 和 A 中做选择。Base 理论选择了 AP，强调基本可用、最终一致性，后面我们讨论工业界常见的达到最终一致性的方案。在有些常见的系统中，选择 CP，如果获取不到一致性的值，则会直接导致不可用，本文从 paxos 入手介绍分布式共识算法。 分布式共识模型分布式共">
+<meta name="keywords" content="base distribute system">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Mosquitto简介">
-<meta property="og:url" content="http://wzlovegit.github.io/2018/05/15/mosquttio cook/index.html">
+<meta property="og:title" content="consensus 共识">
+<meta property="og:url" content="http://wzlovegit.github.io/2018/01/12/consensus/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="1 概述Mosquitto是实现了MQTT协议3.1和3.1.1版本的一个消息服务器的开源实现。Mosquitto是轻量级的，它的应用平台囊括从低电量的单片机到所有服务器。 MQTT协议基于publish/subscribe(发布/订阅)模型提供了轻量级的携带消息的方法。这就为传感器、移动设备（比如手机）、嵌入式设备接入互联网提供了可能。 Mosquitto提供了实现MQTT客户端的C库，并且提供">
+<meta property="og:description" content="一气呵成了解分布式介绍了入门分布式系统的一点基本理论。在现有的网络基础设施条件下，CAP 理论中的 P 是不可避免的，因此我们需要在 C 和 A 中做选择。Base 理论选择了 AP，强调基本可用、最终一致性，后面我们讨论工业界常见的达到最终一致性的方案。在有些常见的系统中，选择 CP，如果获取不到一致性的值，则会直接导致不可用，本文从 paxos 入手介绍分布式共识算法。 分布式共识模型分布式共">
 <meta property="og:locale" content="中文">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/05/15/mosquttio%20cook/mosquitto桥接.jpg">
-<meta property="og:updated_time" content="2018-09-19T14:41:44.946Z">
+<meta property="og:image" content="http://wzlovegit.github.io/2018/01/12/consensus/paxos1.jpg">
+<meta property="og:updated_time" content="2019-01-12T06:09:21.780Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mosquitto简介">
-<meta name="twitter:description" content="1 概述Mosquitto是实现了MQTT协议3.1和3.1.1版本的一个消息服务器的开源实现。Mosquitto是轻量级的，它的应用平台囊括从低电量的单片机到所有服务器。 MQTT协议基于publish/subscribe(发布/订阅)模型提供了轻量级的携带消息的方法。这就为传感器、移动设备（比如手机）、嵌入式设备接入互联网提供了可能。 Mosquitto提供了实现MQTT客户端的C库，并且提供">
-<meta name="twitter:image" content="http://wzlovegit.github.io/2018/05/15/mosquttio%20cook/mosquitto桥接.jpg">
+<meta name="twitter:title" content="consensus 共识">
+<meta name="twitter:description" content="一气呵成了解分布式介绍了入门分布式系统的一点基本理论。在现有的网络基础设施条件下，CAP 理论中的 P 是不可避免的，因此我们需要在 C 和 A 中做选择。Base 理论选择了 AP，强调基本可用、最终一致性，后面我们讨论工业界常见的达到最终一致性的方案。在有些常见的系统中，选择 CP，如果获取不到一致性的值，则会直接导致不可用，本文从 paxos 入手介绍分布式共识算法。 分布式共识模型分布式共">
+<meta name="twitter:image" content="http://wzlovegit.github.io/2018/01/12/consensus/paxos1.jpg">
 
 
 
@@ -124,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://wzlovegit.github.io/2018/05/15/mosquttio cook/"/>
+  <link rel="canonical" href="http://wzlovegit.github.io/2018/01/12/consensus/"/>
 
 
 
 
 
-  <title>Mosquitto简介 | Light</title>
+  <title>consensus 共识 | Light</title>
   
 
 
@@ -237,7 +237,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/05/15/mosquttio cook/">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/01/12/consensus/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王哲">
@@ -254,7 +254,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Mosquitto简介</h1>
+          <h1 class="post-title" itemprop="name headline">consensus 共识</h1>
         
 
         <div class="post-meta">
@@ -266,8 +266,8 @@
               
                 <span class="post-meta-item-text">Diposting di</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-15T09:15:00+08:00">
-                2018-05-15
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-12T13:17:00+08:00">
+                2018-01-12
               </time>
             
 
@@ -289,8 +289,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/协议/" itemprop="url" rel="index">
-                    <span itemprop="name">协议</span>
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
                   </a>
                 </span>
 
@@ -326,29 +326,13 @@
       
 
       
-        <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1 概述"></a>1 概述</h1><p>Mosquitto是实现了MQTT协议3.1和3.1.1版本的一个消息服务器的开源实现。Mosquitto是轻量级的，它的应用平台囊括从低电量的单片机到所有服务器。</p>
-<p>MQTT协议基于<strong>publish/subscribe(发布/订阅)</strong>模型提供了轻量级的携带消息的方法。这就为传感器、移动设备（比如手机）、嵌入式设备接入互联网提供了可能。</p>
-<p>Mosquitto提供了实现MQTT客户端的C库，并且提供了<strong>mosquitto_pub</strong> 和 <strong>mosquitto_sub</strong>的命令行实现。</p>
-<h1 id="2-MQTT"><a href="#2-MQTT" class="headerlink" title="2 MQTT"></a>2 MQTT</h1><h2 id="2-1-描述"><a href="#2-1-描述" class="headerlink" title="2.1 描述"></a>2.1 描述</h2><p>MQTT是一个轻量级的发布/订阅协议。在低电量传感器中非常有用，但它也可以用于很多其他场景。</p>
-<h2 id="2-2-发布-订阅"><a href="#2-2-发布-订阅" class="headerlink" title="2.2 发布/订阅"></a>2.2 发布/订阅</h2><p>MQTT协议基于”pub/sub”即发布/订阅模型。客户端连接到服务器（broker）并且订阅它们感兴趣的主题（topics），除此之外，客户端也会连接到服务器并且发布消息到主题。不同的客户端可以订阅相同的主题。MQTT服务器就像一个接口一样供大量不同设备接入。</p>
-<h2 id="2-3-主题-订阅"><a href="#2-3-主题-订阅" class="headerlink" title="2.3 主题/订阅"></a>2.3 主题/订阅</h2><p>MQTT的主题结构是一种类似于文件系统的层级格式，每一层采用”/“分隔。与此同时，MQTT提供了”+”和”#”通配符，这就为客户端订阅相似的主题提供了便利。</p>
-<ul>
-<li>： 单一层级的通配符<br># ： 多层级通配符  </li>
-</ul>
-<p>比如：设备将温度发送到主题<strong>sensors/COMPUTER_NAME/temperature/HARDDRIVE_NAME</strong>中,如果我们想要订阅所有设备的温度变化，则可以订阅<strong>sensors/+/temperature/+</strong>这个主题。</p>
-<p>又比如订阅<strong>a/b/c/d</strong>这个主题，那么以下几种方式都可以订阅到：</p>
-<p>a/b/c/d<br>+/b/c/d<br>a/+/c/d<br>a/+/+/d<br>+/+/+/+</p>
-<p>a/b/c/d<br>#<br>a/#<br>a/b/#<br>a/b/c/#<br>+/b/c/#</p>
-<p>不要提供长度为0的层级主题。</p>
-<h2 id="2-4-服务质量QoS"><a href="#2-4-服务质量QoS" class="headerlink" title="2.4 服务质量QoS"></a>2.4 服务质量QoS</h2><p>MQTT提供了3个等级的QoS，每个等级对于可达性的要求不同。消息可以采用任意QoS等级发布，也可以采用任意QoS等级订阅，但最终发布端到订阅端的QoS的值为min(QoSSend，QoSReceive)。</p>
-<p>QoS0：只发一次，不发确认。<br>QoS1：最少一次，需要确认。<br>QoS2：精确一次，四次握手。</p>
-<h1 id="3-保持消息"><a href="#3-保持消息" class="headerlink" title="3 保持消息"></a>3 保持消息</h1><p>消息可以配置为保持消息，这意味着服务器在将消息发送到所有订阅的客户端之后，仍然会保存该消息。如果新的订阅到来，服务端会将保持消息发送到该客户端。在某些场景下，消息的更新频率很低，这个时候，如果新的客户端订阅消息时如果未保持消息，则新的客户端会等待比较长的时间；而如果进行了消息保持，则会立即获取到消息。</p>
-<h1 id="4-清除会话-持久连接"><a href="#4-清除会话-持久连接" class="headerlink" title="4 清除会话/持久连接"></a>4 清除会话/持久连接</h1><p>客户端的clean session字段若为false，则认为是持久连接。在持久连接中，当客户端断链，那么它将要订阅的所有主题以及所有它订阅的QoS1和QoS2级别的消息将会存储到服务端，直到它重连。如果clean session字段为false，则在客户端断链之后，会清除所有会话相关内容。</p>
-<h1 id="5-遗嘱"><a href="#5-遗嘱" class="headerlink" title="5 遗嘱"></a>5 遗嘱</h1><p>客户单连接到服务端后，可以给向服务端提供自己的遗嘱。这个遗嘱是在客户端意外断链的时候，服务端需要发布的消息。这个消息的主题，QoS和保持状态跟之前介绍的是一致的。</p>
-<h1 id="6-桥接"><a href="#6-桥接" class="headerlink" title="6 桥接"></a>6 桥接</h1><p>关于Mosquitto桥接的配置在配置文档里面已经描述清楚，这里对其原理进行介绍：</p>
-<img src="/2018/05/15/mosquttio%20cook/mosquitto桥接.jpg">
-<p>桥接在一台Mosquitto服务器配置。桥接服务器与其他服务器建立连接，并各自为该连接命名。</p>
-<p>在某个客户端向任何一台Mosquitto服务器publish消息的时候，由于客户端连接订阅了该主题，那么服务器就会往该连接publish 消息。当其他broker收到publish消息，会将消息发布到对应的topic当中。</p>
+        <p><a href="http://imengdong.cn/2018/11/18/acid%20base%20cap/" target="_blank" rel="noopener">一气呵成了解分布式</a>介绍了入门分布式系统的一点基本理论。在现有的网络基础设施条件下，<strong>CAP</strong> 理论中的 P 是不可避免的，因此我们需要在 C 和 A 中做选择。<strong>Base</strong> 理论选择了 AP，强调基本可用、最终一致性，后面我们讨论工业界常见的达到最终一致性的方案。在有些常见的系统中，选择 CP，如果获取不到一致性的值，则会直接导致不可用，本文从 paxos 入手介绍分布式共识算法。</p>
+<h1 id="分布式共识模型"><a href="#分布式共识模型" class="headerlink" title="分布式共识模型"></a>分布式共识模型</h1><p>分布式共识在具备容错能力的分布式系统中是需要解决的一个基本问题，它指在多个分布式节点就某变量的值达成一致，而且一旦达成一致，则该值就是最终确认的值，不会由于某个节点的异常导致该值变化。<br>分布式共识模型是对工业界需要解决的常见问题的抽象，比如：选主、加锁等。想必大家见识过不止一种选主手段，比如采用 zookeeper 进行选主；在 redis 中通过 redis-sentinel 进行选主。</p>
+<h1 id="共识算法"><a href="#共识算法" class="headerlink" title="共识算法"></a>共识算法</h1><blockquote>
+<p>如果我们不做数据内核相关的工作，目前对该类算法不感兴趣并不影响我们日常的工作，然而简单了解一下却可以帮助我们了解到类似 zookeeper 这些分布式协调服务的能力边界，不至于认为它可以顺利解决所有分布式问题。</p>
+</blockquote>
+<h2 id="形象化描述"><a href="#形象化描述" class="headerlink" title="形象化描述"></a>形象化描述</h2><p>你和其余4个朋友共 5 人，相约每周日要去球馆打篮球。市区内有 30 个球馆在周日提供服务。现在你们周日要去打球了，你们几个通过手机相互联系，怎么确定最终大家都能选中同一个球馆呢？</p>
+<h2 id="PAXOS-算法"><a href="#PAXOS-算法" class="headerlink" title="PAXOS 算法"></a>PAXOS 算法</h2><img src="/2018/01/12/consensus/paxos1.jpg">
 
       
     </div>
@@ -390,7 +374,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/协议-物联网/" rel="tag"># 协议 物联网</a>
+            <a href="/tags/base-distribute-system/" rel="tag"># base distribute system</a>
           
         </div>
       
@@ -403,18 +387,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/05/11/Jedis design/" rel="next" title="Jedis简介">
-                <i class="fa fa-chevron-left"></i> Jedis简介
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/05/21/mosquittio source code/" rel="prev" title="Mosquitto源码分析">
-                Mosquitto源码分析 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/11/hello-world/" rel="prev" title="Hello World">
+                Hello World <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -559,7 +539,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-概述"><span class="nav-number">1.</span> <span class="nav-text">1 概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-MQTT"><span class="nav-number">2.</span> <span class="nav-text">2 MQTT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-描述"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-发布-订阅"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 发布/订阅</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-主题-订阅"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 主题/订阅</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-服务质量QoS"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 服务质量QoS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-保持消息"><span class="nav-number">3.</span> <span class="nav-text">3 保持消息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-清除会话-持久连接"><span class="nav-number">4.</span> <span class="nav-text">4 清除会话/持久连接</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-遗嘱"><span class="nav-number">5.</span> <span class="nav-text">5 遗嘱</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-桥接"><span class="nav-number">6.</span> <span class="nav-text">6 桥接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式共识模型"><span class="nav-number">1.</span> <span class="nav-text">分布式共识模型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#共识算法"><span class="nav-number">2.</span> <span class="nav-text">共识算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#形象化描述"><span class="nav-number">2.1.</span> <span class="nav-text">形象化描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PAXOS-算法"><span class="nav-number">2.2.</span> <span class="nav-text">PAXOS 算法</span></a></li></ol></li></ol></div>
             
 
           </div>
