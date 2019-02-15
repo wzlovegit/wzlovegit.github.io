@@ -234,6 +234,168 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/02/15/pool/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/15/pool/" itemprop="url">pool 池化技术</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-15T22:43:00+08:00">
+                2019-02-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在开发过程当中大家或多或少接触过对象池的技术，比如连接池、线程池等。本人这两天为了解决一个网络编程的问题，对 FreeSwitch Esl库的 Client 进行了封装，开发出来与 Jedis 类似的客户端和连接池，得益于 Jedis 的命名习惯，取名为 JreeSwitch 和 JreeSwitchPool。本文围绕如何实现这类功能进行说明。</p>
+<h1 id="池化技术的缘由"><a href="#池化技术的缘由" class="headerlink" title="池化技术的缘由"></a>池化技术的缘由</h1><p>为什么要有 pool 呢？因为某些对象的创建和销毁开销较大，并且这些对象又是可以重复使用的，那么我们就没有必要每次都创建一个新的对象，而是共享这个对象。</p>
+<blockquote>
+<p>共享单车类似于单车 pool，就贼都而言，假设自己平均每次骑行自行车消费为 1 元，自己购买一辆自行车的花销为 800 元，平均骑行 80 次，自行车就会不翼而飞，即自购自行车出行的消费为 10 元。那么显然共享单车是一个不错的选择。<br>高铁、高速等都是 pool 技术的现实范例</p>
+</blockquote>
+<p>以 JedisPool 为例， Jedis 每次发送指令和接收结果只有几个字节通常 1 ms 足够了，但是创建连接和销毁连接却比较消耗资源，那么我们就在初始化的时候创建连接，发送指令的时候，只需要获取一个空闲连接并将指令发送出去即可，无需额外开销。</p>
+<h1 id="快速实现"><a href="#快速实现" class="headerlink" title="快速实现"></a>快速实现</h1><p>得益于 GenericObjectPool 的实现，我们可以快速完成对象池化，以 Esl 库为例， Esl 基于 Netty 实现，对外提供了 Client 类管理连接，对外暴露 <strong>connect sendCommand close</strong> 重要方法。我们通过 GenericObjectPool 的常用构造函数入手：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GenericObjectPool(PooledObjectFactory&lt;T&gt; factory, GenericObjectPoolConfig&lt;T&gt; config)</span><br></pre></td></tr></table></figure>
+<p>入参需要 PooledObjectFactory 和 GenericObjectPoolConfig。其中 PooledObjectFactory 用于管理对象的创建、激活、去激活、销毁等，GenericObjectPoolConfig 用于完成对象池的配置，比如最小空闲对象数等。GenericObjectPool 则对外提供获取对象的方法（borrowObject）、归还对象的方法、定时回收对象的方法等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public interface PooledObjectFactory&lt;T&gt;</span><br></pre></td></tr></table></figure>
+<p>用于管理对象的生命周期。</p>
+<ul>
+<li><p>makeObject()<br>创建对象实例。 当我们调用对象池的 borrow 方法获取对象时，如果规则满足的情况下（比如池中无空闲对象并且没有到达最大对象数），那么对象池会调用该方法生成一个新的对象给外部使用。</p>
+</li>
+<li><p>activateObject(org.apache.commons.pool2.PooledObject) 激活对象实例。当我们从对象池中 borrow 对象的时候，如果对象池发现将要返回的对象去激活了，则会执行该方法先激活对象再返回。</p>
+</li>
+<li>validateObject(org.apache.commons.pool2.PooledObject) 在对象池返回某个对象或者将对象归还到对象池中的时候如果配置成检测可用性，则会调用该方法判断对象是否可用。只在激活的对象上使用。</li>
+<li>passivateObject(org.apache.commons.pool2.PooledObject) 去激活对象实例。对象归还对象池时调用该方法。</li>
+<li>destroyObject(org.apache.commons.pool2.PooledObject) 销毁对象。</li>
+</ul>
+<p>我们需要实现该接口用于完成 Client 的创建和销毁，即 new Client().connect(xxx) 和 client.close()。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/01/27/2018/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -651,168 +813,6 @@
 <img src="/2018/12/23/springcloud/springcloud.png">
 <p>Zuul 被用作 API 网关，同时借助 Ribbon 和 Hystrix 提供可监控的服务器负载均衡能力。Zuul 服务通常采用 Eureka-Client 注册到 Eureka-Server，用于获取内部服务的状态，并将请求转发给对应的服务。内部服务通过 Ribbon、Hystrix、Feign 完成微服务间调用。通过 Sleuth 监控微服务调用的依赖关系和性能，将监控到的元数据 SPAN 发布到离线消息队列 KAFKA，用 Zipkin 展示微服务调用的依赖关系和性能。Actuator 用于检查服务本身的运行状态：CPU状况、内存状况等。</p>
 <h1 id="微服务和SOA"><a href="#微服务和SOA" class="headerlink" title="微服务和SOA"></a>微服务和SOA</h1><p>上图中提供了一套微服务的基础设施，然而，在历史包袱的情况下，我们是不能一步到位将所有服务都转型为微服务的架构。那么整个的微服务模块可以作为一个整体对外提供服务，也就是 SOA 结构。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/12/18/pool/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="王哲">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Light">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/18/pool/" itemprop="url">pool 池化技术</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-18T19:31:00+08:00">
-                2018-12-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/base/" itemprop="url" rel="index">
-                    <span itemprop="name">base</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>在开发过程当中大家或多或少接触过对象池的技术，比如连接池、线程池等。本人这两天为了解决一个网络编程的问题，对 FreeSwitch Esl库的 Client 进行了封装，开发出来与 Jedis 类似的客户端和连接池，得益于 Jedis 的命名习惯，取名为 JreeSwitch 和 JreeSwitchPool。本文围绕如何实现这类功能进行说明。</p>
-<h1 id="池化技术的缘由"><a href="#池化技术的缘由" class="headerlink" title="池化技术的缘由"></a>池化技术的缘由</h1><p>为什么要有 pool 呢？因为某些对象的创建和销毁开销较大，并且这些对象又是可以重复使用的，那么我们就没有必要每次都创建一个新的对象，而是共享这个对象。</p>
-<blockquote>
-<p>共享单车类似于单车 pool，就贼都而言，假设自己平均每次骑行自行车消费为 1 元，自己购买一辆自行车的花销为 800 元，平均骑行 80 次，自行车就会不翼而飞，即自购自行车出行的消费为 10 元。那么显然共享单车是一个不错的选择。<br>高铁、高速等都是 pool 技术的现实范例</p>
-</blockquote>
-<p>以 JedisPool 为例， Jedis 每次发送指令和接收结果只有几个字节通常 1 ms 足够了，但是创建连接和销毁连接却比较消耗资源，那么我们就在初始化的时候创建连接，发送指令的时候，只需要获取一个空闲连接并将指令发送出去即可，无需额外开销。</p>
-<h1 id="快速实现"><a href="#快速实现" class="headerlink" title="快速实现"></a>快速实现</h1><p>得益于 GenericObjectPool 的实现，我们可以快速完成对象池化，以 Esl 库为例， Esl 基于 Netty 实现，对外提供了 Client 类管理连接，对外暴露 <strong>connect sendCommand close</strong> 重要方法。我们通过 GenericObjectPool 的常用构造函数入手：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GenericObjectPool(PooledObjectFactory&lt;T&gt; factory, GenericObjectPoolConfig&lt;T&gt; config)</span><br></pre></td></tr></table></figure>
-<p>入参需要 PooledObjectFactory 和 GenericObjectPoolConfig。其中 PooledObjectFactory 用于管理对象的创建、激活、去激活、销毁等，GenericObjectPoolConfig 用于完成对象池的配置，比如最小空闲对象数等。GenericObjectPool 则对外提供获取对象的方法（borrowObject）、归还对象的方法、定时回收对象的方法等。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public interface PooledObjectFactory&lt;T&gt;</span><br></pre></td></tr></table></figure>
-<p>用于管理对象的生命周期。</p>
-<ul>
-<li><p>makeObject()<br>创建对象实例。 当我们调用对象池的 borrow 方法获取对象时，如果规则满足的情况下（比如池中无空闲对象并且没有到达最大对象数），那么对象池会调用该方法生成一个新的对象给外部使用。</p>
-</li>
-<li><p>activateObject(org.apache.commons.pool2.PooledObject) 激活对象实例。当我们从对象池中 borrow 对象的时候，如果对象池发现将要返回的对象去激活了，则会执行该方法先激活对象再返回。</p>
-</li>
-<li>validateObject(org.apache.commons.pool2.PooledObject) 在对象池返回某个对象或者将对象归还到对象池中的时候如果配置成检测可用性，则会调用该方法判断对象是否可用。只在激活的对象上使用。</li>
-<li>passivateObject(org.apache.commons.pool2.PooledObject) 去激活对象实例。对象归还对象池时调用该方法。</li>
-<li>destroyObject(org.apache.commons.pool2.PooledObject) 销毁对象。</li>
-</ul>
-<p>我们需要实现该接口用于完成 Client 的创建和销毁，即 new Client().connect(xxx) 和 client.close()。</p>
 
           
         
