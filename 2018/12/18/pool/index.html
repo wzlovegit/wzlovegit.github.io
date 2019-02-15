@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="状态机 Spring," />
+  <meta name="keywords" content="base java," />
 
 
 
@@ -81,21 +81,18 @@
 
 
 
-<meta name="description" content="状态机FSM (Finite State Machine) 有限状态机。学术上 FSM 分为两种类型： Mealy 状态机和 Moore 状态机。  Mealy 状态机  output = f ( present_state, input )next_state = f ( present_state, input)  Moore 状态机  output = f ( present_state )">
-<meta name="keywords" content="状态机 Spring">
+<meta name="description" content="在开发过程当中大家或多或少接触过对象池的技术，比如连接池、线程池等。本人这两天为了解决一个网络编程的问题，对 FreeSwitch Esl库的 Client 进行了封装，开发出来与 Jedis 类似的客户端和连接池，得益于 Jedis 的命名习惯，取名为 JreeSwitch 和 JreeSwitchPool。本文围绕如何实现这类功能进行说明。 池化技术的缘由为什么要有 pool 呢？因为某些对象">
+<meta name="keywords" content="base java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="简单聊聊Spring State Machine">
-<meta property="og:url" content="http://wzlovegit.github.io/2018/07/25/Spring State Machine/index.html">
+<meta property="og:title" content="pool 池化技术">
+<meta property="og:url" content="http://wzlovegit.github.io/2018/12/18/pool/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="状态机FSM (Finite State Machine) 有限状态机。学术上 FSM 分为两种类型： Mealy 状态机和 Moore 状态机。  Mealy 状态机  output = f ( present_state, input )next_state = f ( present_state, input)  Moore 状态机  output = f ( present_state )">
+<meta property="og:description" content="在开发过程当中大家或多或少接触过对象池的技术，比如连接池、线程池等。本人这两天为了解决一个网络编程的问题，对 FreeSwitch Esl库的 Client 进行了封装，开发出来与 Jedis 类似的客户端和连接池，得益于 Jedis 的命名习惯，取名为 JreeSwitch 和 JreeSwitchPool。本文围绕如何实现这类功能进行说明。 池化技术的缘由为什么要有 pool 呢？因为某些对象">
 <meta property="og:locale" content="中文">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/07/25/Spring%20State%20Machine/springsm.jpg">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/07/25/Spring%20State%20Machine/project_teamwork.jpg">
-<meta property="og:updated_time" content="2018-09-19T14:10:28.821Z">
+<meta property="og:updated_time" content="2019-02-15T14:38:52.539Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="简单聊聊Spring State Machine">
-<meta name="twitter:description" content="状态机FSM (Finite State Machine) 有限状态机。学术上 FSM 分为两种类型： Mealy 状态机和 Moore 状态机。  Mealy 状态机  output = f ( present_state, input )next_state = f ( present_state, input)  Moore 状态机  output = f ( present_state )">
-<meta name="twitter:image" content="http://wzlovegit.github.io/2018/07/25/Spring%20State%20Machine/springsm.jpg">
+<meta name="twitter:title" content="pool 池化技术">
+<meta name="twitter:description" content="在开发过程当中大家或多或少接触过对象池的技术，比如连接池、线程池等。本人这两天为了解决一个网络编程的问题，对 FreeSwitch Esl库的 Client 进行了封装，开发出来与 Jedis 类似的客户端和连接池，得益于 Jedis 的命名习惯，取名为 JreeSwitch 和 JreeSwitchPool。本文围绕如何实现这类功能进行说明。 池化技术的缘由为什么要有 pool 呢？因为某些对象">
 
 
 
@@ -125,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://wzlovegit.github.io/2018/07/25/Spring State Machine/"/>
+  <link rel="canonical" href="http://wzlovegit.github.io/2018/12/18/pool/"/>
 
 
 
 
 
-  <title>简单聊聊Spring State Machine | Light</title>
+  <title>pool 池化技术 | Light</title>
   
 
 
@@ -238,7 +235,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/07/25/Spring State Machine/">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/12/18/pool/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王哲">
@@ -255,7 +252,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">简单聊聊Spring State Machine</h1>
+          <h1 class="post-title" itemprop="name headline">pool 池化技术</h1>
         
 
         <div class="post-meta">
@@ -267,8 +264,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-25T21:00:00+08:00">
-                2018-07-25
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-18T19:31:00+08:00">
+                2018-12-18
               </time>
             
 
@@ -290,8 +287,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
                   </a>
                 </span>
 
@@ -327,41 +324,27 @@
       
 
       
-        <h1 id="状态机"><a href="#状态机" class="headerlink" title="状态机"></a>状态机</h1><p>FSM (Finite State Machine) 有限状态机。学术上 FSM 分为两种类型： Mealy 状态机和 Moore 状态机。</p>
+        <p>在开发过程当中大家或多或少接触过对象池的技术，比如连接池、线程池等。本人这两天为了解决一个网络编程的问题，对 FreeSwitch Esl库的 Client 进行了封装，开发出来与 Jedis 类似的客户端和连接池，得益于 Jedis 的命名习惯，取名为 JreeSwitch 和 JreeSwitchPool。本文围绕如何实现这类功能进行说明。</p>
+<h1 id="池化技术的缘由"><a href="#池化技术的缘由" class="headerlink" title="池化技术的缘由"></a>池化技术的缘由</h1><p>为什么要有 pool 呢？因为某些对象的创建和销毁开销较大，并且这些对象又是可以重复使用的，那么我们就没有必要每次都创建一个新的对象，而是共享这个对象。</p>
+<blockquote>
+<p>共享单车类似于单车 pool，就贼都而言，假设自己平均每次骑行自行车消费为 1 元，自己购买一辆自行车的花销为 800 元，平均骑行 80 次，自行车就会不翼而飞，即自购自行车出行的消费为 10 元。那么显然共享单车是一个不错的选择。<br>高铁、高速等都是 pool 技术的现实范例</p>
+</blockquote>
+<p>以 JedisPool 为例， Jedis 每次发送指令和接收结果只有几个字节通常 1 ms 足够了，但是创建连接和销毁连接却比较消耗资源，那么我们就在初始化的时候创建连接，发送指令的时候，只需要获取一个空闲连接并将指令发送出去即可，无需额外开销。</p>
+<h1 id="快速实现"><a href="#快速实现" class="headerlink" title="快速实现"></a>快速实现</h1><p>得益于 GenericObjectPool 的实现，我们可以快速完成对象池化，以 Esl 库为例， Esl 基于 Netty 实现，对外提供了 Client 类管理连接，对外暴露 <strong>connect sendCommand close</strong> 重要方法。我们通过 GenericObjectPool 的常用构造函数入手：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GenericObjectPool(PooledObjectFactory&lt;T&gt; factory, GenericObjectPoolConfig&lt;T&gt; config)</span><br></pre></td></tr></table></figure>
+<p>入参需要 PooledObjectFactory 和 GenericObjectPoolConfig。其中 PooledObjectFactory 用于管理对象的创建、激活、去激活、销毁等，GenericObjectPoolConfig 用于完成对象池的配置，比如最小空闲对象数等。GenericObjectPool 则对外提供获取对象的方法（borrowObject）、归还对象的方法、定时回收对象的方法等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public interface PooledObjectFactory&lt;T&gt;</span><br></pre></td></tr></table></figure>
+<p>用于管理对象的生命周期。</p>
 <ul>
-<li>Mealy 状态机</li>
+<li><p>makeObject()<br>创建对象实例。 当我们调用对象池的 borrow 方法获取对象时，如果规则满足的情况下（比如池中无空闲对象并且没有到达最大对象数），那么对象池会调用该方法生成一个新的对象给外部使用。</p>
+</li>
+<li><p>activateObject(org.apache.commons.pool2.PooledObject) 激活对象实例。当我们从对象池中 borrow 对象的时候，如果对象池发现将要返回的对象去激活了，则会执行该方法先激活对象再返回。</p>
+</li>
+<li>validateObject(org.apache.commons.pool2.PooledObject) 在对象池返回某个对象或者将对象归还到对象池中的时候如果配置成检测可用性，则会调用该方法判断对象是否可用。只在激活的对象上使用。</li>
+<li>passivateObject(org.apache.commons.pool2.PooledObject) 去激活对象实例。对象归还对象池时调用该方法。</li>
+<li>destroyObject(org.apache.commons.pool2.PooledObject) 销毁对象。</li>
 </ul>
-<p>output = f ( present_state, input )<br>next_state = f ( present_state, input)</p>
-<ul>
-<li>Moore 状态机</li>
-</ul>
-<p>output = f ( present_state )<br>next_state = f ( present_state, input )</p>
-<p>参见：</p>
-<p><a href="https://www.tutorialspoint.com/automata_theory/moore_and_mealy_machines.htm" target="_blank" rel="noopener">https://www.tutorialspoint.com/automata_theory/moore_and_mealy_machines.htm</a></p>
-<h1 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h1>
-<p>Spring State Machine 是事件驱动的，事件可以是定时器事件或者普通事件。上图中，比如状态机目前处于 S1 状态，收到 E1 事件后就切换到 S2 状态；状态机目前处于 S2 状态， 收到 E2 事件后切换到 S3 状态。那么 Spring 状态机是怎么使用计算资源的呢？</p>
-<img src="/2018/07/25/Spring%20State%20Machine/springsm.jpg" title="This is an example image">
-<p>每个状态机都有一个接收事件的事件队列，每次每个事件触发都会将 Runnable 任务提交到线程池的任务队列。线程从线程池中提取 Runnable 任务，然后执行事件队列中的全部事件。在任务执行的过程中，会首先加锁，不让多个线程同时处理一个事件队列以免引起线程安全问题。</p>
-<h1 id="分布式协作状态机"><a href="#分布式协作状态机" class="headerlink" title="分布式协作状态机"></a>分布式协作状态机</h1><p>Distribute state machine 是借助 Zookeeper 实现的。每次状态发生变化，Spring State Machine 会将状态持久化到 Zookeeper 中，并以 log 的形式记录到 Zookeeper。 由于另一个 State Machine Watch 了 Zookeeper 上 log 的变化，因此它会在 log 发生变化的时候重放 log，以完成两个 State Machine 的同步。这里需要注意，如果状态机中定义的 Action 中存在变量自加的情况，那么重放 log 会导致 Action 中的操作执行多遍，因此我们在设计的时候通常不能在 Action 中执行操作。</p>
-<h1 id="状态机实例化"><a href="#状态机实例化" class="headerlink" title="状态机实例化"></a>状态机实例化</h1><p>初次使用 Spring State Machine，从其 Demo 中只能看到每次启动 Spring 服务只能配置一个 Spring State Machine 实例。这种情况通常不符合我们的业务流程，因为我们会有多个相同的业务同时执行。当然，这不能困住我们啦，把 Spring State Machine 的源代码下下来，就能看到 Builder 模式的创建状态机的方法。</p>
-<h1 id="经验教训"><a href="#经验教训" class="headerlink" title="经验教训"></a>经验教训</h1><p>经验教训是这将近一月的需求分析、概要设计、详细设计、代码开发到自测阶段不断思考的一些内容。由于并非理论知识，不具备普适性，不具备科学性，所以放在了行文的最后，不妨碍阅读 Spring State Machine 本身的内容。</p>
-<h2 id="如何进行设计？"><a href="#如何进行设计？" class="headerlink" title="如何进行设计？"></a>如何进行设计？</h2><p>设计阶段我们分别进行了业务细节设计、研究 Spring State Machine 的设计、 定时器框架 Quarz 的设计。设计阶段没有达到预期的原因，我认为有以下几个点需要自己以后注意：</p>
-<ol>
-<li>设计仓促</li>
-</ol>
-<p>需求分析和可行性分析是最不能节省时间的。这里的仓促需要我花更多的时间和更多的精力买单。时间紧张是一个比较客观的原因。</p>
-<ol>
-<li>缺少沟通</li>
-</ol>
-<p>骨子里认为开会是个浪费时间的动作，但设计阶段的会议必不可少，一天一次或者一天两次都不为过。沟通的过程是需要和大家不断澄清方案合理性的过程，而且不间断的沟通可以激起负责人的主人翁精神，调动起大家的积极性是愉快工作必不可少的环节。</p>
-<ol>
-<li>缺少信任</li>
-</ol>
-<p>事必躬亲是非常错误的，是一种事倍功半的做法。首先一个人精力有限，其次一个人必有局限。充分信任同事，不断沟通结果才是提高生产力的法则。比如，如果不信任 Spring 的代码质量，那么项目从 0 开始，将是非常巨大的成本。信任同事，一起查看设计和开发结果，对不合理的地方不断完善，既可以减轻事必躬亲带来的压力和巨大工作量，又可以让大家都有主人翁精神。</p>
-<h2 id="如何分工合作？"><a href="#如何分工合作？" class="headerlink" title="如何分工合作？"></a>如何分工合作？</h2><p>需求一下来，我立马拉上组内相关同事进行了一个针对性的拆解分工。因为每个人技术背景不同，所以起初我的想法是每两个同事关注一个重要的点，每个同事关注两个重要的点，即下图的形式：</p>
-<img src="/2018/07/25/Spring%20State%20Machine/project_teamwork.jpg" title="This is an example image">
-<p>此时大家可以分工调研各自重点关注和辅助关注的模块了。分工上基本是合理的。就是缺少了沟通。沟通是分工合作非常需要关注的一个点。下次牵头做设计，必然要每天沟通，记录进度和结果。</p>
-<h2 id="如何保证质量？"><a href="#如何保证质量？" class="headerlink" title="如何保证质量？"></a>如何保证质量？</h2><p>把信任给了同事，那么质量如何保证。这就又体现了沟通的重要性。不是大家能力问题，而是不同技术背景，开发习惯等会引起一些低级问题。开会 review 是提升大家编码水平的一个重要渠道。</p>
+<p>我们需要实现该接口用于完成 Client 的创建和销毁，即 new Client().connect(xxx) 和 client.close()。</p>
 
       
     </div>
@@ -403,7 +386,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/状态机-Spring/" rel="tag"># 状态机 Spring</a>
+            <a href="/tags/base-java/" rel="tag"># base java</a>
           
         </div>
       
@@ -416,8 +399,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/23/JWT/" rel="next" title="JWT简介">
-                <i class="fa fa-chevron-left"></i> JWT简介
+              <a href="/2018/12/18/ribbon/" rel="next" title="ribbon">
+                <i class="fa fa-chevron-left"></i> ribbon
               </a>
             
           </div>
@@ -426,8 +409,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/08/05/question ananlysis/" rel="prev" title="记几次有意思的问题诊断">
-                记几次有意思的问题诊断 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/12/23/springcloud/" rel="prev" title="springcloud">
+                springcloud <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -572,7 +555,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#状态机"><span class="nav-number">1.</span> <span class="nav-text">状态机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#事件驱动"><span class="nav-number">2.</span> <span class="nav-text">事件驱动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分布式协作状态机"><span class="nav-number">3.</span> <span class="nav-text">分布式协作状态机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#状态机实例化"><span class="nav-number">4.</span> <span class="nav-text">状态机实例化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#经验教训"><span class="nav-number">5.</span> <span class="nav-text">经验教训</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何进行设计？"><span class="nav-number">5.1.</span> <span class="nav-text">如何进行设计？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何分工合作？"><span class="nav-number">5.2.</span> <span class="nav-text">如何分工合作？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何保证质量？"><span class="nav-number">5.3.</span> <span class="nav-text">如何保证质量？</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#池化技术的缘由"><span class="nav-number">1.</span> <span class="nav-text">池化技术的缘由</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#快速实现"><span class="nav-number">2.</span> <span class="nav-text">快速实现</span></a></li></ol></div>
             
 
           </div>

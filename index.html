@@ -187,7 +187,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -197,7 +197,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -263,7 +263,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-27T13:17:00+08:00">
                 2019-01-27
@@ -284,7 +284,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -417,7 +417,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-12T13:17:00+08:00">
                 2019-01-12
@@ -438,7 +438,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -580,7 +580,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-23T20:30:00+08:00">
                 2018-12-23
@@ -601,7 +601,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -699,6 +699,168 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/12/18/pool/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/18/pool/" itemprop="url">pool 池化技术</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-18T19:31:00+08:00">
+                2018-12-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在开发过程当中大家或多或少接触过对象池的技术，比如连接池、线程池等。本人这两天为了解决一个网络编程的问题，对 FreeSwitch Esl库的 Client 进行了封装，开发出来与 Jedis 类似的客户端和连接池，得益于 Jedis 的命名习惯，取名为 JreeSwitch 和 JreeSwitchPool。本文围绕如何实现这类功能进行说明。</p>
+<h1 id="池化技术的缘由"><a href="#池化技术的缘由" class="headerlink" title="池化技术的缘由"></a>池化技术的缘由</h1><p>为什么要有 pool 呢？因为某些对象的创建和销毁开销较大，并且这些对象又是可以重复使用的，那么我们就没有必要每次都创建一个新的对象，而是共享这个对象。</p>
+<blockquote>
+<p>共享单车类似于单车 pool，就贼都而言，假设自己平均每次骑行自行车消费为 1 元，自己购买一辆自行车的花销为 800 元，平均骑行 80 次，自行车就会不翼而飞，即自购自行车出行的消费为 10 元。那么显然共享单车是一个不错的选择。<br>高铁、高速等都是 pool 技术的现实范例</p>
+</blockquote>
+<p>以 JedisPool 为例， Jedis 每次发送指令和接收结果只有几个字节通常 1 ms 足够了，但是创建连接和销毁连接却比较消耗资源，那么我们就在初始化的时候创建连接，发送指令的时候，只需要获取一个空闲连接并将指令发送出去即可，无需额外开销。</p>
+<h1 id="快速实现"><a href="#快速实现" class="headerlink" title="快速实现"></a>快速实现</h1><p>得益于 GenericObjectPool 的实现，我们可以快速完成对象池化，以 Esl 库为例， Esl 基于 Netty 实现，对外提供了 Client 类管理连接，对外暴露 <strong>connect sendCommand close</strong> 重要方法。我们通过 GenericObjectPool 的常用构造函数入手：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GenericObjectPool(PooledObjectFactory&lt;T&gt; factory, GenericObjectPoolConfig&lt;T&gt; config)</span><br></pre></td></tr></table></figure>
+<p>入参需要 PooledObjectFactory 和 GenericObjectPoolConfig。其中 PooledObjectFactory 用于管理对象的创建、激活、去激活、销毁等，GenericObjectPoolConfig 用于完成对象池的配置，比如最小空闲对象数等。GenericObjectPool 则对外提供获取对象的方法（borrowObject）、归还对象的方法、定时回收对象的方法等。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public interface PooledObjectFactory&lt;T&gt;</span><br></pre></td></tr></table></figure>
+<p>用于管理对象的生命周期。</p>
+<ul>
+<li><p>makeObject()<br>创建对象实例。 当我们调用对象池的 borrow 方法获取对象时，如果规则满足的情况下（比如池中无空闲对象并且没有到达最大对象数），那么对象池会调用该方法生成一个新的对象给外部使用。</p>
+</li>
+<li><p>activateObject(org.apache.commons.pool2.PooledObject) 激活对象实例。当我们从对象池中 borrow 对象的时候，如果对象池发现将要返回的对象去激活了，则会执行该方法先激活对象再返回。</p>
+</li>
+<li>validateObject(org.apache.commons.pool2.PooledObject) 在对象池返回某个对象或者将对象归还到对象池中的时候如果配置成检测可用性，则会调用该方法判断对象是否可用。只在激活的对象上使用。</li>
+<li>passivateObject(org.apache.commons.pool2.PooledObject) 去激活对象实例。对象归还对象池时调用该方法。</li>
+<li>destroyObject(org.apache.commons.pool2.PooledObject) 销毁对象。</li>
+</ul>
+<p>我们需要实现该接口用于完成 Client 的创建和销毁，即 new Client().connect(xxx) 和 client.close()。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/12/18/ribbon/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -728,7 +890,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-18T19:31:00+08:00">
                 2018-12-18
@@ -749,7 +911,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -891,7 +1053,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-18T10:26:00+08:00">
                 2018-11-18
@@ -912,7 +1074,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1114,7 +1276,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-21T17:26:00+08:00">
                 2018-10-21
@@ -1135,7 +1297,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1338,7 +1500,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-01T09:15:00+08:00">
                 2018-10-01
@@ -1359,7 +1521,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1591,7 +1753,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-28T09:15:00+08:00">
                 2018-09-28
@@ -1612,7 +1774,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1745,7 +1907,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-05T14:38:00+08:00">
                 2018-08-05
@@ -1766,7 +1928,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1812,182 +1974,6 @@
             <h1 id="CLOSE-WAIT"><a href="#CLOSE-WAIT" class="headerlink" title="CLOSE_WAIT"></a>CLOSE_WAIT</h1><p>服务端出现 CLOSE_WAIT 状态，必然是某些原因导致服务端 socket 未关闭， FIN 包未发送到客户端，所以一直处于 CLOSE_WAIT 状态。打印 jstack 发现有大量的相同堆栈，均由同步 RPC 调用未能及时返回引起。</p>
 <h1 id="Jedis连接到slave服务器"><a href="#Jedis连接到slave服务器" class="headerlink" title="Jedis连接到slave服务器"></a>Jedis连接到slave服务器</h1><p>服务端采用哨兵+主备方案部署，客户端采用 Jedis 连接。测试反应数据无法写入 redis，一直打印 READONLY异常。登录 redis，info 查看连接节点角色为 slave。因此怀疑主备切换之后 Jedis 客户端未能感知到。通过 Jedis 源代码得知 redis 主备切换后哨兵会将主备切换的信息 pub 到 +switch-master 这个主题， Jedis 客户端订阅该主题，在获取到主备切换信息之后关闭当前所有 Jedis 连接，跟新的主节点建立连接。由于测试服务端环境只有一个哨兵，并且 redis 的 pub/sub 模式是发布后需要直接消费，否则就会丢失，造就了 Jedis 客户端未能发现主备切换，引起客户端连接在了从节点。</p>
 <h1 id="kafka无业务状态下流量和CPU较高"><a href="#kafka无业务状态下流量和CPU较高" class="headerlink" title="kafka无业务状态下流量和CPU较高"></a>kafka无业务状态下流量和CPU较高</h1><p>现网和测试反应 kafka 在基本没有业务的情况下，网络带宽竟然占用到了 5Mbits/s。问题反馈上来颇感棘手，原因是 kafka 采用 erlang 开发，而我只对 c/c++/Java 有所了解。既然无法直接阅读 kafka 代码，那就从外围分析。首先抓包，查看到的内容都是一些 topic 的名称，然而从我们的常识判断 kafka 这么成熟的商用消息队列不至于出现自身同步都引起巨大流量的问题。采用工具查看流量都从 kafka 不同节点同步消息互相流动。offset 的同步是采用的自动提交方式，每次提交都会触发 offset 同步。排查后发现 offset 的自动提交时间为 100ms，因此引起多个客户端每秒触发 10 次 offset 同步。将 offset 修改为 5000 ms 之后流量和 CPU 都降下来了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/07/25/Spring State Machine/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="王哲">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Light">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/07/25/Spring State Machine/" itemprop="url">简单聊聊Spring State Machine</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-25T21:00:00+08:00">
-                2018-07-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Java/" itemprop="url" rel="index">
-                    <span itemprop="name">Java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="状态机"><a href="#状态机" class="headerlink" title="状态机"></a>状态机</h1><p>FSM (Finite State Machine) 有限状态机。学术上 FSM 分为两种类型： Mealy 状态机和 Moore 状态机。</p>
-<ul>
-<li>Mealy 状态机</li>
-</ul>
-<p>output = f ( present_state, input )<br>next_state = f ( present_state, input)</p>
-<ul>
-<li>Moore 状态机</li>
-</ul>
-<p>output = f ( present_state )<br>next_state = f ( present_state, input )</p>
-<p>参见：</p>
-<p><a href="https://www.tutorialspoint.com/automata_theory/moore_and_mealy_machines.htm" target="_blank" rel="noopener">https://www.tutorialspoint.com/automata_theory/moore_and_mealy_machines.htm</a></p>
-<h1 id="事件驱动"><a href="#事件驱动" class="headerlink" title="事件驱动"></a>事件驱动</h1>
-<p>Spring State Machine 是事件驱动的，事件可以是定时器事件或者普通事件。上图中，比如状态机目前处于 S1 状态，收到 E1 事件后就切换到 S2 状态；状态机目前处于 S2 状态， 收到 E2 事件后切换到 S3 状态。那么 Spring 状态机是怎么使用计算资源的呢？</p>
-<img src="/2018/07/25/Spring%20State%20Machine/springsm.jpg" title="This is an example image">
-<p>每个状态机都有一个接收事件的事件队列，每次每个事件触发都会将 Runnable 任务提交到线程池的任务队列。线程从线程池中提取 Runnable 任务，然后执行事件队列中的全部事件。在任务执行的过程中，会首先加锁，不让多个线程同时处理一个事件队列以免引起线程安全问题。</p>
-<h1 id="分布式协作状态机"><a href="#分布式协作状态机" class="headerlink" title="分布式协作状态机"></a>分布式协作状态机</h1><p>Distribute state machine 是借助 Zookeeper 实现的。每次状态发生变化，Spring State Machine 会将状态持久化到 Zookeeper 中，并以 log 的形式记录到 Zookeeper。 由于另一个 State Machine Watch 了 Zookeeper 上 log 的变化，因此它会在 log 发生变化的时候重放 log，以完成两个 State Machine 的同步。这里需要注意，如果状态机中定义的 Action 中存在变量自加的情况，那么重放 log 会导致 Action 中的操作执行多遍，因此我们在设计的时候通常不能在 Action 中执行操作。</p>
-<h1 id="状态机实例化"><a href="#状态机实例化" class="headerlink" title="状态机实例化"></a>状态机实例化</h1><p>初次使用 Spring State Machine，从其 Demo 中只能看到每次启动 Spring 服务只能配置一个 Spring State Machine 实例。这种情况通常不符合我们的业务流程，因为我们会有多个相同的业务同时执行。当然，这不能困住我们啦，把 Spring State Machine 的源代码下下来，就能看到 Builder 模式的创建状态机的方法。</p>
-<h1 id="经验教训"><a href="#经验教训" class="headerlink" title="经验教训"></a>经验教训</h1><p>经验教训是这将近一月的需求分析、概要设计、详细设计、代码开发到自测阶段不断思考的一些内容。由于并非理论知识，不具备普适性，不具备科学性，所以放在了行文的最后，不妨碍阅读 Spring State Machine 本身的内容。</p>
-<h2 id="如何进行设计？"><a href="#如何进行设计？" class="headerlink" title="如何进行设计？"></a>如何进行设计？</h2><p>设计阶段我们分别进行了业务细节设计、研究 Spring State Machine 的设计、 定时器框架 Quarz 的设计。设计阶段没有达到预期的原因，我认为有以下几个点需要自己以后注意：</p>
-<ol>
-<li>设计仓促</li>
-</ol>
-<p>需求分析和可行性分析是最不能节省时间的。这里的仓促需要我花更多的时间和更多的精力买单。时间紧张是一个比较客观的原因。</p>
-<ol>
-<li>缺少沟通</li>
-</ol>
-<p>骨子里认为开会是个浪费时间的动作，但设计阶段的会议必不可少，一天一次或者一天两次都不为过。沟通的过程是需要和大家不断澄清方案合理性的过程，而且不间断的沟通可以激起负责人的主人翁精神，调动起大家的积极性是愉快工作必不可少的环节。</p>
-<ol>
-<li>缺少信任</li>
-</ol>
-<p>事必躬亲是非常错误的，是一种事倍功半的做法。首先一个人精力有限，其次一个人必有局限。充分信任同事，不断沟通结果才是提高生产力的法则。比如，如果不信任 Spring 的代码质量，那么项目从 0 开始，将是非常巨大的成本。信任同事，一起查看设计和开发结果，对不合理的地方不断完善，既可以减轻事必躬亲带来的压力和巨大工作量，又可以让大家都有主人翁精神。</p>
-<h2 id="如何分工合作？"><a href="#如何分工合作？" class="headerlink" title="如何分工合作？"></a>如何分工合作？</h2><p>需求一下来，我立马拉上组内相关同事进行了一个针对性的拆解分工。因为每个人技术背景不同，所以起初我的想法是每两个同事关注一个重要的点，每个同事关注两个重要的点，即下图的形式：</p>
-<img src="/2018/07/25/Spring%20State%20Machine/project_teamwork.jpg" title="This is an example image">
-<p>此时大家可以分工调研各自重点关注和辅助关注的模块了。分工上基本是合理的。就是缺少了沟通。沟通是分工合作非常需要关注的一个点。下次牵头做设计，必然要每天沟通，记录进度和结果。</p>
-<h2 id="如何保证质量？"><a href="#如何保证质量？" class="headerlink" title="如何保证质量？"></a>如何保证质量？</h2><p>把信任给了同事，那么质量如何保证。这就又体现了沟通的重要性。不是大家能力问题，而是不同技术背景，开发习惯等会引起一些低级问题。开会 review 是提升大家编码水平的一个重要渠道。</p>
 
           
         
@@ -2073,8 +2059,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">18</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
@@ -2085,7 +2071,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">12</span>
-                  <span class="site-state-item-name">Kategorien</span>
+                  <span class="site-state-item-name">categories</span>
                 
               </div>
             
@@ -2095,8 +2081,8 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">16</span>
-                  <span class="site-state-item-name">Tags</span>
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">tags</span>
                 
               </div>
             
@@ -2149,7 +2135,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
