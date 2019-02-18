@@ -8,8 +8,29 @@
     <atom:link href="/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>分享 交流</description>
-    <pubDate>Sat, 16 Feb 2019 11:45:23 GMT</pubDate>
+    <pubDate>Mon, 18 Feb 2019 11:19:01 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>服务保活</title>
+      <link>http://wzlovegit.github.io/2019/02/18/server%20keepalive/</link>
+      <guid>http://wzlovegit.github.io/2019/02/18/server%20keepalive/</guid>
+      <pubDate>Mon, 18 Feb 2019 10:43:00 GMT</pubDate>
+      <description>
+      
+        
+        
+          &lt;p&gt;服务保活是微服务治理的基本要求，服务注册、服务摘除的自动化都离不开服务保活。那么如何去保活服务呢？&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;大部分软件工程师是做业务的，但是业务是繁荣的，Not only web！我们通常会依赖相关领域中重要的三方服务，比如通信领域的 Fre
+        
+      
+      </description>
+      
+      <content:encoded><![CDATA[<p>服务保活是微服务治理的基本要求，服务注册、服务摘除的自动化都离不开服务保活。那么如何去保活服务呢？</p><blockquote><p>大部分软件工程师是做业务的，但是业务是繁荣的，Not only web！我们通常会依赖相关领域中重要的三方服务，比如通信领域的 FreeSwitch。FreeSwitch 并没有原生的集群能力，比如选主、failover等。针对这一类服务，我们需要了解如何保活服务。</p></blockquote><h1 id="续约-VS-探测"><a href="#续约-VS-探测" class="headerlink" title="续约 VS 探测"></a>续约 VS 探测</h1><p>续约是将注册中心作为服务，三方服务作为客户端，周期性向注册中心上报自身状态，一旦注册中心连续多次无法获取三方服务的续约请求，则认为三方服务出现故障。如下图所示：</p><img src="/2019/02/18/server%20keepalive/renew.png"><p>探测是将注册中心作为客户端，三方服务作为服务，注册中心周期性发送 PING 等待三方服务返回 PONG，一旦注册中心连续多次无法获取三方服务的 PONG 回应，则认为三方服务出现故障。如下图所示：</p><img src="/2019/02/18/server%20keepalive/probe.png"><p>这两种方式选择任意一种均可以满足要求。</p><h1 id="连接-VS-服务"><a href="#连接-VS-服务" class="headerlink" title="连接 VS 服务"></a>连接 VS 服务</h1><p>接触过连接池的工程师都知道连接池中的连接通常也需要保活，也会采用 PING / PONG 方式，比如 Jedis。但本人认为连接的保活和服务的保活是两个不同层次的内容，一个连接的丢失并不能象征服务故障。</p><p>连接的保活，是确保在连接上可以传递信息。服务的保活，是确保服务可用。服务的保活 PING/PONG 可以通过任一连接发送，只要成功即可认为服务可用。</p><img src="/2019/02/18/server%20keepalive/server.png"><p>结论：连接的保活放到底层连接实现。服务的保活放到服务定时任务中采用 PING/PONG 实现。</p>]]></content:encoded>
+      
+      <comments>http://wzlovegit.github.io/2019/02/18/server%20keepalive/#disqus_thread</comments>
+    </item>
     
     <item>
       <title>pool 池化技术</title>

@@ -234,6 +234,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/02/18/server keepalive/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/18/server keepalive/" itemprop="url">服务保活</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-18T18:43:00+08:00">
+                2019-02-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/framework/" itemprop="url" rel="index">
+                    <span itemprop="name">framework</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>服务保活是微服务治理的基本要求，服务注册、服务摘除的自动化都离不开服务保活。那么如何去保活服务呢？</p>
+<blockquote>
+<p>大部分软件工程师是做业务的，但是业务是繁荣的，Not only web！我们通常会依赖相关领域中重要的三方服务，比如通信领域的 FreeSwitch。FreeSwitch 并没有原生的集群能力，比如选主、failover等。针对这一类服务，我们需要了解如何保活服务。</p>
+</blockquote>
+<h1 id="续约-VS-探测"><a href="#续约-VS-探测" class="headerlink" title="续约 VS 探测"></a>续约 VS 探测</h1><p>续约是将注册中心作为服务，三方服务作为客户端，周期性向注册中心上报自身状态，一旦注册中心连续多次无法获取三方服务的续约请求，则认为三方服务出现故障。如下图所示：</p>
+<img src="/2019/02/18/server%20keepalive/renew.png">
+<p>探测是将注册中心作为客户端，三方服务作为服务，注册中心周期性发送 PING 等待三方服务返回 PONG，一旦注册中心连续多次无法获取三方服务的 PONG 回应，则认为三方服务出现故障。如下图所示：</p>
+<img src="/2019/02/18/server%20keepalive/probe.png">
+<p>这两种方式选择任意一种均可以满足要求。</p>
+<h1 id="连接-VS-服务"><a href="#连接-VS-服务" class="headerlink" title="连接 VS 服务"></a>连接 VS 服务</h1><p>接触过连接池的工程师都知道连接池中的连接通常也需要保活，也会采用 PING / PONG 方式，比如 Jedis。但本人认为连接的保活和服务的保活是两个不同层次的内容，一个连接的丢失并不能象征服务故障。</p>
+<p>连接的保活，是确保在连接上可以传递信息。服务的保活，是确保服务可用。服务的保活 PING/PONG 可以通过任一连接发送，只要成功即可认为服务可用。</p>
+<img src="/2019/02/18/server%20keepalive/server.png">
+<p>结论：连接的保活放到底层连接实现。服务的保活放到服务定时任务中采用 PING/PONG 实现。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/02/15/pool/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1886,150 +2040,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/08/05/question ananlysis/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="王哲">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Light">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/05/question ananlysis/" itemprop="url">记几次有意思的问题诊断</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-05T14:38:00+08:00">
-                2018-08-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/诊断/" itemprop="url" rel="index">
-                    <span itemprop="name">诊断</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="CLOSE-WAIT"><a href="#CLOSE-WAIT" class="headerlink" title="CLOSE_WAIT"></a>CLOSE_WAIT</h1><p>服务端出现 CLOSE_WAIT 状态，必然是某些原因导致服务端 socket 未关闭， FIN 包未发送到客户端，所以一直处于 CLOSE_WAIT 状态。打印 jstack 发现有大量的相同堆栈，均由同步 RPC 调用未能及时返回引起。</p>
-<h1 id="Jedis连接到slave服务器"><a href="#Jedis连接到slave服务器" class="headerlink" title="Jedis连接到slave服务器"></a>Jedis连接到slave服务器</h1><p>服务端采用哨兵+主备方案部署，客户端采用 Jedis 连接。测试反应数据无法写入 redis，一直打印 READONLY异常。登录 redis，info 查看连接节点角色为 slave。因此怀疑主备切换之后 Jedis 客户端未能感知到。通过 Jedis 源代码得知 redis 主备切换后哨兵会将主备切换的信息 pub 到 +switch-master 这个主题， Jedis 客户端订阅该主题，在获取到主备切换信息之后关闭当前所有 Jedis 连接，跟新的主节点建立连接。由于测试服务端环境只有一个哨兵，并且 redis 的 pub/sub 模式是发布后需要直接消费，否则就会丢失，造就了 Jedis 客户端未能发现主备切换，引起客户端连接在了从节点。</p>
-<h1 id="kafka无业务状态下流量和CPU较高"><a href="#kafka无业务状态下流量和CPU较高" class="headerlink" title="kafka无业务状态下流量和CPU较高"></a>kafka无业务状态下流量和CPU较高</h1><p>现网和测试反应 kafka 在基本没有业务的情况下，网络带宽竟然占用到了 5Mbits/s。问题反馈上来颇感棘手，原因是 kafka 采用 erlang 开发，而我只对 c/c++/Java 有所了解。既然无法直接阅读 kafka 代码，那就从外围分析。首先抓包，查看到的内容都是一些 topic 的名称，然而从我们的常识判断 kafka 这么成熟的商用消息队列不至于出现自身同步都引起巨大流量的问题。采用工具查看流量都从 kafka 不同节点同步消息互相流动。offset 的同步是采用的自动提交方式，每次提交都会触发 offset 同步。排查后发现 offset 的自动提交时间为 100ms，因此引起多个客户端每秒触发 10 次 offset 同步。将 offset 修改为 5000 ms 之后流量和 CPU 都降下来了。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2080,7 +2090,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
@@ -2091,7 +2101,7 @@
               
               <div class="site-state-item site-state-categories">
                 
-                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">Kategorien</span>
                 
               </div>
@@ -2102,7 +2112,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-count">18</span>
                   <span class="site-state-item-name">Tags</span>
                 
               </div>
