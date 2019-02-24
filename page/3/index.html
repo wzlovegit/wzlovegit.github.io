@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Zookeeper Curator," />
+  <meta name="keywords" content="Hexo, NexT" />
 
 
 
@@ -81,18 +81,16 @@
 
 
 
-<meta name="description" content="CuratorApache Curator 是 Apache Zookeeper 的一个客户端库。它封装了底层 Apache Zookeeper 客户端 API，为用户提供了更加简便可靠的高级 API 和一些常用工具。 除此之外，它还提供了常见场景的实现（比如选主、分布式锁等）以及一些扩展（比如服务发现）。 curator-recipes 为我们提供了几种常用场景的解决方案和实现，本文着重介绍这些">
-<meta name="keywords" content="Zookeeper Curator">
-<meta property="og:type" content="article">
-<meta property="og:title" content="curator">
-<meta property="og:url" content="http://wzlovegit.github.io/2018/09/28/curator lock/index.html">
+<meta name="description" content="分享 交流">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Light">
+<meta property="og:url" content="http://wzlovegit.github.io/page/3/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="CuratorApache Curator 是 Apache Zookeeper 的一个客户端库。它封装了底层 Apache Zookeeper 客户端 API，为用户提供了更加简便可靠的高级 API 和一些常用工具。 除此之外，它还提供了常见场景的实现（比如选主、分布式锁等）以及一些扩展（比如服务发现）。 curator-recipes 为我们提供了几种常用场景的解决方案和实现，本文着重介绍这些">
+<meta property="og:description" content="分享 交流">
 <meta property="og:locale" content="中文">
-<meta property="og:updated_time" content="2018-10-01T03:26:01.247Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="curator">
-<meta name="twitter:description" content="CuratorApache Curator 是 Apache Zookeeper 的一个客户端库。它封装了底层 Apache Zookeeper 客户端 API，为用户提供了更加简便可靠的高级 API 和一些常用工具。 除此之外，它还提供了常见场景的实现（比如选主、分布式锁等）以及一些扩展（比如服务发现）。 curator-recipes 为我们提供了几种常用场景的解决方案和实现，本文着重介绍这些">
+<meta name="twitter:title" content="Light">
+<meta name="twitter:description" content="分享 交流">
 
 
 
@@ -122,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://wzlovegit.github.io/2018/09/28/curator lock/"/>
+  <link rel="canonical" href="http://wzlovegit.github.io/page/3/"/>
 
 
 
 
 
-  <title>curator | Light</title>
+  <title>Light</title>
   
 
 
@@ -147,7 +145,8 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -220,9 +219,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-expand">
     
+      
 
   
 
@@ -235,7 +234,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/09/28/curator lock/">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/03/11/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王哲">
@@ -252,7 +251,9 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">curator</h1>
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/11/hello-world/" itemprop="url">Hello World</a></h1>
         
 
         <div class="post-meta">
@@ -264,8 +265,8 @@
               
                 <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-28T09:15:00+08:00">
-                2018-09-28
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-11T17:46:00+08:00">
+                2018-03-11
               </time>
             
 
@@ -287,8 +288,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Zookeeper/" itemprop="url" rel="index">
-                    <span itemprop="name">Zookeeper</span>
+                  <a href="/categories/test/" itemprop="url" rel="index">
+                    <span itemprop="name">test</span>
                   </a>
                 </span>
 
@@ -324,20 +325,12 @@
       
 
       
-        <h1 id="Curator"><a href="#Curator" class="headerlink" title="Curator"></a>Curator</h1><p>Apache Curator 是 Apache Zookeeper 的一个客户端库。它封装了底层 Apache Zookeeper 客户端 API，为用户提供了更加简便可靠的高级 API 和一些常用工具。 除此之外，它还提供了常见场景的实现（比如选主、分布式锁等）以及一些扩展（比如服务发现）。</p>
-<p>curator-recipes 为我们提供了几种常用场景的解决方案和实现，本文着重介绍这些工具的用法以及实现原理。</p>
-<h1 id="Elections-选主"><a href="#Elections-选主" class="headerlink" title="Elections (选主)"></a>Elections (选主)</h1><p>日常生活中，一个稍微繁杂一些的工作，通常需要多人协作，多人协作时通常存在一个 leader 负责根据每个人的状况分发任务；那么就需要大家推举出一个让人信服的 leader，不能搞小团体，这样才能高效完成任务。在分布式系统中，通常也需要推举出一个 leader 完成整个系统的协同。</p>
-<blockquote>
-<p>选主（leader election）是指分布式系统中各个节点推举出一个节点作为整个系统的组织者，进而协同各个节点的状态，协调分布式任务。</p>
-</blockquote>
-<h2 id="应用场景举例"><a href="#应用场景举例" class="headerlink" title="应用场景举例"></a>应用场景举例</h2><ol>
-<li>监控</li>
-</ol>
-<p>因为 leader 节点需要协同整个系统，所以及时获取系统中各个 non-leader 节点的状态是很重要的。因此 leader 节点会监控整个系统节点的状态。<br>比如在一个分布式计算系统中，调度模块将任务下发给 leader 节点，leader 节点在分发任务的时候，首先要确保 non-leader 计算节点的状态正常，才会下发计算任务；否则，就会引起数据丢失，计算失败。</p>
-<ol>
-<li>调度</li>
-</ol>
+        
+          
+            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
 
+          
+        
       
     </div>
     
@@ -347,69 +340,19 @@
     
 
     
-      <div>
-        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
-  <div>谢谢鼓励</div>
-  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
-    <span>Donate</span>
-  </button>
-  <div id="QR" style="display: none;">
-
-    
-      <div id="wechat" style="display: inline-block">
-        <img id="wechat_qr" src="/images/wechatpay.png" alt="王哲 WeChat Pay"/>
-        <p>WeChat Pay</p>
-      </div>
-    
-
-    
-
-    
-
-  </div>
-</div>
-
-      </div>
-    
 
     
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/Zookeeper-Curator/" rel="tag"># Zookeeper Curator</a>
-          
-        </div>
+
+      
+
       
 
       
       
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/08/05/question ananlysis/" rel="next" title="记几次有意思的问题诊断">
-                <i class="fa fa-chevron-left"></i> 记几次有意思的问题诊断
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/01/lock/" rel="prev" title="同步与互斥">
-                同步与互斥 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -419,11 +362,14 @@
   </article>
 
 
+    
+  </section>
 
-    <div class="post-spread">
-      
-    </div>
-  </div>
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+
 
 
           </div>
@@ -431,15 +377,6 @@
 
 
           
-
-  
-    <div class="comments" id="comments">
-      <div id="lv-container" data-id="city" data-uid="MTAyMC80MDc1Mi8xNzI3OA=="></div>
-    </div>
-
-  
-
-
 
         </div>
         
@@ -460,17 +397,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Inhaltsverzeichnis
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Übersicht
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -537,22 +465,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Curator"><span class="nav-number">1.</span> <span class="nav-text">Curator</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Elections-选主"><span class="nav-number">2.</span> <span class="nav-text">Elections (选主)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#应用场景举例"><span class="nav-number">2.1.</span> <span class="nav-text">应用场景举例</span></a></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
@@ -693,10 +605,6 @@
 
 
   
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
-
-
 
   
 
@@ -725,17 +633,6 @@
 
 
 
-  
-    <script type="text/javascript">
-      (function(d, s) {
-        var j, e = d.getElementsByTagName(s)[0];
-        if (typeof LivereTower === 'function') { return; }
-        j = d.createElement(s);
-        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-        j.async = true;
-        e.parentNode.insertBefore(j, e);
-      })(document, 'script');
-    </script>
   
 
 

@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="base java," />
+  <meta name="keywords" content="base spring cloud," />
 
 
 
@@ -81,18 +81,20 @@
 
 
 
-<meta name="description" content="近期在优化 FreeSwitch ESL 客户端相关的业务实现的过程中，对 ESL 提供的 Client 进行了封装，设计并开发了 FreeSwitch 连接池，命名为 JreeSwitch（学习 Jedis 命名方式）。本文围绕如何设计池和如何使用池展开讨论，对池化技术的精髓进行介绍。 对象池对象池是统一管理多个对象生命周期的一种技术。对象池最大的优点是省去频繁创建和销毁对象的性能损耗，其次可以">
-<meta name="keywords" content="base java">
+<meta name="description" content="通过 ribbon介绍，我们了解到 Ribbon 是一个 HTTP 负载均衡客户端，但只有负载均衡并不能达到商用系统的要求，本文我们一边分析为什么，一边了解 Hystrix 提供的解决方案。  降级、熔断、限流是我们经常听到的概念，也是商用系统稳定运行的关键。降级、熔断发生在服务请求端，限流通常发生在服务提供端。  降级服务 A 请求服务 B，由于网络抖动，请求发送失败，此次 HTTP 请求失败。">
+<meta name="keywords" content="base spring cloud">
 <meta property="og:type" content="article">
-<meta property="og:title" content="pool 池化技术">
-<meta property="og:url" content="http://wzlovegit.github.io/2019/02/15/pool/index.html">
+<meta property="og:title" content="点赞 Hystrix 设计">
+<meta property="og:url" content="http://wzlovegit.github.io/2019/02/24/hystrix design/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="近期在优化 FreeSwitch ESL 客户端相关的业务实现的过程中，对 ESL 提供的 Client 进行了封装，设计并开发了 FreeSwitch 连接池，命名为 JreeSwitch（学习 Jedis 命名方式）。本文围绕如何设计池和如何使用池展开讨论，对池化技术的精髓进行介绍。 对象池对象池是统一管理多个对象生命周期的一种技术。对象池最大的优点是省去频繁创建和销毁对象的性能损耗，其次可以">
+<meta property="og:description" content="通过 ribbon介绍，我们了解到 Ribbon 是一个 HTTP 负载均衡客户端，但只有负载均衡并不能达到商用系统的要求，本文我们一边分析为什么，一边了解 Hystrix 提供的解决方案。  降级、熔断、限流是我们经常听到的概念，也是商用系统稳定运行的关键。降级、熔断发生在服务请求端，限流通常发生在服务提供端。  降级服务 A 请求服务 B，由于网络抖动，请求发送失败，此次 HTTP 请求失败。">
 <meta property="og:locale" content="中文">
-<meta property="og:updated_time" content="2019-02-16T11:45:23.835Z">
+<meta property="og:image" content="http://wzlovegit.github.io/2019/02/24/hystrix%20design/asynchttp.png">
+<meta property="og:updated_time" content="2019-02-24T13:19:53.105Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="pool 池化技术">
-<meta name="twitter:description" content="近期在优化 FreeSwitch ESL 客户端相关的业务实现的过程中，对 ESL 提供的 Client 进行了封装，设计并开发了 FreeSwitch 连接池，命名为 JreeSwitch（学习 Jedis 命名方式）。本文围绕如何设计池和如何使用池展开讨论，对池化技术的精髓进行介绍。 对象池对象池是统一管理多个对象生命周期的一种技术。对象池最大的优点是省去频繁创建和销毁对象的性能损耗，其次可以">
+<meta name="twitter:title" content="点赞 Hystrix 设计">
+<meta name="twitter:description" content="通过 ribbon介绍，我们了解到 Ribbon 是一个 HTTP 负载均衡客户端，但只有负载均衡并不能达到商用系统的要求，本文我们一边分析为什么，一边了解 Hystrix 提供的解决方案。  降级、熔断、限流是我们经常听到的概念，也是商用系统稳定运行的关键。降级、熔断发生在服务请求端，限流通常发生在服务提供端。  降级服务 A 请求服务 B，由于网络抖动，请求发送失败，此次 HTTP 请求失败。">
+<meta name="twitter:image" content="http://wzlovegit.github.io/2019/02/24/hystrix%20design/asynchttp.png">
 
 
 
@@ -122,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://wzlovegit.github.io/2019/02/15/pool/"/>
+  <link rel="canonical" href="http://wzlovegit.github.io/2019/02/24/hystrix design/"/>
 
 
 
 
 
-  <title>pool 池化技术 | Light</title>
+  <title>点赞 Hystrix 设计 | Light</title>
   
 
 
@@ -235,7 +237,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/02/15/pool/">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/02/24/hystrix design/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王哲">
@@ -252,7 +254,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">pool 池化技术</h1>
+          <h1 class="post-title" itemprop="name headline">点赞 Hystrix 设计</h1>
         
 
         <div class="post-meta">
@@ -264,8 +266,8 @@
               
                 <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-15T22:43:00+08:00">
-                2019-02-15
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-24T09:51:00+08:00">
+                2019-02-24
               </time>
             
 
@@ -324,48 +326,33 @@
       
 
       
-        <p>近期在优化 FreeSwitch ESL 客户端相关的业务实现的过程中，对 ESL 提供的 Client 进行了封装，设计并开发了 FreeSwitch 连接池，命名为 JreeSwitch（学习 Jedis 命名方式）。本文围绕如何设计池和如何使用池展开讨论，对池化技术的精髓进行介绍。</p>
-<h1 id="对象池"><a href="#对象池" class="headerlink" title="对象池"></a>对象池</h1><p>对象池是统一管理多个对象生命周期的一种技术。对象池最大的优点是<strong>省去频繁创建和销毁对象的性能损耗</strong>，其次可以<strong>将对象生命周期的管理复杂度集中管理，减少开发和运维难度</strong>。</p>
+        <p>通过 <a href="/2018/12/18/ribbon/" title="ribbon">ribbon</a>介绍，我们了解到 Ribbon 是一个 HTTP 负载均衡客户端，但只有负载均衡并不能达到商用系统的要求，本文我们一边分析为什么，一边了解 Hystrix 提供的解决方案。</p>
 <blockquote>
-<p>小贴士： 池化技术在现实生活当中随处可见，即共享技术。例如共享单车属于单车资源池化，高铁属于交通资源池化，我们不创建共享单车和高铁，但是我们可以方便得使用它们。</p>
+<p>降级、熔断、限流是我们经常听到的概念，也是商用系统稳定运行的关键。降级、熔断发生在服务请求端，限流通常发生在服务提供端。</p>
 </blockquote>
-<h1 id="用处"><a href="#用处" class="headerlink" title="用处"></a>用处</h1><p>正是由于对象池的这些优点，使得我们经常见到线程池、连接池等名词。既然对象池如此优秀，为什么不讲所有的对象都放到对象池呢？我总结出如下用法：</p>
+<h1 id="降级"><a href="#降级" class="headerlink" title="降级"></a>降级</h1><p>服务 A 请求服务 B，由于网络抖动，请求发送失败，此次 HTTP 请求失败。如果不做处理，则会将异常抛到用户手中，用户直接一个黑人问号脸：</p>
+
+<p>懂一点的用户觉得这个软件很 low，不懂的觉得不会是病毒吧。此时作为一个码农，你可能会说，都失败了，我有什么办法？网络异常，怪我喽？</p>
+<p>答案是：有办法，确实怪你考虑得不周全。网络异常是不可避免的，因此 CAP 里面中有了 AP 和 CP 的选择，我们的方案必须考虑网路抖动。此时给用户提供一个错误引导比返回一串不知所云的异常要好得多，比如：”请查看网络是否正常，请重试 … “。</p>
+<p>这就是我们所说的降级。虽然网络出现了暂时性异常，但我可以选择返回一个用户能理解的失败，而非返回一串异常。 值得一提的是 Hystrix 能够帮我们包装 HTTP 请求，捕获请求过程中的异常，并提供 Fallback 方法让我们实现降级逻辑。</p>
+<h1 id="熔断"><a href="#熔断" class="headerlink" title="熔断"></a>熔断</h1><p>服务 A 请求服务 B，如果服务 B 的 b1 实例由于某种不可抗因素出现了较长时间的不可用。如果不做处理，就会出现概率性用户请求失败，用户会倾向于怀疑人品。</p>
+<p>作为一个码农，你可能会说，不可抗因素，让运维上啊。运维上不假，但从问题发生到反馈到运营部再到研发定位再到运维下掉 b1 实例，修复完成。如果发生在后半夜，可能会持续很长时间。这么多的服务实例，随便一个故障都触发这么长时间的一个人力流程，用户体验无从谈起。在这种高压力状态下，大家除了让老板看着很努力，没有解决任何实质问题。</p>
+<p>Hystrix 提供了熔断器。</p>
 <ul>
-<li>对象一次创建和销毁的开销相对业务本身较大，通常涉及内核资源的调度（系统 API 调用），比如连接、线程、内存等</li>
-<li>对象可以复用，并非临时性对象，比如连接创建之后，在连接上发送命令即可，无需频繁建链。</li>
+<li>可以采用滚筒采样，周期计算的方式来判断实例是否正常。</li>
+<li>如果发现一个时间窗口内，某实例的请求失败率超过了阈值（当然采样个数要足够，不能采样一个失败，直接按 100% 失败处理），则触发熔断器打开，此时异常服务就被标记为了下线实例，不再使用</li>
+<li>熔断器打开后，后续请求直接进入 Fallback（通常是这样，如果配置了并发控制的话，则会快速失败抛异常，而不进入 Fallback）</li>
+<li>另外，在熔断器打开期间，一个 TEST 时间窗口，客户端会向标记为熔断的异常实例发送一次请求，如果还是失败，则继续打开熔断器，如果成功，则关闭熔断器，自动回复实例。</li>
 </ul>
-<h1 id="对象池设计"><a href="#对象池设计" class="headerlink" title="对象池设计"></a>对象池设计</h1><blockquote>
-<p>参照 GenericObjectPool 进行讲解</p>
-</blockquote>
-<p>我们在使用对象池时是不关注对象何时创建的，用完对象之后，同样也不关注对象何时被销毁，那么对于一个用于租赁对象的对象池来讲，它需要具备以下几个核心能力。</p>
-<ul>
-<li>borrowObject : 对象池出租对象给用户</li>
-<li>returnObject : 用户归还对象给对象池</li>
-<li>检查对象状态 : 出租前、归还后检查</li>
-<li>对象池检查 : 定时检查，根据对象状态和对象池状态决定是否回收或创建连接</li>
-<li>动态扩容缩容 : 根据对象池状态，动态扩充新对象或销毁对象</li>
-</ul>
-<h2 id="GenericObject"><a href="#GenericObject" class="headerlink" title="GenericObject"></a>GenericObject</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GenericObjectPool(PooledObjectFactory&lt;T&gt; factory, GenericObjectPoolConfig&lt;T&gt; config)</span><br></pre></td></tr></table></figure>
-<p>入参为 PooledObjectFactory 和 GenericObjectPoolConfig。其中 PooledObjectFactory 用于提供对象的创建、激活、去激活、销毁等方法给 GenericObjectPool 管理对象生命周期时使用。GenericObjectPoolConfig 用于完成对象池的配置，比如最小空闲对象数等。</p>
-<h2 id="PooledObjectFactory"><a href="#PooledObjectFactory" class="headerlink" title="PooledObjectFactory"></a>PooledObjectFactory</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public interface PooledObjectFactory&lt;T&gt;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>makeObject()<br>创建对象实例。 当我们调用对象池的 borrowObject 方法获取对象时，在规则满足的情况下（比如池中无空闲对象并且没有到达最大对象数），那么对象池会调用该方法生成一个新的对象放入对象池。</p>
-</li>
-<li><p>activateObject(org.apache.commons.pool2.PooledObject) 激活对象实例。当我们从对象池中 borrowObject 的时，会执行该方法先激活对象再返回给用户使用。</p>
-</li>
-<li><p>validateObject(org.apache.commons.pool2.PooledObject) 判断对象合法性。在对象池返回某个对象或者将对象归还到对象池中的时，若满足配置规则，则会调用该方法判断对象是否可用。</p>
-</li>
-<li><p>passivateObject(org.apache.commons.pool2.PooledObject) 去激活对象实例。当我们 returnObject 给对象池时，会调用该方法去激活对象。</p>
-</li>
-<li>destroyObject(org.apache.commons.pool2.PooledObject) 销毁对象。当定时检查对象状态和对象池状态时，若满足规则，则销毁一部分对象。</li>
-</ul>
-<h2 id="GenericObjectPoolConfig"><a href="#GenericObjectPoolConfig" class="headerlink" title="GenericObjectPoolConfig"></a>GenericObjectPoolConfig</h2><p>管理对象池的最大个数，最大空闲对象个数和最少空闲个数。</p>
-<h1 id="快速实现"><a href="#快速实现" class="headerlink" title="快速实现"></a>快速实现</h1><p>在 GenericObjectPool 的基础上，我们可以快速完成对象池化。</p>
-<ul>
-<li>实现 PooledObjectFactory ：提供对象的创建、激活、去激活、销毁等方法。</li>
-<li>创建 GenericObjectPool ： 完成对象池生命周期管理（当然可以通过 GenericObjectPoolConfig 设置对象池的大小）。</li>
-</ul>
-<p>使用者在使用时无需关注何时创建、何时销毁等操作就可以复用以前的对象，非常方便。</p>
+<p>通过这种自动化的方式，让我们可以睡个好觉，上班以后，再根据监控，处理这个 b1 实例。</p>
+<h1 id="超时和重试"><a href="#超时和重试" class="headerlink" title="超时和重试"></a>超时和重试</h1><p>服务 A 请求服务 B，如果请求失败，A 就告诉调用者，你再试一下。就好像，你去政府部门办事，跟柜台小姐姐说明情况之后，她去找领导，领导正在开会，此时她告诉你，你过 10 min 再过来办一次（毫无违和感）。你略有不爽。后面你又来了 10 次，都是领导在开会。</p>
+<p>后来有了位有脑子的领导，发起了一次行政效能革命。你只需要把材料交个柜台小姐姐回家就好。小姐姐去给你找到领导，把章盖好，是不是很好。这才是为人民服务，人民拥护的好政策。</p>
+<p>服务 A 在一次请求失败后，需要重试请求服务 B。Ribbon 自身也带有重试机制控制。</p>
+<h1 id="HTTP-性能"><a href="#HTTP-性能" class="headerlink" title="HTTP 性能"></a>HTTP 性能</h1><p>用 Spring Cloud 做微服务，难免需要发起 HTTP 请求来完成服务间通信。HTTP 请求是基于 TCP 的 7 层协议。使用 HTTP 长连接代替短连接（减轻 TCP 建链、断链损耗）是我们最先想到的提高性能的方法。很多人会提到，异步化的，把业务线程和IO线程分隔开。异步化是对的，不过他们少了解了一个内容，就是 HTTP 请求需要 req/rsp 才算完成，才能在长连接发送另一次 req/rsp。所以很多人考虑得方案如下：</p>
+<img src="/2019/02/24/hystrix%20design/asynchttp.png" title="异步请求">
+<p>但这在资使用方面有一些朝三暮四的感觉，虽然业务线程不再阻塞，但是 IO 线程依旧会阻塞，鉴于 HTTP 请求的效率问题，对服务的性能影响通常也不能忽略。</p>
+<p>用过 dubbo 的同学可能会想，如果可以有个代理能够帮我们整合请求和响应，那么我们就可以在连接上如同流水线一样，疯狂的发送请求，而不用等到第一个 req/rsp 完成之后再发送第二个。</p>
+<p>Hystrix 并没有采用这种复杂的方式，可能也受限于协议的要求吧。但 Hystrix 提供了请求合并的能力，这样一次HTTP请求其实携带了大量的业务请求，一次应答携带了大量的业务响应，借助这种方式，把请求应答在网络上传输的时间均摊，同样可以提升并发效率。感兴趣的同学可以了解一下。</p>
 
       
     </div>
@@ -407,7 +394,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/base-java/" rel="tag"># base java</a>
+            <a href="/tags/base-spring-cloud/" rel="tag"># base spring cloud</a>
           
         </div>
       
@@ -420,8 +407,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/27/2018/" rel="next" title="小结">
-                <i class="fa fa-chevron-left"></i> 小结
+              <a href="/2019/02/18/server keepalive/" rel="next" title="服务保活">
+                <i class="fa fa-chevron-left"></i> 服务保活
               </a>
             
           </div>
@@ -429,10 +416,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/02/18/server keepalive/" rel="prev" title="服务保活">
-                服务保活 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -576,7 +559,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#对象池"><span class="nav-number">1.</span> <span class="nav-text">对象池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用处"><span class="nav-number">2.</span> <span class="nav-text">用处</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对象池设计"><span class="nav-number">3.</span> <span class="nav-text">对象池设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GenericObject"><span class="nav-number">3.1.</span> <span class="nav-text">GenericObject</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PooledObjectFactory"><span class="nav-number">3.2.</span> <span class="nav-text">PooledObjectFactory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GenericObjectPoolConfig"><span class="nav-number">3.3.</span> <span class="nav-text">GenericObjectPoolConfig</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#快速实现"><span class="nav-number">4.</span> <span class="nav-text">快速实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#降级"><span class="nav-number">1.</span> <span class="nav-text">降级</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#熔断"><span class="nav-number">2.</span> <span class="nav-text">熔断</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#超时和重试"><span class="nav-number">3.</span> <span class="nav-text">超时和重试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP-性能"><span class="nav-number">4.</span> <span class="nav-text">HTTP 性能</span></a></li></ol></div>
             
 
           </div>
