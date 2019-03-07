@@ -234,6 +234,259 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/10/01/lock/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/01/lock/" itemprop="url">同步与互斥</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-01T09:15:00+08:00">
+                2018-10-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>随着计算机科学和实践的发展，多线程、多进程编程早已是后台工程师（无论框架还是服务器或是业务）需要熟知的重要基础知识之一。这个技术帮助工程师最大限度的利用冯诺依曼型计算机的资源，然而该技术在给资本家节约成本（当然也会提升人民生活的便利）的同时，提升了工程师编码的复杂度。</p>
+</blockquote>
+<p><strong>摘要</strong> 本文着重讨论多线程、多进程编程中的同步与互斥。<strong>名词解释</strong>部分对本文涉及到的重要名词进行说明，<strong>问题研讨</strong>部分对同步与互斥这一经典问题进行描述。</p>
+<h1 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h1><h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><ul>
+<li><p><strong>定义</strong></p>
+<p>计算机中的资源指的是操作系统管理的抽象资源。比如：内存、IO、CPU、锁等。</p>
+</li>
+</ul>
+<h2 id="临界资源"><a href="#临界资源" class="headerlink" title="临界资源"></a>临界资源</h2><ul>
+<li><p><strong>定义</strong></p>
+<p>多道程序（多进程、多线程）系统中，一次只允许一道程序（一个线程、一个进程）使用的资源，称为<strong>临界资源</strong>。</p>
+</li>
+<li><p><strong>调皮一下</strong></p>
+<p>现在假设厕所只有一个坑，小 A 占用的时候，小 B 只能等；小 B 占用的时候，小 A 只能等。厕所的坑是一个解决问题的重要资源，然而却不能被小 A 和小 B 同时使用，那么这个坑就是<strong>临界资源</strong>。</p>
+<blockquote>
+<p><strong>想法</strong>：计算机科学衍生自人类本身的经验科学和数学科学，因此有很多名词和编码理念取材于日常生活。而且计算机科学又非常高效地反馈了人类，取材于日常生活的理念，快速应用到解决日常问题。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="竞争"><a href="#竞争" class="headerlink" title="竞争"></a>竞争</h2><ul>
+<li><strong>定义</strong><br>操作系统（Operation System）是计算机的管家，管理着这台计算机的全部资源。应用程序在运行过程中需要的资源均需向 OS 申请并且及时归还。多道程序申请一个临界资源的情况，称为<strong>竞争</strong>。</li>
+</ul>
+<h2 id="独立进程（或线程）"><a href="#独立进程（或线程）" class="headerlink" title="独立进程（或线程）"></a>独立进程（或线程）</h2><ul>
+<li><strong>定义</strong><br>自身状态与其他进程（或线程）无关并且其他进程不会影响自身状态的进程（或线程），称为<strong>独立进程（或线程）</strong>。</li>
+</ul>
+<h2 id="合作进程（或线程）"><a href="#合作进程（或线程）" class="headerlink" title="合作进程（或线程）"></a>合作进程（或线程）</h2><ul>
+<li><strong>定义</strong><br>进程执行过程中影响其他进程（或线程）状态或被其他进程（或线程）影响自身状态，称为<strong>合作进程（或线程）</strong>。</li>
+</ul>
+<h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2><ul>
+<li><strong>定义</strong><br>在多道系统中，合作进程（或线程）按照某种事先规定的序列完成任务的过程称为<strong>同步</strong>。</li>
+</ul>
+<h2 id="互斥"><a href="#互斥" class="headerlink" title="互斥"></a>互斥</h2><ul>
+<li><p><strong>定义</strong><br>在多道系统中，合作进程（或线程）对临界资源的排他访问，称为<strong>互斥</strong>。</p>
+</li>
+<li><p><strong>调皮一下</strong><br>小 A 和小 B 属于合作进程。他们需要按照既定的顺序解决问题：小 A 先上或者小 B 先上。小 A 先上的话，小 B 只能等待小 A 出来，小 B 遵守了厕所坑互斥的约定，按照次序解决问题，这就是同步。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>想法</strong>，同步与互斥是两个非常独立的概念，然而却经常理解混乱。其一，多道程序为了完成同步需要一些互斥手段。其二，自然语言解释抽象概念本身就捉襟见肘。</p>
+</blockquote>
+<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><ul>
+<li><strong>定义</strong><br>一种由资源管理者提供的资源，用于正确地访问临界资源。</li>
+</ul>
+<h1 id="问题研讨"><a href="#问题研讨" class="headerlink" title="问题研讨"></a>问题研讨</h1><p>由于互斥是同步的一个重要手段，我们从互斥入手去展开这一主题的介绍。锁在为多道程序正确地访问临界资源提供支持的同时，也加大了编写正确多道程序的难度。</p>
+<h2 id="多道程序的活跃性问题"><a href="#多道程序的活跃性问题" class="headerlink" title="多道程序的活跃性问题"></a>多道程序的活跃性问题</h2><h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><ul>
+<li><p><strong>定义</strong><br>集合中的每一个进程都在等待只能由本集合中的其他进程才能引发的事件，那么该组进程是死锁的。死锁会进一步引起服务挂起，无法正常处理业务。</p>
+</li>
+<li><p><strong>调皮一下</strong><br>教科书爱用哲学家用餐问题引入介绍死锁，然而作为市井打工仔，我没见过科学家，因此这里换个日常生活中常见的死锁。一次下班回家，在一个交通转盘上就发生了严重的交通死锁，看到一辆救护车的悲鸣，心里很是触动。死锁如下：</p>
+<img src="/2018/10/01/lock/Deadlock.jpg">
+</li>
+<li><p><strong>死锁产生</strong><br>从上面的例子我们可以看到死锁产生需要4个必要条件：</p>
+<ol>
+<li><strong>互斥</strong>：进程对临界资源排他性占用，若进程 P1 持有临界资源，则进程 P2 请求临界资源时需要等待，直到 P1 释放该资源，P2 才能获取。上图中，路口就是临界资源，同时只能由1辆车通过。</li>
+<li><strong>请求和占有</strong>：进程 P1 在请求资源 R1 的同时还独占资源 R2，进程 P2 在请求资源 R2 的同时还独占资源 R1。上图中，每个方向的车队都是在请求自己的通行路口，同时还独占另外一个车队的通行路口。</li>
+<li><strong>不可抢占</strong>：进程 P1 获得的资源 R1 在未自己释放之前不可由进程 P2 抢夺。每个车队都没有执法权可以让另一个车队让出一个路口。</li>
+<li><strong>循环等待</strong>：进程资源环形链路。车队和路口出现了一个环形。</li>
+</ol>
+<p>上述四个条件为死锁产生的必要不充分条件：即死锁 -&gt; 互斥，死锁 -&gt; 请求和保持，死锁 -&gt; 请求和占有，死锁 -&gt; 循环等待，反过来则不成立。</p>
+</li>
+<li><p><strong>问题解决方案</strong></p>
+<p>科学家给出了科学结论和理论上可行的方案：</p>
+<ol>
+<li><strong>死锁预防</strong><br>破坏死锁产生的4个必要条件之一，则就不会发生死锁。<strong>有序资源分配法</strong>是非常典型的一种死锁预防算法，它破坏了<strong>循环等待</strong>条件。<br><strong>有序资源分配算法</strong>即进程在获取多个资源的时候需要事先规定好的顺序获取，比如进程 P1 和 P2 需要资源 R1 R2 完成工作，如果 P1 占有 R1 申请 R2，P2 占有 R2 申请 R1 就会出现死锁。若我们事先规定进程获取资源的顺序为 R1 R2，那么进程 P2 在申请 R2 之前需先申请 R1，若 R1 申请不到则其无法持有 R2。因此不会产生死锁。</li>
+<li><strong>死锁避免</strong><br>系统对进程发出的每一个系统能够满足的资源申请进行动态检查，并根据检查结果决定是否分配资源；如果分配后系统可能发生死锁，则不予分配，否则予以分配。这是一种保证系统不进入死锁状态的<strong>动态策略</strong>。<strong>银行家算法</strong>是典型的死锁避免算法。<br><strong>银行家算法</strong>比较复杂，很难三言两语解释清楚，请见。由于申请资源者并非一次性将自己所需的最大资源数全部从银行家手里获取，因此会有虽然银行家手里有资源，但是并不能向外分配的情况。此时需要检测是否存在进程安全序列。</li>
+<li><strong>死锁检测</strong><br>允许死锁发生，然后检测到进程发生死锁，再去干预。在交通图中，检测到死锁，右下角的警车到达，经过疏导完成了解锁。检测策略实现起来比较有难度。</li>
+</ol>
+<blockquote>
+<p><strong>想法</strong>在日常业务开发中，通过业务拆分，通常多个进程竞争一个临界资源，不会出现多个临界资源，因此直接不满足死锁必要条件的<strong>请求和占有</strong>。如果真遇到多个临界资源的竞争，则需要引入<strong>有序资源分配法</strong>（由于资源有序，导致业务上的串行，影响性能），<strong>银行家算法</strong>（动态分配资源，实现略显复杂，提高并发性）。</p>
+</blockquote>
+<h3 id="饥饿"><a href="#饥饿" class="headerlink" title="饥饿"></a>饥饿</h3></li>
+<li><p><strong>定义</strong></p>
+<p>进程的等待时间给进程的响应时间带来明显影响，称为<strong>进程饥饿</strong>。若一直等待到即使完成该任务也毫无意义的时候，则称为<strong>饥饿死亡</strong>。</p>
+</li>
+<li><p><strong>调度算法</strong><br>进程和线程调度均由 OS 来完成，但业务相关任务调度则由工程师控制，因此调度算法也是工程师需要掌握的技术手段。下面介绍 6 种典型的进程调度算法（当然可以应用到任务调度当中），它们均是抢占式、非抢占式调度算法：</p>
+<ol>
+<li><strong>FCFS (First Come First Serve) 先来先服务</strong><ul>
+<li>任务按照先来先服务原则执行（俗话所说的按照先来后到）</li>
+<li>基于 FIFO 队列，实现简单</li>
+<li>平均等待时长较长（老师常说的，你耽误课堂一分钟，整个教室 60 个人，你就耽误了 60 分钟）</li>
+</ul>
+</li>
+<li><strong>SJN (Short Job Next) 短作业优先</strong><ul>
+<li>任务按照短作业优先原则执行</li>
+<li>平均等待时长最短（可以证明）</li>
+<li>适合预先知道处理时长的批处理系统，不适合预先不知道处理时长的交互式系统</li>
+<li>系统需要实现知道处理时长</li>
+</ul>
+</li>
+<li><strong>Priority Scheduling 优先级调度</strong><ul>
+<li>批处理系统中的常用调度算法</li>
+<li>按照任务优先级处理，同一优先级按照 FCFS 处理</li>
+</ul>
+</li>
+<li><strong>Shortest Remaining Time 最少剩余时间</strong></li>
+<li><strong>Round Robin(RR) Scheduling 轮询调度</strong><ul>
+<li>每个任务获取一个固定的执行时间，时间到则切换下一个任务</li>
+</ul>
+</li>
+<li><strong>Multiple-Level Queue Scheduling 多级队列调度</strong></li>
+</ol>
+</li>
+</ul>
+<p>调度也是一个研究方向，值得庆幸的是科学家已经提供了很多行之有效的经典方案。Quartz 就是一个分布式调度框架，最近也用到了我们的项目中。</p>
+<h3 id="活锁"><a href="#活锁" class="headerlink" title="活锁"></a>活锁</h3><ul>
+<li><p><strong>定义</strong></p>
+<p>活锁指的是任务或者执行者没有被阻塞，只是由于某种原因导致执行者一直重复尝试-失败，尝试-失败。</p>
+</li>
+<li><p><strong>实例</strong><br>活锁会导致虽然线程没有阻塞，但却什么都完成不了。比如执行任务的过程中，若遇到失败任务则重试，那么就有可能一直重试下去。</p>
+</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>锁是实现互斥的一种手段；互斥是程序执行过程中对临界资源访问的一种保证正确性的手段；同步需要 A 等待 B 完成才能继续执行，A 得知 B 已经完成的手段的一种方式就是访问一个临界资源。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/09/28/curator lock/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1780,251 +2033,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/03/24/Java executor/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="王哲">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Light">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/24/Java executor/" itemprop="url">Java多线程模型和Executor框架</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-24T23:40:00+08:00">
-                2018-03-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/多线程/" itemprop="url" rel="index">
-                    <span itemprop="name">多线程</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><p>本文主要介绍Java多线程模型以及Java成熟的线程池框架Executor框架。线程模型分为单线程、无限多线程、线程池模型。Executor直接创建线程池的方法通常不推荐使用，除非你明确知道它的含义；在实际应用过程中我们还是会通过ThreadPoolExecutor定制自己想要的线程池，以便控制内存和CPU利用率，提升系统稳定性。</p>
-<h1 id="2-线程模型"><a href="#2-线程模型" class="headerlink" title="2 线程模型"></a>2 线程模型</h1><h2 id="2-1-线程和进程"><a href="#2-1-线程和进程" class="headerlink" title="2.1 线程和进程"></a>2.1 线程和进程</h2><p>线程是OS任务调度的基本单位，进程是OS资源分配的基本单位。什么意思？</p>
-<ul>
-<li>OS在分配内存地址空间的时候，是以进程分配的。即一个进程享有虚拟地址空间的访问权限；该进程不可以访问其他进程地址空间中的资源。然而该进程中的线程可以共享该进程的地址空间。</li>
-<li>OS在调度任务执行的时候，是以线程调度的。即如果当前CPU有空闲，需要让它run任务，那么就会选择一个线程来执行任务。</li>
-</ul>
-<h2 id="2-2-任务和线程模型"><a href="#2-2-任务和线程模型" class="headerlink" title="2.2 任务和线程模型"></a>2.2 任务和线程模型</h2><p>Java当中将任务的生成和任务的执行分别做了抽象。</p>
-<p><strong>任务</strong>：定义招待客人的hiWork任务，对每个传递进来的整型值say hi：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">void hiWork(int i) &#123;</span><br><span class="line">	System.out.println(&quot;hi : &quot; + i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="2-2-1-单线程"><a href="#2-2-1-单线程" class="headerlink" title="2.2.1 单线程"></a>2.2.1 单线程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Thread t = new Thread() &#123;</span><br><span class="line">	public void run() &#123;</span><br><span class="line">		int i = 0;</span><br><span class="line">		while (i &lt; 100) &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>一个线程循环执行所有任务。<br>优点：</p>
-<ul>
-<li>不用考虑临界资源、锁带来的线程活跃性问题：因为只有一个线程执行，不会出现临界资源争用，不会出现死锁，也不会饿死任务。</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li>系统资源利用率低。多个CPU只能使用1个。</li>
-<li>吞吐和响应都很差。后面的任务必须等待前面的任务执行完。<h3 id="2-2-2-一个任务一个线程"><a href="#2-2-2-一个任务一个线程" class="headerlink" title="2.2.2 一个任务一个线程"></a>2.2.2 一个任务一个线程</h3></li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">int i = 0;</span><br><span class="line">while (i &lt; 100) &#123;</span><br><span class="line">	Thread t = new Thread() &#123;</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	i++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>每个任务分配一个线程。<br>优点：</p>
-<ul>
-<li>响应速度快。任务会直接被拿走执行，不用等待其他任务。</li>
-<li>资源利用率高。多个任务同时执行，CPU使用率高。</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li>需要考虑多线程活跃性。死锁，饥饿等。</li>
-<li>线程创建销毁频繁带来的资源消耗大。</li>
-<li>线程过多可能导致系统崩溃。线程本身也在OS当中占用资源。过多的线程，会导致OS资源用光，挂掉。</li>
-<li>线程过多可能导致频繁切换。CPU个数有限，过多的线程会引起CPU不断切换线程执行，浪费资源。<h3 id="2-2-3-线程池"><a href="#2-2-3-线程池" class="headerlink" title="2.2.3 线程池"></a>2.2.3 线程池</h3></li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ExecutorService executor = ...;</span><br><span class="line">int i = 0;</span><br><span class="line">while (i &lt; 100) &#123;</span><br><span class="line">	excutor.excute(new Runnable() &#123;</span><br><span class="line">		public void run() &#123;</span><br><span class="line">			hiWork(i);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;);</span><br><span class="line">	i++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>多个线程分别执行不同的任务。<br>优点：</p>
-<ul>
-<li>吞吐和响应好</li>
-<li>不会频繁创建销毁线程</li>
-<li>不会由于任务过多导致线程太多系统崩溃</li>
-<li>不会导致频繁线程切换<br>这么一看就像完美了一样。其实从实际使用来看，这种方案确实很6。</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li>多线程活跃性。死锁、饥饿等。</li>
-</ul>
-<h2 id="2-2-4-结论"><a href="#2-2-4-结论" class="headerlink" title="2.2.4 结论"></a>2.2.4 结论</h2><p>对比以上三种的优缺点，找到任务类型，选择合适的线程模型。比如，强烈要求顺序性的任务，我们会选择类似于第一种的方案，保证顺序性；比如互相独立的任务，我们会选择类似第三种的方案，保证高吞吐，低延时。</p>
-<h1 id="3-Executor-线程框架"><a href="#3-Executor-线程框架" class="headerlink" title="3 Executor 线程框架"></a>3 Executor 线程框架</h1><img src="/2018/03/24/Java%20executor/Executors.png" title="Executors框架">
-<p>Java的线程框架Executor将任务和执行任务的线程分离开来。线程池当中的线程就像工人一样，不断从传送带上提取任务，处理完之后，再从传送带上获取下一个任务，循环往复。线程池细节很多，本小节对线程池创建、任务执行、任务提交方式进行简单介绍。若我们不去定制ThreadPoolExecutor，那么本节介绍的就是Executor的原理。如果定制了线程池，那么它便会有不同的表现。</p>
-<h2 id="3-1-线程池构造函数"><a href="#3-1-线程池构造函数" class="headerlink" title="3.1 线程池构造函数"></a>3.1 线程池构造函数</h2><p>看一下线程池的构造函数如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Creates a new &#123;@code ThreadPoolExecutor&#125; with the given initial</span><br><span class="line"> * parameters.</span><br><span class="line"> *</span><br><span class="line"> * @param corePoolSize 线程池中即使某些线程处于idle状态，也要有corePoolSize个线程</span><br><span class="line"> *        除非设置&#123;@code allowCoreThreadTimeOut&#125;</span><br><span class="line"> * @param maximumPoolSize 线程池中最多允许存在maxmumPoolSize个线程</span><br><span class="line"> * @param keepAliveTime 当线程池中的线程个数超过了corePoolSize，那么线程如果在keepAliveTime时间内</span><br><span class="line"> *        还是一直处于空闲状态，则终止该线程</span><br><span class="line"> * @param unit &#123;@code keepAliveTime&#125; 参数的时间单位</span><br><span class="line"> * @param workQueue 任务执行之前会先提交到workQueue队列。该队列只接收execute方法提交的Runnable任务</span><br><span class="line"> * @param threadFactory 线程创建工厂</span><br><span class="line"> * @param handler 当提交任务由于线程绑定或队列已满被阻塞时，采用handler句柄处理</span><br><span class="line"> * @throws IllegalArgumentException if one of the following holds:&lt;br&gt;</span><br><span class="line"> *         &#123;@code corePoolSize &lt; 0&#125;&lt;br&gt;</span><br><span class="line"> *         &#123;@code keepAliveTime &lt; 0&#125;&lt;br&gt;</span><br><span class="line"> *         &#123;@code maximumPoolSize &lt;= 0&#125;&lt;br&gt;</span><br><span class="line"> *         &#123;@code maximumPoolSize &lt; corePoolSize&#125;</span><br><span class="line"> * @throws NullPointerException if &#123;@code workQueue&#125;</span><br><span class="line"> *         or &#123;@code threadFactory&#125; or &#123;@code handler&#125; is null</span><br><span class="line"> */</span><br><span class="line">public ThreadPoolExecutor(int corePoolSize,</span><br><span class="line">                          int maximumPoolSize,</span><br><span class="line">                          long keepAliveTime,</span><br><span class="line">                          TimeUnit unit,</span><br><span class="line">                          BlockingQueue&lt;Runnable&gt; workQueue,</span><br><span class="line">                          ThreadFactory threadFactory,</span><br><span class="line">                          RejectedExecutionHandler handler) &#123;</span><br><span class="line">    if (corePoolSize &lt; 0 ||</span><br><span class="line">        maximumPoolSize &lt;= 0 ||</span><br><span class="line">        maximumPoolSize &lt; corePoolSize ||</span><br><span class="line">        keepAliveTime &lt; 0)</span><br><span class="line">        throw new IllegalArgumentException();</span><br><span class="line">    if (workQueue == null || threadFactory == null || handler == null)</span><br><span class="line">        throw new NullPointerException();</span><br><span class="line">    this.acc = System.getSecurityManager() == null ?</span><br><span class="line">            null :</span><br><span class="line">            AccessController.getContext();</span><br><span class="line">    this.corePoolSize = corePoolSize;</span><br><span class="line">    this.maximumPoolSize = maximumPoolSize;</span><br><span class="line">    this.workQueue = workQueue;</span><br><span class="line">    this.keepAliveTime = unit.toNanos(keepAliveTime);</span><br><span class="line">    this.threadFactory = threadFactory;</span><br><span class="line">    this.handler = handler;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>由此可知，线程池需要我们提供几个策略：</p>
-<ol>
-<li>任务队列</li>
-<li>任务队列满之后的处理方式</li>
-<li>线程池线程个数区间</li>
-<li>线程池中线程在idle状态下能活多长时间</li>
-<li>线程池中线程的创建方式</li>
-</ol>
-<h2 id="3-2-任务队列"><a href="#3-2-任务队列" class="headerlink" title="3.2 任务队列"></a>3.2 任务队列</h2><p>BlockedQueue提供offer put take poll等方法完成对任务的提交和获取。任务队列可以根据自己的想法，配置有界队列，无界队列。实践表明：</p>
-<ol>
-<li>配置有界队列，保证内存可控，否则可能由于处理不急导致OOM。</li>
-<li>可以选择FIFO队列或者优先级队列。</li>
-<li>队列的线程安全性已经在Executor框架当中实现，所以没必要自己从头实现一个阻塞队列，只需要扩充。</li>
-</ol>
-<h3 id="3-2-1-如何向线程池提交任务"><a href="#3-2-1-如何向线程池提交任务" class="headerlink" title="3.2.1 如何向线程池提交任务"></a>3.2.1 如何向线程池提交任务</h3><p>execute执行的时候，默认采用的BlockedQueue的offer方法。队列不满的情况下，任务将被提交到队列当中；如果队列已满，则会执行RejectExecutionHandler指定的方法，不会产生阻塞。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">public void execute(Runnable command) &#123;</span><br><span class="line">    if (command == null)</span><br><span class="line">        throw new NullPointerException();</span><br><span class="line">    /*</span><br><span class="line">     * Proceed in 3 steps:</span><br><span class="line">     *</span><br><span class="line">     * 1. 如果线程池中的线程数小于corePoolSize，则把当前任务command作为第一个任务给新创建的线程</span><br><span class="line">     *    创建失败，则在之前的线程当中执行</span><br><span class="line">     *</span><br><span class="line">     * 2. If a task can be successfully queued, then we still need</span><br><span class="line">     * to double-check whether we should have added a thread</span><br><span class="line">     * (because existing ones died since last checking) or that</span><br><span class="line">     * the pool shut down since entry into this method. So we</span><br><span class="line">     * recheck state and if necessary roll back the enqueuing if</span><br><span class="line">     * stopped, or start a new thread if there are none.</span><br><span class="line">     *</span><br><span class="line">     * 3. 如果我们添加任务队列失败，则创建新的线程去执行该任务，如果创建失败，则执行reject</span><br><span class="line">     */</span><br><span class="line">    int c = ctl.get();</span><br><span class="line">    if (workerCountOf(c) &lt; corePoolSize) &#123;</span><br><span class="line">        if (addWorker(command, true))</span><br><span class="line">            return;</span><br><span class="line">        c = ctl.get();</span><br><span class="line">    &#125;</span><br><span class="line">    if (isRunning(c) &amp;&amp; workQueue.offer(command)) &#123;</span><br><span class="line">        int recheck = ctl.get();</span><br><span class="line">        if (! isRunning(recheck) &amp;&amp; remove(command))</span><br><span class="line">            reject(command);</span><br><span class="line">        else if (workerCountOf(recheck) == 0)</span><br><span class="line">            addWorker(null, false);</span><br><span class="line">    &#125;</span><br><span class="line">    else if (!addWorker(command, false))</span><br><span class="line">        reject(command); // 执行reject函数</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>submit &amp;&amp; execute</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @throws RejectedExecutionException &#123;@inheritDoc&#125;</span><br><span class="line"> * @throws NullPointerException       &#123;@inheritDoc&#125;</span><br><span class="line"> */</span><br><span class="line">public &lt;T&gt; Future&lt;T&gt; submit(Runnable task, T result) &#123;</span><br><span class="line">    if (task == null) throw new NullPointerException();</span><br><span class="line">    RunnableFuture&lt;T&gt; ftask = newTaskFor(task, result);</span><br><span class="line">    execute(ftask);</span><br><span class="line">    return ftask;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>submit提交任务之后，会先生成一个RunnableFuture对象来管理提交任务的生命周期，然后调用execute去提交任务。</p>
-<h2 id="3-3-任务队列满之后的处理方式"><a href="#3-3-任务队列满之后的处理方式" class="headerlink" title="3.3 任务队列满之后的处理方式"></a>3.3 任务队列满之后的处理方式</h2><p>Executor框架调用executor提交任务，executor调用BlockedQueue的offer方法提交任务。如果队列不满，则提交成功；如果队列满，则offer返回false，转而执行RejectExecutionHandler提供的方法。那么RejectExecutionHandler方法如何处理呢？</p>
-<h3 id="3-3-1-任务不能丢失的情况"><a href="#3-3-1-任务不能丢失的情况" class="headerlink" title="3.3.1 任务不能丢失的情况"></a>3.3.1 任务不能丢失的情况</h3><ol>
-<li><p>阻塞任务提交<br>缺点：1）任务延时；2）任务全部阻塞到任务队列，可能引发内存溢出；3）提交任务的线程可能需要做其他重要工作却被阻塞；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public static class MyKeepPolicy implements RejectedExecutionHandler &#123;</span><br><span class="line">    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) &#123;</span><br><span class="line">        while (true) &#123;</span><br><span class="line">           try &#123;</span><br><span class="line">               e.getQueue().put(r);</span><br><span class="line">               break;</span><br><span class="line">           &#125; catch (InterruptException e) &#123;</span><br><span class="line">               ;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在任务提交线程执行任务<br>优点：1）不丢任务；2）任务在任务提交线程执行，可以不阻塞任务提交线程；3）任务的形成速度得到一定程度降低；<br>缺点：1）任务延时；2）时序问题，最后提交不进去的任务，反而比队列中的任务先获得处理权</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public static class CallerRunsPolicy implements RejectedExecutionHandler &#123;</span><br><span class="line">    /**</span><br><span class="line">     * Creates a &#123;@code CallerRunsPolicy&#125;.</span><br><span class="line">     */</span><br><span class="line">    public CallerRunsPolicy() &#123; &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Executes task r in the caller&apos;s thread, unless the executor</span><br><span class="line">     * has been shut down, in which case the task is discarded.</span><br><span class="line">     *</span><br><span class="line">     * @param r the runnable task requested to be executed</span><br><span class="line">     * @param e the executor attempting to execute this task</span><br><span class="line">     */</span><br><span class="line">    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) &#123;</span><br><span class="line">        if (!e.isShutdown()) &#123;</span><br><span class="line">            r.run();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="3-3-2-任务可以丢失的情况"><a href="#3-3-2-任务可以丢失的情况" class="headerlink" title="3.3.2 任务可以丢失的情况"></a>3.3.2 任务可以丢失的情况</h3><ol>
-<li><p>抛出异常，将处理权转交给任务提交线程<br>优点：1）控制权转移到任务提交线程；2）不会稀里糊涂丢任务；3）不会阻塞后续任务<br>缺点：1）抛出了异常通常情况下也没有更好的办法</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public void rejectedExecution(Runnable r, ThreadPoolExecutor e) &#123;</span><br><span class="line">            throw new RejectedExecutionException(&quot;Task &quot; + r.toString() +</span><br><span class="line">                                                 &quot; rejected from &quot; +</span><br><span class="line">                                                 e.toString());</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>选择默默丢弃：通常不会这样做，稀里糊涂丢任务，在实际情况下通常是不能容忍的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * A handler for rejected tasks that silently discards the</span><br><span class="line"> * rejected task.</span><br><span class="line"> */</span><br><span class="line">public static class DiscardPolicy implements RejectedExecutionHandler &#123;</span><br><span class="line">    /**</span><br><span class="line">     * Creates a &#123;@code DiscardPolicy&#125;.</span><br><span class="line">     */</span><br><span class="line">    public DiscardPolicy() &#123; &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Does nothing, which has the effect of discarding task r.</span><br><span class="line">     *</span><br><span class="line">     * @param r the runnable task requested to be executed</span><br><span class="line">     * @param e the executor attempting to execute this task</span><br><span class="line">     */</span><br><span class="line">    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>选择丢弃最前面的任务：这个策略通常也不会和优先级队列连用，会导致优先级最高的任务被丢弃</p>
-<h2 id="3-4-线程池中线程个数区间"><a href="#3-4-线程池中线程个数区间" class="headerlink" title="3.4 线程池中线程个数区间"></a>3.4 线程池中线程个数区间</h2><p>最小线程数：从任务队列中取出任务之后，会创建线程执行任务，执行完任务之后，如果线程总数小于等于最小线程数，则线程不会退出。<br>最大线程数：当线程都忙以后，从任务获取队列会创建新的线程，直到达到最大线程数。</p>
-</li>
-</ol>
-<h2 id="3-5-线程池中线程在idle状态下能活多长时间"><a href="#3-5-线程池中线程在idle状态下能活多长时间" class="headerlink" title="3.5 线程池中线程在idle状态下能活多长时间"></a>3.5 线程池中线程在idle状态下能活多长时间</h2><p>达到最大线程数之后，如果线程处于空闲状态，超过参数设置的时长，则超出的线程会不断退出。</p>
-<h2 id="3-6-线程池中线程的创建方式"><a href="#3-6-线程池中线程的创建方式" class="headerlink" title="3.6 线程池中线程的创建方式"></a>3.6 线程池中线程的创建方式</h2><h3 id="3-6-1-线程创建和任务执行"><a href="#3-6-1-线程创建和任务执行" class="headerlink" title="3.6.1 线程创建和任务执行"></a>3.6.1 线程创建和任务执行</h3><p>线程池中的线程被封装为Worker。Worker中thread的创建方式跟我们通常采取的方法一样，new Thread之后复写run方法。run方法中采用poll或者take的方式从BlockedQueue当中获取任务，并执行。时序图和代码如下：</p>
-<img src="/2018/03/24/Java%20executor/线程池时序.png" title="线程池执行任务时序">
-<p>黑色是正常流程，红色为异常流程，绿色为线程池。获取任务的时候，采用的poll或者take的方法。在任务队列不空的情况下，会返回一个任务；在任务队列为空的情况下，会阻塞。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">  * 从ThreadFactory创建thread，如果有初始任务，就会先执行初始任务</span><br><span class="line">  * @param firstTask the first task (null if none)</span><br><span class="line">  */</span><br><span class="line"> Worker(Runnable firstTask) &#123;</span><br><span class="line">     setState(-1); // inhibit interrupts until runWorker</span><br><span class="line">     this.firstTask = firstTask; //第一个任务</span><br><span class="line">     this.thread = getThreadFactory().newThread(this); // 创建线程，见下面一片代码</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public Thread newThread(Runnable r) &#123;</span><br><span class="line">    Thread t = new Thread(group, r,</span><br><span class="line">                          namePrefix + threadNumber.getAndIncrement(),</span><br><span class="line">                          0); // 创建线程对象</span><br><span class="line">    if (t.isDaemon())</span><br><span class="line">        t.setDaemon(false); // 非守护线程</span><br><span class="line">    if (t.getPriority() != Thread.NORM_PRIORITY)</span><br><span class="line">        t.setPriority(Thread.NORM_PRIORITY); // 设置优先级</span><br><span class="line">    return t;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">private final class Worker</span><br><span class="line">    extends AbstractQueuedSynchronizer</span><br><span class="line">    implements Runnable</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    /** Delegates main run loop to outer runWorker  */</span><br><span class="line">    public void run() &#123;</span><br><span class="line">        runWorker(this);</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">final void runWorker(Worker w) &#123;</span><br><span class="line">    Thread wt = Thread.currentThread();</span><br><span class="line">    Runnable task = w.firstTask;</span><br><span class="line">    w.firstTask = null;</span><br><span class="line">    w.unlock(); // allow interrupts</span><br><span class="line">    boolean completedAbruptly = true;</span><br><span class="line">    try &#123;</span><br><span class="line">        // 如果有任务task或者从队列当中获取到了任务，则执行该任务</span><br><span class="line">        while (task != null || (task = getTask()) != null) &#123;</span><br><span class="line">            w.lock(); // 任务执行时，需要保证任务不被其他线程池中断，只能由自己中断</span><br><span class="line">            // 任务执行之前检查线程是否处于需要被中断的状态，如果是，则设置线程中断标志位</span><br><span class="line">            // 如果不是，则清除掉线程中断位，使得其他线程不能中断该线程</span><br><span class="line">            if ((runStateAtLeast(ctl.get(), STOP) ||</span><br><span class="line">                 (Thread.interrupted() &amp;&amp;</span><br><span class="line">                  runStateAtLeast(ctl.get(), STOP))) &amp;&amp;</span><br><span class="line">                !wt.isInterrupted())</span><br><span class="line">                wt.interrupt();</span><br><span class="line">            try &#123;</span><br><span class="line">                // 回调任务执行之前的一些操作，通常情况下，不会干啥，但给我们提供了扩展execute的方法</span><br><span class="line">                beforeExecute(wt, task); </span><br><span class="line">                Throwable thrown = null;</span><br><span class="line">                try &#123;</span><br><span class="line">                    task.run(); // 任务执行</span><br><span class="line">                &#125; catch (RuntimeException x) &#123;</span><br><span class="line">                    thrown = x; throw x;</span><br><span class="line">                &#125; catch (Error x) &#123;</span><br><span class="line">                    thrown = x; throw x;</span><br><span class="line">                &#125; catch (Throwable x) &#123;</span><br><span class="line">                    thrown = x; throw new Error(x);</span><br><span class="line">                &#125; finally &#123;</span><br><span class="line">                    afterExecute(task, thrown); // 回调任务执行之后的操作</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                task = null;</span><br><span class="line">                w.completedTasks++; // 完成的任务数 +1</span><br><span class="line">                w.unlock(); // 释放锁</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        completedAbruptly = false;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        // 任务执行过程中出现不能处理的错误和异常，会导致while退出，执行线程退出操作</span><br><span class="line">        processWorkerExit(w, completedAbruptly); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">private Runnable getTask() &#123;</span><br><span class="line">    boolean timedOut = false; // Did the last poll() time out?</span><br><span class="line"></span><br><span class="line">    for (;;) &#123;</span><br><span class="line">        int c = ctl.get();</span><br><span class="line">        int rs = runStateOf(c);</span><br><span class="line"></span><br><span class="line">        // Check if queue empty only if necessary.</span><br><span class="line">        if (rs &gt;= SHUTDOWN &amp;&amp; (rs &gt;= STOP || workQueue.isEmpty())) &#123;</span><br><span class="line">            decrementWorkerCount();</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int wc = workerCountOf(c);</span><br><span class="line"></span><br><span class="line">        // Are workers subject to culling?</span><br><span class="line">        boolean timed = allowCoreThreadTimeOut || wc &gt; corePoolSize;</span><br><span class="line"> // 线程池中线程超过最大值，或者获取任务超时；并且任务队列为空，那么减少线程池中线程个数</span><br><span class="line">        if ((wc &gt; maximumPoolSize || (timed &amp;&amp; timedOut))</span><br><span class="line">            &amp;&amp; (wc &gt; 1 || workQueue.isEmpty())) &#123;</span><br><span class="line">            if (compareAndDecrementWorkerCount(c))</span><br><span class="line">                return null;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            Runnable r = timed ?</span><br><span class="line">                workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) : // 获取任务超时返回</span><br><span class="line">                workQueue.take(); // 或者阻塞直到获取任务</span><br><span class="line">            if (r != null)</span><br><span class="line">                return r;</span><br><span class="line">            timedOut = true;</span><br><span class="line">        &#125; catch (InterruptedException retry) &#123;</span><br><span class="line">            timedOut = false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="3-7-总结"><a href="#3-7-总结" class="headerlink" title="3.7 总结"></a>3.7 总结</h2><ol>
-<li>Executor框架已经实现了成熟的任务队列和线程池</li>
-<li>Executor建议采用ThreadPoolExecutor去初始化， 不建议使用默认方式</li>
-<li>线程执行过程中，在入口处捕获大异常，而不是让线程直接跑飞，查询不到异常日志。</li>
-<li>对于不重要的任务，可以选择抛异常的形式交给任务提交线程处理；对于重要的任务，可以选择阻塞的方式，或者将任务转移的方式处理。具体策略依据业务而定。</li>
-</ol>
-<h1 id="4-总结"><a href="#4-总结" class="headerlink" title="4 总结"></a>4 总结</h1><p>通过本篇介绍，相信可以了解到多线程的优缺点以及EXECUTOR框架的注意事项。这样我们就可以根据优缺点为我们的业务选择合适的线程池配置。通过对Executor框架源码的部分了解，也避免我们犯一些低级错误，导致OOM和稀里糊涂丢任务或者线程阻塞。</p>
-<p><strong>完</strong></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2075,7 +2083,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">21</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
@@ -2097,7 +2105,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">19</span>
                   <span class="site-state-item-name">Tags</span>
                 
               </div>
