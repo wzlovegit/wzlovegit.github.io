@@ -89,13 +89,12 @@
 <meta property="og:site_name" content="Light">
 <meta property="og:description" content="开发面临的问题 微服务架构现已广泛应用于商用系统，然而微服务之间并非完全隔离的两套系统，它们之间的通信在所难免。如何快速实现一个具有可维护性、高性能的 RPC 框架？ 常用协议通常具有自己的特定场景，比如 HTTP 通常用于超文本传输，而不会用于邮件传输、大文件传输和实时媒体传输。为了更好的支撑自己的现有业务，有些情况下我们会自建协议服务器，那么如何快速实现具有可维护性、高性能的自建协议服务器呢？">
 <meta property="og:locale" content="中文">
-<meta property="og:image" content="http://wzlovegit.github.io/2019/02/27/netty/images/network_transport.png">
-<meta property="og:image" content="http://wzlovegit.github.io/2019/02/27/netty/images/echo.png">
-<meta property="og:updated_time" content="2019-04-30T07:32:18.688Z">
+<meta property="og:image" content="http://wzlovegit.github.io/2019/02/27/netty/echo.png">
+<meta property="og:updated_time" content="2019-04-30T07:37:24.632Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="netty 1 之 netty 简介">
 <meta name="twitter:description" content="开发面临的问题 微服务架构现已广泛应用于商用系统，然而微服务之间并非完全隔离的两套系统，它们之间的通信在所难免。如何快速实现一个具有可维护性、高性能的 RPC 框架？ 常用协议通常具有自己的特定场景，比如 HTTP 通常用于超文本传输，而不会用于邮件传输、大文件传输和实时媒体传输。为了更好的支撑自己的现有业务，有些情况下我们会自建协议服务器，那么如何快速实现具有可维护性、高性能的自建协议服务器呢？">
-<meta name="twitter:image" content="http://wzlovegit.github.io/2019/02/27/netty/images/network_transport.png">
+<meta name="twitter:image" content="http://wzlovegit.github.io/2019/02/27/netty/echo.png">
 
 
 
@@ -333,7 +332,7 @@
 </ul>
 <p>由此可知，自建或扩充和业务比较贴合的协议是非常常见的业务场景。我们该如何去快速开发一个协议服务器，并且达到可扩展、高性能、稳定的要求？Netty 是一个不错的选择。</p>
 <h1 id="Netty-简介"><a href="#Netty-简介" class="headerlink" title="Netty 简介"></a>Netty 简介</h1><p>Netty 是一个基于事件驱动的 Java 网络应用框架。</p>
-<p><img src="./images/network_transport.png" alt="网络传输" title="network_transport.png"></p>
+ 
 <pre><code>我们知道，应用层数据在由 A 发送到 B 的过程，数据需要依次经过传输层、网络层、数据链路层、物理层才会通过光纤等介质发送到 B。B的物理层收到以后，一次经过数据链路层、网络层、传输层的处理以后，才会由内核反馈给应用层。至于每一层的功能，有需要的可以翻一下教材。
 </code></pre><ul>
 <li><p>事件驱动</p>
@@ -344,7 +343,7 @@
 </li>
 </ul>
 <h1 id="echo"><a href="#echo" class="headerlink" title="echo"></a>echo</h1><p>我们通过一个简单的例子，先运行一个回声服务器的 server。制定 echo 回声协议如下：对于任意字符串 Str，客户端向服务器发送Str ，服务器向客户端响应Str。这个实例可以先拷贝下来，run 一下，这样不会觉得枯燥，能理解多少就理解多少，后续我们再深入介绍。</p>
-<p><img src="./images/echo.png" alt="回声协议图示" title="echo.png"></p>
+  <img src="/2019/02/27/netty/echo.png">
 <ul>
 <li>pom 添加依赖</li>
 </ul>
