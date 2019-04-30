@@ -187,7 +187,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -197,7 +197,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -220,6 +220,230 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/10/21/rest/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/21/rest/" itemprop="url">REST Introduction</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-21T17:26:00+08:00">
+                2018-10-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>本文翻译自 <a href="https://www.restapitutorial.com/" target="_blank" rel="noopener">https://www.restapitutorial.com/</a> ，继承协议 Creative Commons Attribution-ShareAlike 4.0 International License。转载请注明出处。</p>
+</blockquote>
+<h1 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h1><p>与其他计算机技术一样，构建好一个 RESTful 服务也是科学与艺术的结合。互联网方兴未艾，如火如荼，采用业界最佳实践创建 REST API 变得越来越重要。由于 RESTful web 服务不遵循除 HTTP 以外的规定标准，因此根据行业最佳实践构建 RESTful API 以简化并提高客户端使用率变得非常重要。</p>
+<p>目前没有很多可以帮助开发人员的 REST API 实践指南，RestApiTutorial.com 致力于专研 REST API 的最佳实践并且为开发人员提供资源，以便大家可以参考和自我学习。</p>
+<h1 id="REST-简介"><a href="#REST-简介" class="headerlink" title="REST 简介"></a>REST 简介</h1><p>REST 架构包含 6 个约束，参见 <a href="https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm" target="_blank" rel="noopener">https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm</a> ：</p>
+<ul>
+<li><p>统一接口</p>
+<p>统一接口用于简化和解耦客户端和服务端，以便于它们独立发展。统一接口设计的 4 个指导原则如下：</p>
+<p><strong>基于资源</strong></p>
+<p>请求中采用 URI 标识唯一资源。资源和返回给客户端的资源呈现是不同的，例如，服务器会将表示数据库记录的用UTF-8编码的 HTML，XML 或 JSON 数据发送给客户端，而不是将数据库返回给客户端。这里的 HTML，XML 或 JSON 等就是资源呈现，数据库真实的记录就是资源。</p>
+<p><strong>通过资源呈现操作资源</strong></p>
+<p>当客户端持有一个资源呈现及其附属的元数据时，它就应该具有足够多的信息在其权限允许的范围内增加、修改、删除服务器的资源。</p>
+<p><strong>自描述消息</strong></p>
+<p>每个消息需要包含如何处理它的足够信息，比如，采用 MIME 类型指定采用那个解析器处理消息，响应也需要明确指定它们的缓存能力。</p>
+<p><strong>超媒体用作应用状态引擎（HATEOAS）</strong></p>
+<p>客户端通过请求体、请求行、请求头传递状态到服务端，服务端通过响应体、响应码、响应头传递状态到客户端。这种方式称为超媒体。</p>
+<p>除了上面的描述，HATEOAS 还意味着在必要的情况下，链接需要包含在返回的响应体重以便 URI 检索相关资源。</p>
+<blockquote>
+<p>统一接口是任何 REST 服务设计的基础</p>
+</blockquote>
+</li>
+<li><p>无状态</p>
+<p>REST 是 REpresentational <strong>State</strong> Transer （资源呈现状态迁移） 的简写，无状态是关键，也就是说处理当前请求所必需的状态就包含在该请求（无论是包含在 URI、查询参数、请求体、请求头）中，无需其它维系状态的手段。URI 唯一标识资源，请求体中包含资源的状态，服务器基于这两个信息处理完请求后通过响应头、响应体和状态码将结果状态返回给客户端。</p>
+<p>有过工作经历的工程师都接触过 <strong>session</strong> 用于在服务器保存跨 HTTP 请求的业务状态，然而，在 REST 结构中，客户端需要维护所有的状态信息以便提供给服务器处理该请求，即便在该业务状态需要跨越多个 HTTP 请求的情况下，依旧需要客户端多次发送状态。无状态的条件下，服务器不用维系会话状态，使得服务器易于横向扩展。另外，无状态的使得服务器在设计负载均衡的时候无需考虑会话关系。</p>
+<p>如何区分状态和资源？状态或应用状态是指服务器为了处理请求需要关注的信息，比如请求中携带的必要数据。资源或者资源状态是指资源呈现所指向的真正内容，比如数据库中的数据。每个客户端可以根据每次请求的需要更改应用状态，然而资源是在所有发起请求的客户端间是共享的常量。</p>
+<p>是否遇到过由于 web 应用需要您按照既定顺序填写内容而您没有照做引起的服务失败？这正是因为它违背了无状态原则。然而某些场景确实无法做到无状态，比如 three-legged OAuth，API调用频率限制等，在这些场景下，您就需要尽可能保证服务一次性完成，避免服务跨越多个请求才能完成。</p>
+</li>
+</ul>
+<ul>
+<li><p>可缓存</p>
+<p>和万维网一样，在 REST 架构中，客户端可以缓存响应，因此响应需要直接或间接的定义它们是否可以被缓存，以防止客户端在后续的请求中重用不恰当的数据。管理良好的缓存或多或少减少了客户端服务器的直接交互，更进一步提升了扩展性和性能。</p>
+</li>
+<li><p>C/S 模式</p>
+<p>统一接口将客户端和服务器分开，这样的话，客户端无需考虑数据存储，交由服务器来完成，因此提升了客户端的可移植性；服务器不用考虑用户状态，因此提升了服务器的可扩展性和简单性。只要接口不发生变更，客户端和服务器可以独立开发和升级。</p>
+</li>
+<li><p>分层系统</p>
+<p>客户端通常无法判断它是直连了终端服务器还是沿途的中间服务器，中间服务器可以通过启用负载均衡和共享缓存提供系统可伸缩性。分层机制也可以更加方面的实施安全保护措施。</p>
+</li>
+<li><p>Code on Demand(optional)</p>
+<p>服务器可以通过传输客户端可以执行的逻辑扩展或定制客户端功能，比如包含客户端脚本（例如JS）和编译组件（例如 Java applets）。</p>
+<p>符合 REST 风格，遵循上述约束可以带来诸如性能、可伸缩性、简单性、可修改性、可见性、可移植性和可靠性等诸多好处。</p>
+<blockquote>
+<p>注：Code on Demand 是唯一一个可选约束。如果违背了其他约束，那么该服务严格意义上并不是一个真正的 RESTful 服务。</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="REST-API-小贴士"><a href="#REST-API-小贴士" class="headerlink" title="REST API 小贴士"></a>REST API 小贴士</h1><p>下面介绍 6 个 REST API 设计的小贴士，不管是不是严格的 RESTful 服务，这些小贴士都会帮助您设计出更好用的服务。</p>
+<ul>
+<li><p>合理运用 HTTP 中的动词<br>API 使用者可以发送 GET、POST、PUT 和 DELETE 这些动词给服务器，这极大地增强了请求的表达能力。主要的 HTTP 动词用法如下：</p>
+<ul>
+<li><strong>GET</strong><br><strong>查</strong>：读取（查询）某个指定资源或某个指定资源的集合。</li>
+<li><strong>PUT</strong><br><strong>改</strong>：修改某个指定资源或某个自定资源的集合。如果预先知道资源标识符，PUT 也可以用于创建特定资源。</li>
+<li><strong>DELETE</strong></li>
+<li><strong>删</strong>：删除指定资源</li>
+<li><strong>POST</strong><br><strong>增</strong>：创建一个新资源。对于不适合上述三类的操作，POST 是一个万金油动词。</li>
+</ul>
+</li>
+<li><p>提供合理的资源名称<br>创建一个优秀的 API 来自于 80% 的艺术和 20% 的科学。采用层级性的 URL 用以合理表示资源是 API 设计的艺术部分。一个合理的资源名称（URL 路径，比如 /customers/12345/orders）有助于更加清晰的表达请求的内容。<br>合理的资源名称可以为服务请求提供上下文，使得 API 更易理解。URI 的层次性为 API 使用者提供友好的易于理解的资源层次结构，利于 API 在应用程序中使用。<br>下面是几个快速设计 URL （资源名称）的规则：</p>
+<ul>
+<li><strong>URL 中采用标识符代替查询字符串</strong>。查询字符串参数适合过滤但不适合用作资源名称。<br>好： /users/12345<br>差： /api?type=user&amp;id=23</li>
+<li><strong>采用 URL 的分层特性来表示资源结构</strong>。</li>
+<li><strong>面向用户设计资源名称，而非面向数据</strong>。</li>
+<li><strong>资源名称采用名词命名，用 HTTP 方法指定动作</strong>。</li>
+<li><strong>在 URL 的分层中，采用复数命名形式</strong>。使用复数可以使得 URL 在跨 HTTP 的方法保持一致。<br>好： /customers/33245/orders/8769/lineitems/1<br>坏： /customer/33245/order/8769/lineitem/1</li>
+<li><strong>避免冗余的表示集合的命名方式</strong>。比如， customer_list 可以采用复数形式替换， customers。</li>
+<li><strong>在 URL 分层中采用小写形式，使用下划线或连字符分隔单词</strong>。有些服务器大小写不敏感，因此最好保持一致性。</li>
+<li><strong>在清楚表明语义的情况下，保持 URL 短小精悍</strong>。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p>采用 HTTP 响应码表明处理状态</p>
+<p>响应状态码是 HTTP 协议的一部分，它们涵盖了绝大部分常见的场景。由于 RESTful 也遵循 HTTP 规范，所以我们设计的 API 也应该返回相关的 HTTP 状态码。比如，在成功创建资源（比如来自 POST 请求）以后，API 应该返回 HTTP 状态码 201。下面是 TOP 10 常用的 HTTP 状态码列表:</p>
+<p><strong>200 OK</strong><br>普通成功状态码，用于表示成功。<br><strong>201 CREATED</strong><br>资源创建成功（通过 POST 或 PUT）。将响应头中的 Location 字段设置为标识新资源的连接，响应体可有可无。<br><strong>204 NO CONTENT</strong><br>成功，但响应正文中没有任何内容，通常用于 DELETE 和 PUT 操作。<br><strong>400 BAD REQUEST</strong><br>处理请求时出现不合法的状态时的一般错误码。比如，数据格式错误、域名解析错误等。<br><strong>401 UNAUTHORIZED</strong><br>未携带或携带了错误的鉴权 token 时的错误码。<br><strong>403 FORBIDDEN</strong><br>用户没有认证权限执行该操作，或者资源不能被访问时的错误码。<br><strong>404 NOT FOUND</strong><br>找不到指定的资源时的错误码。不管是真的不存在或者存在 401 或 403，服务出于安全方面的考虑需要屏蔽。<br><strong>405 METHOD NOT ALLOWED</strong><br>请求的 URL 存在但不支持请求中的 HTTP 方法访问。比如 POST /users/12345，API 若不支持使用 POST 方法，返回 405 是必须设置 Allow 字段，诸如 GET, PUT, DELETE。<br><strong>409 CONFLICT</strong><br>执行请求时出现资源冲突。比如尝试创建相同信息的两个用户，或者不支持级联删除时删除根对象。<br><strong>500 INTERNAL SERVER ERROR</strong><br>不要故意返回 500 错误。服务端出现问题时会抛 500 错误，这种错误客户端无法解决。</p>
+</li>
+<li><p>同时支持 JSON 和 XML（JSON 大行其道，这个有待考量）</p>
+<p>在不是很复杂的情况下，尽可能同时提供对 JSON 和 XML 的支持。理想情况下，让客户端采用 Accpet 字段指定格式，或者将 URL 上的 .xml 换成 .json 即可。<br>虽然我们建议支持 XML，但是除非必须，请尽量保持 XML 和 JSON 一样的简单实用。也就是说，XML 中也不支持架构和命名空间这些细节，只有数据和连接。如果完整支持 XML，其代价往往是高昂的。根据我们的实战经验，过去几年几乎没有使用过 XML 响应了，对于服务和客户端来讲都显得过于重了。<br>如果非要支持类似命名空间这些功能，JSON-Schema也是可以提供的。</p>
+</li>
+<li><p>创建细粒度资源<br>在最开始最好依托于底层应用程序和数据库的API来创建具有 CRUD 功能的资源，然后再利用小的资源构建更大的资源。</p>
+</li>
+<li>考虑连通性<br>通过超链接实现连通性是 REST 的一个重要原则。虽然不具备连通性的时候，服务依然是可用的，但是如果在响应中带有连接，那么 API 变得更具有自我描述性。至少我们可以通过链接通知客户端如何检索数据，还有，利用 HTTP Location 头域返回客户端通过 POST （或 PUT）创建的资源的连接。在支持分页响应时，”first”，”last”，”next”和”prev”非常有用。</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -263,7 +487,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-01T09:15:00+08:00">
                 2018-10-01
@@ -284,7 +508,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -516,7 +740,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-28T09:15:00+08:00">
                 2018-09-28
@@ -537,7 +761,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -670,7 +894,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-05T14:38:00+08:00">
                 2018-08-05
@@ -691,7 +915,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -814,7 +1038,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-25T21:00:00+08:00">
                 2018-07-25
@@ -835,7 +1059,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -990,7 +1214,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-23T10:34:00+08:00">
                 2018-06-23
@@ -1011,7 +1235,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1181,7 +1405,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-21T16:30:00+08:00">
                 2018-05-21
@@ -1202,7 +1426,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1340,7 +1564,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-15T09:15:00+08:00">
                 2018-05-15
@@ -1361,7 +1585,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1504,7 +1728,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-11T18:34:00+08:00">
                 2018-05-11
@@ -1525,7 +1749,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1695,7 +1919,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-03T20:33:00+08:00">
                 2018-05-03
@@ -1716,7 +1940,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1814,225 +2038,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/03/31/Jvm memory/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="王哲">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Light">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/31/Jvm memory/" itemprop="url">Java内存分配和回收</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-31T23:40:00+08:00">
-                2018-03-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/jvm/" itemprop="url" rel="index">
-                    <span itemprop="name">jvm</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h1><p>我不会JVM开发，但是加深对JVM的理解可以帮助我们编写更好的服务。目前我只了解了一下JVM的内存相关的内容，比如怎么分配内存空间可以减少gc次数，如何调整JVM参数提升程序性能，如何定位OOM的问题。</p>
-<h1 id="2-JVM-内存布局"><a href="#2-JVM-内存布局" class="headerlink" title="2 JVM 内存布局"></a>2 JVM 内存布局</h1><ol>
-<li>线程独享内存</li>
-</ol>
-<ul>
-<li>PC：程序计数器，线程切换时需要保存当前执行状态，PC用于记录线程将要执行的下一条指令。</li>
-<li>虚拟机栈：JVM在执行函数的过程中，需要存储局部变量、参数、返回值等，用到虚拟机栈</li>
-<li>本地方法栈：JVM调用本地方法执行，需要存储局部变量、参数、返回值等，用到本地方法栈</li>
-</ul>
-<ol>
-<li>线程共享内存</li>
-</ol>
-<ul>
-<li>heap：堆内存通常是JVM最大的内存，用于存储对象实体</li>
-<li>方法区：用于存放代码指令、常量等</li>
-</ul>
-<img src="/2018/03/31/Jvm%20memory/jvm内存布局.png" title="jvm内存布局">
-<h1 id="3-GC-Root"><a href="#3-GC-Root" class="headerlink" title="3 GC Root"></a>3 GC Root</h1><ul>
-<li>虚拟机栈中的引用指向的对象</li>
-<li>本地方法栈中的引用指向的对象</li>
-<li>类中静态变量指向的对象</li>
-<li>类中静态方法使用的对象</li>
-<li>类中常量引用（final修饰）指向的常量</li>
-</ul>
-<p>从图jvm内存布局可以看出，GC Root其实就是heap内存之外的内存中的一些引用指向的对象。堆中引用指向的对象属于间接的，不属于GC Root。</p>
-<h1 id="4-JVM-内存回收算法"><a href="#4-JVM-内存回收算法" class="headerlink" title="4 JVM 内存回收算法"></a>4 JVM 内存回收算法</h1><h2 id="4-1-标记清除-Mark-Sweep"><a href="#4-1-标记清除-Mark-Sweep" class="headerlink" title="4.1 标记清除 Mark-Sweep"></a>4.1 标记清除 Mark-Sweep</h2><h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><ol>
-<li>先标记哪些内存需要回收</li>
-<li>清除标记要删除的内存</li>
-</ol>
-<p>首先将用过的内存空间标记为已用，在gc的时候，首先根据GC Root标记需要被回收的对象，然后将这些被回收的对象所占用的空间标记为可用。此时jvm在分配堆内存的时候，就可以在这些标记为可用的内存当中开辟空间。</p>
-<img src="/2018/03/31/Jvm%20memory/mark-sweep.png" title="mark-sweep">
-<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
-<li>内存碎片。由于对象占用的内存就地回收，所以内存碎片会越来越严重，最终导致内存无法分配给对象使<br>用。由mark-sweep图可以看出3个方格大的对象分配内存失败，虽然内存当中有足够的空间可以使用。</li>
-</ol>
-<p>为了解决内存碎片，在内存使用到一定程度后，就需要进行内存整理，将对象搬到一起存储。CMS垃圾回收器就是采用的这种机制，触发内存整理的参数为CMSInitiatingOccupancyFraction、UseCMSCompactAtFullCollection、CMSFullGCsBeforeCompaction。</p>
-<h2 id="4-2-复制"><a href="#4-2-复制" class="headerlink" title="4.2 复制"></a>4.2 复制</h2><h3 id="算法-1"><a href="#算法-1" class="headerlink" title="算法"></a>算法</h3><ol>
-<li>划分出一部分区域用于给新生成的对象分配空间</li>
-<li>划分出的一部分区域被用完之后，复制到另外一份空闲区域</li>
-</ol>
-<img src="/2018/03/31/Jvm%20memory/copy.png" title="copy">
-<h3 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
-<li>内存中有一部分无法使用，我们可以看出内存最多可以使用S + E的空间。</li>
-<li>对象移动</li>
-<li>无内存碎片</li>
-</ol>
-<p>由于服务当中大部分的对象是朝生夕死的，所以复制算法作为新生代的回收算法，由于对象存活概率低，S空间可以变小，对象移动也会变少，所以复制算法很适合作为新生代垃圾回收算法。</p>
-<h2 id="4-3-标记整理-Mark-Compact"><a href="#4-3-标记整理-Mark-Compact" class="headerlink" title="4.3 标记整理 Mark-Compact"></a>4.3 标记整理 Mark-Compact</h2><h3 id="算法-2"><a href="#算法-2" class="headerlink" title="算法"></a>算法</h3><ol>
-<li>标记哪些内存需要回收</li>
-<li>将不被回收的内存整理到一起</li>
-</ol>
-<img src="/2018/03/31/Jvm%20memory/mark-compact.png" title="mark-compact">
-<h3 id="优缺点-2"><a href="#优缺点-2" class="headerlink" title="优缺点"></a>优缺点</h3><ol>
-<li>减少内存碎片</li>
-<li>对象移动少</li>
-<li>不需要浪费内存空间</li>
-</ol>
-<h1 id="5-JVM-垃圾回收器"><a href="#5-JVM-垃圾回收器" class="headerlink" title="5 JVM 垃圾回收器"></a>5 JVM 垃圾回收器</h1><img src="/2018/03/31/Jvm%20memory/垃圾回收器.png">
-<h2 id="5-1-Serial-新生代内存回收机制，复制算法"><a href="#5-1-Serial-新生代内存回收机制，复制算法" class="headerlink" title="5.1 Serial: 新生代内存回收机制，复制算法"></a>5.1 Serial: 新生代内存回收机制，复制算法</h2><img src="/2018/03/31/Jvm%20memory/serial.png" title="serial">
-<p>STOP THE WORLD听着很厉害，但是真正出现的时候，通常面临着痛苦。比如，在大量任务执行的过程中，本来一秒处理100个，突然就变成了几个，用图形化界面展示出来就是一个暴跌的曲线。这通常象征着需要加班了。所以串行gc在多CPU的情况下，不推荐。</p>
-<h2 id="5-2-ParNew：Serial算法的并行版本"><a href="#5-2-ParNew：Serial算法的并行版本" class="headerlink" title="5.2 ParNew：Serial算法的并行版本"></a>5.2 ParNew：Serial算法的并行版本</h2><img src="/2018/03/31/Jvm%20memory/ParNew.png">
-<p>ParNew是Serial的并行实现。它同样存在STOP THE WORLD的限制。但并行版本在多核情况下通常会有更优秀的回收效率。比较难受的一点是ParNew如果设置为新生代垃圾回收器，那么老年代只能用Serial-Old回收器。Serial-Old是标记整理算法的串行版本的实现，也无法利用多核优势。</p>
-<h2 id="5-3-Serial-old：-老年代内存回收机制"><a href="#5-3-Serial-old：-老年代内存回收机制" class="headerlink" title="5.3 Serial-old： 老年代内存回收机制"></a>5.3 Serial-old： 老年代内存回收机制</h2><p>老年代垃圾回收器，标记整理算法，有STOP THE WORLD的限制，并且无法利用多核性能。但可以与ParNew、Serial和Parallel Scanvege搭配使用。也是CMS无法整理内存的时候采用的后继方案。</p>
-<h2 id="5-4-ParOld：-Serial-Old的并行版本"><a href="#5-4-ParOld：-Serial-Old的并行版本" class="headerlink" title="5.4 ParOld： Serial-Old的并行版本"></a>5.4 ParOld： Serial-Old的并行版本</h2><h2 id="5-5-Par-Scanverge-吞吐优先考虑的垃圾回收器"><a href="#5-5-Par-Scanverge-吞吐优先考虑的垃圾回收器" class="headerlink" title="5.5 Par Scanverge 吞吐优先考虑的垃圾回收器"></a>5.5 Par Scanverge 吞吐优先考虑的垃圾回收器</h2><h2 id="5-6-CMS"><a href="#5-6-CMS" class="headerlink" title="5.6 CMS"></a>5.6 CMS</h2><img src="/2018/03/31/Jvm%20memory/CMS.png">
-<p>Java 1.6之前的常用的老年代垃圾回收器。虽然初始标记和重新标记都会STW，但是它们执行都比较快，可以将对用户线程的影响降到最低。</p>
-<p>缺点：</p>
-<ol>
-<li>CPU敏感，占用（CPU + 3）/4的CPU资源进行GC</li>
-<li>无法处理浮动垃圾，即一边标记一边由用户线程产生的垃圾，会导致CMS失败，此时会处罚Serial-old再一次进行GC</li>
-<li>标记清除算法的局限性。需要配置内存整理阈值触发内存整理。</li>
-</ol>
-<h2 id="5-7-G1GC"><a href="#5-7-G1GC" class="headerlink" title="5.7 G1GC"></a>5.7 G1GC</h2><p>新一代垃圾回收器。将内存划分为很多的Region，回收的时候进行小范围回收。1.7之后通常在Server端采用G1GC。虽然书上介绍说G1GC在吞吐上对比与CMS并没有优势，但是随着其发展，应该会不断提升。</p>
-<h1 id="JVM-内存管理常用参数实战配置"><a href="#JVM-内存管理常用参数实战配置" class="headerlink" title="JVM 内存管理常用参数实战配置"></a>JVM 内存管理常用参数实战配置</h1><p>Xms : 最小申请内存。 1G<br>Xmx : 最大申请内存。 4G。虽然64bits虚拟机可以配置更大的运行内存，但通常服务不应该去依靠自己内存存储大量的内容，这在异常情况下可能导致任务丢失。而且在OOM进行dump的时候，过大的内存会导致dump文件很大，对于获取信息不利。<br>UseG1GC : G1GC通常是我们队垃圾回收器的选择，因为新，期待G1团队可以将其优化的更好。<br>server : 服务端开启server模式<br>打印gc日志<br>+HeapDumpOnOutOfMemoryError : 内存溢出打印heapdump文件<br>HeapDumpPath=/path/heap/dump :  heapdump文件路径<br>+PrintGCDeatils : 打印垃圾回收的细节信息<br>Xloggc:<filename> : 将垃圾回收信息输出到指定文件<br>+PrintGCDateStamps : 需要打印日历形式的时间戳选项</filename></p>
-<h1 id="JAVA-内存问题定位手段"><a href="#JAVA-内存问题定位手段" class="headerlink" title="JAVA 内存问题定位手段"></a>JAVA 内存问题定位手段</h1><h2 id="jmap"><a href="#jmap" class="headerlink" title="jmap"></a>jmap</h2><p>命令：jmap -dump:format=b,file=heap.bin</p>
-<p>file：保存路径及文件名<br>pid：进程编号（windows通过任务管理器查看，linux通过ps aux查看）</p>
-<p>dump文件可以通过MemoryAnalyzer(MAT)分析查看,可以查看dump时对象数量，内存占用，线程情况等。</p>
-<p>通常情况下我们不会用jhat分析jmap信息，第一jhat消耗服务器资源；第二jhat的分析能力还不上javaVisualvm。</p>
-<h2 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h2><p>jstat是查看java进程内存和gc的神器，通常配置参数jstat -gcutil {pid}</p>
-<h1 id="JAVA-CPU问题定位手段"><a href="#JAVA-CPU问题定位手段" class="headerlink" title="JAVA CPU问题定位手段"></a>JAVA CPU问题定位手段</h1><p>jps<br>ps -mp pid -o THREAD,tid,time<br>jstack</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2083,8 +2088,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">22</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
@@ -2095,7 +2100,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">Kategorien</span>
+                  <span class="site-state-item-name">categories</span>
                 
               </div>
             
@@ -2106,7 +2111,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">19</span>
-                  <span class="site-state-item-name">Tags</span>
+                  <span class="site-state-item-name">tags</span>
                 
               </div>
             
@@ -2159,7 +2164,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 

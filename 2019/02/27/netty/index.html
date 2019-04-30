@@ -73,8 +73,6 @@
 
 
 
-  
-
 
   <link rel="alternate" href="/rss2.xml" title="Light" type="application/atom+xml" />
 
@@ -83,18 +81,21 @@
 
 
 
-<meta name="description" content="分享 交流">
+<meta name="description" content="开发面临的问题 微服务架构现已广泛应用于商用系统，然而微服务之间并非完全隔离的两套系统，它们之间的通信在所难免。如何快速实现一个具有可维护性、高性能的 RPC 框架？ 常用协议通常具有自己的特定场景，比如 HTTP 通常用于超文本传输，而不会用于邮件传输、大文件传输和实时媒体传输。为了更好的支撑自己的现有业务，有些情况下我们会自建协议服务器，那么如何快速实现具有可维护性、高性能的自建协议服务器呢？">
 <meta name="keywords" content="base network">
 <meta property="og:type" content="article">
-<meta property="og:title" content="netty">
+<meta property="og:title" content="netty 1 之 netty 简介">
 <meta property="og:url" content="http://wzlovegit.github.io/2019/02/27/netty/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="分享 交流">
+<meta property="og:description" content="开发面临的问题 微服务架构现已广泛应用于商用系统，然而微服务之间并非完全隔离的两套系统，它们之间的通信在所难免。如何快速实现一个具有可维护性、高性能的 RPC 框架？ 常用协议通常具有自己的特定场景，比如 HTTP 通常用于超文本传输，而不会用于邮件传输、大文件传输和实时媒体传输。为了更好的支撑自己的现有业务，有些情况下我们会自建协议服务器，那么如何快速实现具有可维护性、高性能的自建协议服务器呢？">
 <meta property="og:locale" content="中文">
-<meta property="og:updated_time" content="2019-02-27T13:38:30.112Z">
+<meta property="og:image" content="http://wzlovegit.github.io/2019/02/27/netty/images/network_transport.png">
+<meta property="og:image" content="http://wzlovegit.github.io/2019/02/27/netty/images/echo.png">
+<meta property="og:updated_time" content="2019-04-30T07:32:18.688Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="netty">
-<meta name="twitter:description" content="分享 交流">
+<meta name="twitter:title" content="netty 1 之 netty 简介">
+<meta name="twitter:description" content="开发面临的问题 微服务架构现已广泛应用于商用系统，然而微服务之间并非完全隔离的两套系统，它们之间的通信在所难免。如何快速实现一个具有可维护性、高性能的 RPC 框架？ 常用协议通常具有自己的特定场景，比如 HTTP 通常用于超文本传输，而不会用于邮件传输、大文件传输和实时媒体传输。为了更好的支撑自己的现有业务，有些情况下我们会自建协议服务器，那么如何快速实现具有可维护性、高性能的自建协议服务器呢？">
+<meta name="twitter:image" content="http://wzlovegit.github.io/2019/02/27/netty/images/network_transport.png">
 
 
 
@@ -130,7 +131,7 @@
 
 
 
-  <title>netty | Light</title>
+  <title>netty 1 之 netty 简介 | Light</title>
   
 
 
@@ -190,7 +191,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -200,7 +201,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -254,7 +255,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">netty</h1>
+          <h1 class="post-title" itemprop="name headline">netty 1 之 netty 简介</h1>
         
 
         <div class="post-meta">
@@ -264,7 +265,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-27T21:35:00+08:00">
                 2019-02-27
@@ -285,7 +286,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -326,7 +327,37 @@
       
 
       
-        
+        <h1 id="开发面临的问题"><a href="#开发面临的问题" class="headerlink" title="开发面临的问题"></a>开发面临的问题</h1><ul>
+<li>微服务架构现已广泛应用于商用系统，然而微服务之间并非完全隔离的两套系统，它们之间的通信在所难免。如何快速实现一个具有可维护性、高性能的 RPC 框架？</li>
+<li>常用协议通常具有自己的特定场景，比如 HTTP 通常用于超文本传输，而不会用于邮件传输、大文件传输和实时媒体传输。为了更好的支撑自己的现有业务，有些情况下我们会自建协议服务器，那么如何快速实现具有可维护性、高性能的自建协议服务器呢？</li>
+</ul>
+<p>由此可知，自建或扩充和业务比较贴合的协议是非常常见的业务场景。我们该如何去快速开发一个协议服务器，并且达到可扩展、高性能、稳定的要求？Netty 是一个不错的选择。</p>
+<h1 id="Netty-简介"><a href="#Netty-简介" class="headerlink" title="Netty 简介"></a>Netty 简介</h1><p>Netty 是一个基于事件驱动的 Java 网络应用框架。</p>
+<p><img src="./images/network_transport.png" alt="网络传输" title="network_transport.png"></p>
+<pre><code>我们知道，应用层数据在由 A 发送到 B 的过程，数据需要依次经过传输层、网络层、数据链路层、物理层才会通过光纤等介质发送到 B。B的物理层收到以后，一次经过数据链路层、网络层、传输层的处理以后，才会由内核反馈给应用层。至于每一层的功能，有需要的可以翻一下教材。
+</code></pre><ul>
+<li><p>事件驱动</p>
+<p>事件驱动是指，内核向应用层上报网络 IO 事件以后，应用层进程或线程从 parking 或 waiting 状态进入 running 状态开始处理事件。</p>
+</li>
+<li><p>网络框架</p>
+<p>Netty 基于传输层 socket 完成事件驱动模型的设计，将复杂繁琐且几乎不变的 socket 通信封装起来，给应用层提供更加便捷的上层视图，便于开发人员专注自定义协议开发。</p>
+</li>
+</ul>
+<h1 id="echo"><a href="#echo" class="headerlink" title="echo"></a>echo</h1><p>我们通过一个简单的例子，先运行一个回声服务器的 server。制定 echo 回声协议如下：对于任意字符串 Str，客户端向服务器发送Str ，服务器向客户端响应Str。这个实例可以先拷贝下来，run 一下，这样不会觉得枯燥，能理解多少就理解多少，后续我们再深入介绍。</p>
+<p><img src="./images/echo.png" alt="回声协议图示" title="echo.png"></p>
+<ul>
+<li>pom 添加依赖</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencies&gt;</span><br><span class="line">    &lt;!-- https://mvnrepository.com/artifact/io.netty/netty-all --&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;io.netty&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;netty-all&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;5.0.0.Alpha2&lt;/version&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line">&lt;/dependencies&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>server</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> server;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.netty.bootstrap.ServerBootstrap;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.ByteBuf;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.Unpooled;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.*;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.nio.NioEventLoopGroup;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.SocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.nio.NioServerSocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.handler.codec.LineBasedFrameDecoder;</span><br><span class="line"><span class="keyword">import</span> io.netty.handler.codec.string.StringDecoder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NettyServer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">NettyServer</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">bind</span><span class="params">(<span class="keyword">int</span> port)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        EventLoopGroup connectGroup = <span class="keyword">new</span> NioEventLoopGroup();</span><br><span class="line"></span><br><span class="line">        EventLoopGroup ioGroup = <span class="keyword">new</span> NioEventLoopGroup();</span><br><span class="line"></span><br><span class="line">        ServerBootstrap serverBootstrap = <span class="keyword">new</span> ServerBootstrap();</span><br><span class="line">        serverBootstrap.group(connectGroup, ioGroup)</span><br><span class="line">                .channel(NioServerSocketChannel.class)</span><br><span class="line">                .option(ChannelOption.SO_BACKLOG, <span class="number">20</span>)</span><br><span class="line">                .childHandler(<span class="keyword">new</span> ChannelInitializer&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(SocketChannel ch)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                        ch.pipeline().addLast(<span class="keyword">new</span> LineBasedFrameDecoder(<span class="number">1024</span>));</span><br><span class="line">                        ch.pipeline().addLast(<span class="keyword">new</span> StringDecoder());</span><br><span class="line">                        ch.pipeline().addLast(<span class="keyword">new</span> ChannelHandlerAdapter() &#123;</span><br><span class="line">                            <span class="meta">@Override</span></span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">exceptionCaught</span><span class="params">(ChannelHandlerContext ctx, Throwable cause)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                                ctx.close();</span><br><span class="line">                            &#125;</span><br><span class="line"></span><br><span class="line">                            <span class="meta">@Override</span></span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">channelRead</span><span class="params">(ChannelHandlerContext ctx, Object msg)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                                String body = (String) msg;</span><br><span class="line">                                System.out.println(body);</span><br><span class="line">                                body = body + System.getProperty(<span class="string">"line.separator"</span>);</span><br><span class="line">                                ByteBuf buf = Unpooled.buffer(body.length());</span><br><span class="line">                                buf.writeBytes(body.getBytes());</span><br><span class="line">                                ctx.writeAndFlush(buf);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ChannelFuture future = serverBootstrap.bind(port).sync();</span><br><span class="line">            future.channel().closeFuture().sync();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            connectGroup.shutdown();</span><br><span class="line">            ioGroup.shutdown();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> NettyServer().bind(<span class="number">1234</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>client</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> client;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.netty.bootstrap.Bootstrap;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.ByteBuf;</span><br><span class="line"><span class="keyword">import</span> io.netty.buffer.Unpooled;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.*;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.nio.NioEventLoopGroup;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.SocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.channel.socket.nio.NioSocketChannel;</span><br><span class="line"><span class="keyword">import</span> io.netty.handler.codec.LineBasedFrameDecoder;</span><br><span class="line"><span class="keyword">import</span> io.netty.handler.codec.string.StringDecoder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ExecutorService;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.Executors;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NettyClient</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ExecutorService executorService = Executors.newSingleThreadExecutor();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">NettyClient</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">connect</span><span class="params">(String host, <span class="keyword">int</span> port)</span> </span>&#123;</span><br><span class="line">        EventLoopGroup eventLoopGroup = <span class="keyword">new</span> NioEventLoopGroup();</span><br><span class="line"></span><br><span class="line">        Bootstrap bootstrap = <span class="keyword">new</span> Bootstrap();</span><br><span class="line">        bootstrap.group(eventLoopGroup)</span><br><span class="line">                .channel(NioSocketChannel.class)</span><br><span class="line">                .option(ChannelOption.TCP_NODELAY, <span class="keyword">true</span>)</span><br><span class="line">                .handler(<span class="keyword">new</span> ChannelInitializer&lt;SocketChannel&gt;() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initChannel</span><span class="params">(SocketChannel socketChannel)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                        socketChannel.pipeline().addLast(<span class="keyword">new</span> LineBasedFrameDecoder(<span class="number">1024</span>));</span><br><span class="line">                        socketChannel.pipeline().addLast(<span class="keyword">new</span> StringDecoder());</span><br><span class="line">                        socketChannel.pipeline().addLast(<span class="keyword">new</span> ChannelHandlerAdapter() &#123;</span><br><span class="line">                            <span class="meta">@Override</span></span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">exceptionCaught</span><span class="params">(ChannelHandlerContext ctx, Throwable cause)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                                ctx.close();</span><br><span class="line">                            &#125;</span><br><span class="line"></span><br><span class="line">                            <span class="meta">@Override</span></span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">channelActive</span><span class="params">(ChannelHandlerContext ctx)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                                executorService.execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                                    <span class="meta">@Override</span></span><br><span class="line">                                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                                        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">20</span>; i++) &#123;</span><br><span class="line">                                            String req = <span class="string">"echo"</span> + System.getProperty(<span class="string">"line.separator"</span>);</span><br><span class="line">                                            ByteBuf msg = Unpooled.buffer(req.length());</span><br><span class="line">                                            msg.writeBytes(req.getBytes());</span><br><span class="line">                                            ctx.writeAndFlush(msg);</span><br><span class="line">                                            <span class="keyword">try</span> &#123;</span><br><span class="line">                                                Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">                                            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                                                e.printStackTrace();</span><br><span class="line">                                            &#125;</span><br><span class="line">                                        &#125;</span><br><span class="line">                                    &#125;</span><br><span class="line">                                &#125;);</span><br><span class="line"></span><br><span class="line">                            &#125;</span><br><span class="line"></span><br><span class="line">                            <span class="meta">@Override</span></span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">channelRead</span><span class="params">(ChannelHandlerContext ctx, Object msg)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                                String body = (String) msg;</span><br><span class="line">                                System.out.println(body);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ChannelFuture future = bootstrap.connect(host, port).sync();</span><br><span class="line">            future.channel().closeFuture().sync();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            eventLoopGroup.shutdownGracefully();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> NettyClient().connect(<span class="string">"127.0.0.1"</span>, <span class="number">1234</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
       
     </div>
     
@@ -390,6 +421,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2019/03/24/fastdfs/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -445,8 +480,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -461,8 +505,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">22</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
@@ -473,7 +517,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">Kategorien</span>
+                  <span class="site-state-item-name">categories</span>
                 
               </div>
             
@@ -484,7 +528,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">19</span>
-                  <span class="site-state-item-name">Tags</span>
+                  <span class="site-state-item-name">tags</span>
                 
               </div>
             
@@ -514,6 +558,22 @@
       </section>
 
       
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#开发面临的问题"><span class="nav-number">1.</span> <span class="nav-text">开发面临的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Netty-简介"><span class="nav-number">2.</span> <span class="nav-text">Netty 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#echo"><span class="nav-number">3.</span> <span class="nav-text">echo</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
 
       
 
@@ -537,7 +597,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
