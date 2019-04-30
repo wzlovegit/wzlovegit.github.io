@@ -89,12 +89,13 @@
 <meta property="og:site_name" content="Light">
 <meta property="og:description" content="开发面临的问题 微服务架构现已广泛应用于商用系统，然而微服务之间并非完全隔离的两套系统，它们之间的通信在所难免。如何快速实现一个具有可维护性、高性能的 RPC 框架？ 常用协议通常具有自己的特定场景，比如 HTTP 通常用于超文本传输，而不会用于邮件传输、大文件传输和实时媒体传输。为了更好的支撑自己的现有业务，有些情况下我们会自建协议服务器，那么如何快速实现具有可维护性、高性能的自建协议服务器呢？">
 <meta property="og:locale" content="中文">
+<meta property="og:image" content="http://wzlovegit.github.io/2019/02/27/netty/network_transport.png">
 <meta property="og:image" content="http://wzlovegit.github.io/2019/02/27/netty/echo.png">
-<meta property="og:updated_time" content="2019-04-30T07:37:24.632Z">
+<meta property="og:updated_time" content="2019-04-30T07:38:34.923Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="netty 1 之 netty 简介">
 <meta name="twitter:description" content="开发面临的问题 微服务架构现已广泛应用于商用系统，然而微服务之间并非完全隔离的两套系统，它们之间的通信在所难免。如何快速实现一个具有可维护性、高性能的 RPC 框架？ 常用协议通常具有自己的特定场景，比如 HTTP 通常用于超文本传输，而不会用于邮件传输、大文件传输和实时媒体传输。为了更好的支撑自己的现有业务，有些情况下我们会自建协议服务器，那么如何快速实现具有可维护性、高性能的自建协议服务器呢？">
-<meta name="twitter:image" content="http://wzlovegit.github.io/2019/02/27/netty/echo.png">
+<meta name="twitter:image" content="http://wzlovegit.github.io/2019/02/27/netty/network_transport.png">
 
 
 
@@ -190,7 +191,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -200,7 +201,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -264,7 +265,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-27T21:35:00+08:00">
                 2019-02-27
@@ -285,7 +286,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -332,7 +333,7 @@
 </ul>
 <p>由此可知，自建或扩充和业务比较贴合的协议是非常常见的业务场景。我们该如何去快速开发一个协议服务器，并且达到可扩展、高性能、稳定的要求？Netty 是一个不错的选择。</p>
 <h1 id="Netty-简介"><a href="#Netty-简介" class="headerlink" title="Netty 简介"></a>Netty 简介</h1><p>Netty 是一个基于事件驱动的 Java 网络应用框架。</p>
- 
+ <img src="/2019/02/27/netty/network_transport.png">
 <pre><code>我们知道，应用层数据在由 A 发送到 B 的过程，数据需要依次经过传输层、网络层、数据链路层、物理层才会通过光纤等介质发送到 B。B的物理层收到以后，一次经过数据链路层、网络层、传输层的处理以后，才会由内核反馈给应用层。至于每一层的功能，有需要的可以翻一下教材。
 </code></pre><ul>
 <li><p>事件驱动</p>
@@ -481,10 +482,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Table of Contents
+            Inhaltsverzeichnis
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Overview
+            Übersicht
           </li>
         </ul>
       
@@ -505,7 +506,7 @@
                 <a href="/archives/">
               
                   <span class="site-state-item-count">23</span>
-                  <span class="site-state-item-name">posts</span>
+                  <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
             
@@ -516,7 +517,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">categories</span>
+                  <span class="site-state-item-name">Kategorien</span>
                 
               </div>
             
@@ -527,7 +528,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">19</span>
-                  <span class="site-state-item-name">tags</span>
+                  <span class="site-state-item-name">Tags</span>
                 
               </div>
             
@@ -596,7 +597,7 @@
 </div>
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
