@@ -234,6 +234,168 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/04/30/netty2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/30/netty2/" itemprop="url">netty 2 之 IO 模型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-30T15:42:00+08:00">
+                2019-04-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我们知道，从操作系统的角度来看，IO 是其必不可少的一部分。网络上的数据流入到系统中为 Input 的一种，数据从系统中流出到网络上为 Output 的一种。那么我们应该如何高效的处理网络 IO 呢？</p>
+<h1 id="BIO"><a href="#BIO" class="headerlink" title="BIO"></a>BIO</h1><p>BIO Blocked-IO 的简写，即阻塞式 IO。阻塞是指应用程序在调用操作系统提供的系统 API（比如，read, write）的时候，会挂起当前进程或线程，直到该 API 返回结果。拿 TCP socket 编程来举例：</p>
+<img src="/2019/04/30/netty2/bio.png">
+<p>应用程序调用操作系统提供的 write API 将 “hello world” 写入内核缓冲区，内核将数据通过 socket 发送到对端内核缓冲区，如果由于某种原因字母 ‘o’ 丢失，那么 TCP 会触发发送端重发 ‘o’ 到对端，但此时对端的 read 方法将一直阻塞，直到字母 ‘o’ 收到以后，才会从内核返回数据给上层应用，此时 read 才能返回，并继续执行后续的内容。</p>
+<blockquote>
+<p>write read 等用到阻塞式的 socket 上，就会一直等到 socket 返回才会执行后续指令。在现实生活中如果有人如此，你会觉得他比较“轴”，比如，烧热水的时候，他一直盯着壶直到水开才会干别的事情。</p>
+</blockquote>
+<p>BIO 的缺点就是阻塞进程或线程。现在服务器动则成千上万的用户接入，如果采用 BIO 的形式，为了快速响应用户，就需要成千上万的用户进程或线程，这种会给操作系统对进程或线程的调度带来很大的负担。我们可以观察到的现象是：CPU 满负荷运行，然而用户那边得到的反馈是响应太慢。<br>BIO 的优点是编码简单。BIO 常见于客户端开发，因为客户端通常和服务器保有一个连接，它发送了请求之后，如果服务器没有响应，那么它只能等待。比如 Jedis 采用了 BIO 开发。当然现在也不断出现很多 NIO 开发的客户端，这个在后面讨论。</p>
+<h1 id="Non-blocked-IO"><a href="#Non-blocked-IO" class="headerlink" title="Non-blocked IO"></a>Non-blocked IO</h1><p>与 BIO 对应的就是 Non-blocked IO，即非阻塞式 IO。非阻塞式 IO 是指应用程序在调用操作系统提供的系统 API（比如 read, write）的时候，如果操作系统数据已经准备好，则直接返回数据，否则返回失败。read 和 write 操作不会导致进程或者线程挂起进入阻塞状态。</p>
+<img src="/2019/04/30/netty2/nio.png">
+<p>与 BIO 类似，数据会通过 socket 经由协议栈通过光纤等介质传输到对端。与 BIO 不同的是，非阻塞式 IO 在操作系统数据未准备好之前，会直接返回失败，而不是将进程或线程设置为阻塞状态。</p>
+<blockquote>
+<p>write read 等用到非阻塞 socket 上，就会立即返回。比如，烧热水的时候，如果水没开，则立即去干其他事情，过一会儿再回来看一下是否开了。</p>
+</blockquote>
+<p>目前内核提供了多路复用器（select，epoll，kqueue）,由于 socket 并不是一直有数据进行传输，或者由于网络的不稳定因素，会出现内核数据暂时不可读的情况，所以我们通常在多路复用器上监听多个非阻塞式 IO。一旦该 IO 可读或者可写，我们再进行读取或者写入。反应堆模型是目前最常见的服务器 IO 模型，Netty 就是采用了这一模型，利用这一模型我们可以灵活配置 IO 线程和业务线程的数据，充分使用计算机资源。这个后续专门讲解。</p>
+<h1 id="AIO"><a href="#AIO" class="headerlink" title="AIO"></a>AIO</h1><p>AIO Asynchronized-IO 的简写，即异步 IO。不管是 BIO 还是 Non-blocked IO，都是同步 IO。这里的同步和异步是针对用户和内核所说的。对于同步 IO，是指 socket 是否可读或可写，是需用用户进程不断地去扫描查看才能知道的；对于异步 IO，是指 socket 在可读或可写，是内核知道以后，反过来通知用户进程的（具体怎么通知，我也没试过，目前这个不是我们关注的重点，内核可以通过回调、信号等等机制去处理 socket 的可读可写事件）。看过几家客户端和服务器代码，目前没见过 AIO 的应用场景，暂时知道有这么个概念即可。</p>
+<blockquote>
+<p>还是采用上面的现实实例：水烧开后，壶发出蜂鸣声，就是异步，因为不用我们一直去看水是否开了。</p>
+</blockquote>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>虽然很多人把多路复用 IO 列为单独的一种 IO，但我还是把它划分到了 Non-blocked IO，因为我觉得这两个在 IO 模型上没有太大区别，只是为了提升性能，内核帮我们做了一些事情。</p>
+<p>对于 Java 的 NIO，是 Java 处理 IO 的一种改进。在 NIO 之前， Java 多采用流式方式而非 buffer 方式处理 IO，并且 Java 大多是提供单通道（比如 InputStream 只有读取的能力， OutputStream 只有写入的能力）能力而非双通道（比如 Channel）的方式处理数据。大家容易把 NIO 和 Non-blocked IO 混在一起谈论，是因为 NIO 在网络库上使用广泛，而网络库目前大多基于多路复用 IO 模型。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/03/24/fastdfs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1642,229 +1804,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/11/18/acid base cap/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="王哲">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Light">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/18/acid base cap/" itemprop="url">一气呵成了解分布式</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-18T10:26:00+08:00">
-                2018-11-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/base/" itemprop="url" rel="index">
-                    <span itemprop="name">base</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>分布式的理念已经遍地开花，无论数据库存储、大规模计算、文件系统以及大多数商用软件的后台服务器都无法绕开分布式。相比于单机系统而言，分布式无论从理解上还是管理上复杂性都提高了不止一个量级，为什么大家还要选择用分布式？分布式在解决了某些问题的时候，又给我们带来了哪些新的问题？在设计分布式应用的时候，需要遵循哪些基本原则？日常我们又用过哪些分布式系统呢？本文将围绕上述的问题展开说明。</p>
-<h1 id="分布式简介"><a href="#分布式简介" class="headerlink" title="分布式简介"></a>分布式简介</h1><h2 id="认识分布式系统"><a href="#认识分布式系统" class="headerlink" title="认识分布式系统"></a>认识分布式系统</h2><p>分布式系统将一组计算机组合起来，提供统一的服务。从使用者角度来看，分布式系统使用起来和单机系统是一样的。下面我们引用[1]中的例子进行说明。</p>
-<img src="/2018/11/18/acid%20base%20cap/traditional&distribute.png">
-<p>传统的数据库安装在一个单机 OS 的文件系统上，所有与该数据库的交互（CRUD）都在该数据库完成。而在分布式数据库部署中，用户通常会和多个数据库服务器交互。从上图可以看出，采用分布式数据库部署之后，第一可以将读写数据库操作分离；第二可以进行数据备份；第三可以进行主从切换。</p>
-<h2 id="分布式系统的成因"><a href="#分布式系统的成因" class="headerlink" title="分布式系统的成因"></a>分布式系统的成因</h2><p>相较于单机系统，开发、调试、部署、运维分布式系统的难度更大。甚至可以这样说，一个完整的运维监控平台是分布式系统进入商用阶段必不可少的一部分（ google 发表了 dapper 论文，facebook 开发了 zipkin 工具，spring cloud 也集成 sleuth ）。商用分布式系统意味着规模庞大的运维监控管理平台。既然如此，我们为什么还要做分布式系统？</p>
-<blockquote>
-<p>此处声明一个观点：被逼的。分布式系统除了解决了单机系统面临的难题外，还引入了单机系统不存在的问题。有钱有势，我想没必要做分布式系统。想必大家在办事情的时候都遇到过“我们领导不在，你明天再来。”这种牛逼的回答。人家就是纯单机，领导不在直接不提供服务。</p>
-</blockquote>
-<p>显然分布式系统并非智力游戏，它提供了单机系统所不具备的几个重要的影响用户体验的能力：</p>
-<ol>
-<li><p><strong>水平扩展能力</strong><br>水平扩展指若一个服务节点可以为 m 个用户提供正常服务，那么 n 个服务节点可以为 n * m 个用户提供正常服务。也就是说系统可服务的用户数可随着服务节点个数线性增长。<br>通常我们达不到如此理想的水平扩展能力，因为随着节点个数增多，节点间信息同步、路由用户到某节点等开销都会增大。所以只要在 n = max_user_num / m 的范围内（其中 max_usr_num 为预估用户最大值）满足水平扩展，我们就可以认为该系统具有水平扩展能力。<br>与水平扩展相呼应的的扩展方式叫做垂直扩展，垂直扩展通常指提高单机硬件设备处理能力。垂直扩展对于大业务量的服务器来讲通常是杯水车薪。</p>
-<blockquote>
-<p>想象一个场景，随着用户量的变大和需求的愈加复杂，有一天突然节点 CPU 80%，free -m 为100，投诉纷至沓来。正在老板焦头烂额之际，很多人提出了两个方案：1， 让码农加班优化；2，买主频更高的 CPU ，换更大的内存。第一种方案，等你优化完，项目组都解散了；第二种方案，即使是目前最好的 CPU，它的处理能力也是有限的；可扩展内存的数量也是非常有限的。此时若只需要在云端扩充几个一模一样的节点就可以迅速恢复服务将会是最快速稳妥的方案。</p>
-</blockquote>
-</li>
-<li><p><strong>更高的可用性</strong></p>
-<p>假设一台主机在某一时刻发生不可恢复的故障的可能性为 1/1000。根据概率论的知识可知 n 台主机在某一时刻同时故障的概率为 (1/1000) ^ n。在 n &gt; 1 的情况下，分布式比单机系统提供了更高的可用性的。</p>
-</li>
-<li><p><strong>更小的延迟</strong></p>
-<p>第一由于分散了服务节点压力，服务节点可以更快的响应用户；第二若多地域部署分布式系统，用户可以选择就近接入，提高响应速度。</p>
-</li>
-</ol>
-<h1 id="分布式理论"><a href="#分布式理论" class="headerlink" title="分布式理论"></a>分布式理论</h1><p>事物总是具有两面性，分布式系统在解决单机系统出现的问题的同时也引入了单机系统没有的多节点数据一致性问题。下面我们首先介绍产生该问题的原因（CAP），然后介绍两种解决数据一致性问题的实践。</p>
-<h2 id="CAP"><a href="#CAP" class="headerlink" title="CAP"></a>CAP</h2><p>CAP （Consistency、Availability、Partition Tolerance)是指在现在基础设施条件下，一个分布式系统无法同时满足一致性、可用性和分区容忍性。</p>
-<img src="/2018/11/18/acid%20base%20cap/cap.png">
-<ul>
-<li><p><strong>一致性（Consistency）</strong> ： 所有节点访问同一份最新的数据副本</p>
-</li>
-<li><p><strong>可用性（Availability）</strong> ：每次请求都能获取到非错的响应——但是不保证获取的数据为最新数据</p>
-</li>
-<li><p><strong>分区容忍性(Partition Tolerance)</strong> ： 以实际效果而言，分区相当于对通信的时限要求。系统如果不能在时限内达成数据一致性，就意味着发生了分区的情况，必须就当前操作在C和A之间做出选择。</p>
-</li>
-</ul>
-<p>就现在基础设施而言，网络是不可靠的，分区是必然的。如果我们保证了一致性，那么在分布式系统数据未达成一致的时间内，是不能提供访问的，即不具备可用性。如果我们保证了可用性，那么在分布式系统数据未达成一致的时间内，我们提供的数据不是最新数据，即不保证一致性。</p>
-<blockquote>
-<p>AP 和 CP 均有商用分布式系统采用，就数据库而言，Cassandra 是 AP，MySQL 事务则是 CP。</p>
-</blockquote>
-<h2 id="ACID-VS-BASE"><a href="#ACID-VS-BASE" class="headerlink" title="ACID VS BASE"></a>ACID VS BASE</h2><h3 id="事务-ACID"><a href="#事务-ACID" class="headerlink" title="事务 ACID"></a>事务 ACID</h3><ul>
-<li><strong>原子性（Atomicity）</strong> : 数据库事务要么完整的执行完毕，要么就恢复执行之前的状态。不允许出现执行一部分的状态。</li>
-<li><strong>一致性（Consistency)</strong> : 事务将数据库从一个合法状态转移到另一个合法状态。比如银行转账，A转给B 500，那么事务执行成功后必须是 A 减少 500，B增加 500 ，不能出现 A 减少 500 ，B 没变的情况。</li>
-<li><p><strong>隔离性（Isolation）</strong> : 多个客户端生成的多个事务是互相隔离执行。隔离级别分为 4 类：脏读、不可重复读、幻读、串行。</p>
-<blockquote>
-<ol>
-<li>脏读： A B 事务并行执行，A 事务写入的未提交的数据被 B 事务读取到</li>
-<li>不可重复读： A B 事务并行执行，A 事务写入的已提交的数据被 B 事务读取到</li>
-<li>幻读： A B 事务并行执行，A 向表中添加了一条数据，B 通过查询全部记录条数统计到该数据，但却无法检索出来。</li>
-<li>串行： A B 事务并行执行， B 事务必须等 A 事务执行完毕才能执行。</li>
-</ol>
-</blockquote>
-</li>
-<li><strong>持久性（Durability）</strong> : 事务的数据操作必须反映在非易失性存储中（比如硬盘）并在事务成功完成后保持不变。事务失败则不能使数据处于部分提交状态。</li>
-</ul>
-<p>由此可见事务为了保证一致性，但牺牲了可用性。即若不能达成一致性，则拒绝提供服务，直到全部成功或全部失败。</p>
-<h3 id="BASE"><a href="#BASE" class="headerlink" title="BASE"></a>BASE</h3><ul>
-<li><strong>基本可用（BasicallyAvailable）</strong> ：系统总是可以给用户一个响应</li>
-<li><strong>可变状态（Soft State）</strong> : 系统中存储的值可能在返回给用户之后又发生了变化</li>
-<li><strong>最终一致性（Eventually Consistent）</strong> : 当数据添加到系统后，系统会将数据逐渐复制到其他节点。也正是由于最终一致性要求，会产生可变状态。</li>
-</ul>
-<p>由此可见 BASE 理论采用可变状态 + 最终一致性减弱了一致性约束。它倾向于 AP。</p>
-<p>我们知道，为了保证事务的 ACID 特性，关系型数据库通过 MVCC 做了大量的工作。然而在很多应用场景中，强一致性并没有可用性那么重要。比如，线上抢购系统，在10000个人同时抢购的时候，显示还有 1000 台， 最终可定有 9000 个用户没抢上，再下单时台数已经为 0。然而用户是可以接受这种现象的。但是如果为了强一致性要求，而使得网站拒绝服务，则会让用户反感。</p>
-<h1 id="分布式模型"><a href="#分布式模型" class="headerlink" title="分布式模型"></a>分布式模型</h1><p>虽然都是分布式服务，但是提供服务的方式不尽相同，下面介绍两种常见的分布式模型。</p>
-<h2 id="主备模型"><a href="#主备模型" class="headerlink" title="主备模型"></a>主备模型</h2><p>主备模型多见于持有状态的服务，比如数据库、消息队列、任务调度等。比如在写入比例远小于查询比例的场景中，MySQL 部署方式采用的是一主多备，主库写入，备库读取；Kafka 的 partition 在各 Kafka 的物理机上分布的时候也是一主多备，在主 partition 故障之后，备 partiton 继续提供数据；分布式调度框架通常也采用一主多备的形式，主调度负责下发任务，在主调度故障之后，由备调度继续下发任务。</p>
-<p>对于 Kafka 来讲只是数据上的主备，处理上采用的是多活模型，因此支持水平扩展。对于 MySQL 来讲，处理上就采用的主从模型，即只有主库具有写入权限，备库只支持查询。这个时候的水平扩展给我们带来另外一个话题：客户端协作。</p>
-<h3 id="客户端协作"><a href="#客户端协作" class="headerlink" title="客户端协作"></a>客户端协作</h3><p><strong>服务器分片</strong>，比如 redis-cluster 系统，在客户端向 cluster 中的节点 A 发起请求的时候，若请求的结果在节点 A 上，那么 redis-cluster 会将结果直接返回，如果在 B 节点， redis-cluster 会给客户端回复一个重定向命令，客户端会将请求发往 B 节点，从而完成分布式操作。这是 redis-cluster 是可以支持水平扩展的。<br><strong>客户端分片</strong>，比如 mycat 服务用来支持 MySQL 的水平扩展。在客户端发起请求的时候，由客户端对请求进行路由，分发到不同的 MySQL 服务器。</p>
-<h2 id="多活模型"><a href="#多活模型" class="headerlink" title="多活模型"></a>多活模型</h2><p>多活模型通常用于业务应用开发，业务应用的状态全部存储在缓存、消息队列、数据库等服务中，业务应用本身无状态。业务应用提供无差别服务。<br>我们知道，多活模型通常有两种方法来导流客户端请求：<strong>服务器路由</strong> VS <strong>客户端路由</strong>。<br>在 Spring Cloud 的微服务架构中采用<strong>客户端路由</strong>。服务端注册到 Eureka-Server 并提供 RESTful 接口（无状态接口），客户端（Ribbon 、 Hystrix 、 Feign）通过 Eureka-Server 提供的接口发现服务，并采用既定的路由规则进行路由。Ribbon 提供了多种路由，IRule 接口提供了服务发现的规则（包括轮询、加权、区域亲和等），chooseServer 接口提供了选择服务的规则，在这两种策略的配合下，为客户端选择出指定的服务器。</p>
-<p>对于对外提供的接口（整个系统之外），则需要用到<strong>服务器路由</strong>，通常采用 Zuul、Nginx 等负载均衡工具，针对服务器的使用情况进行负载均衡。</p>
-<h1 id="分布式问题"><a href="#分布式问题" class="headerlink" title="分布式问题"></a>分布式问题</h1><h2 id="最终一致性"><a href="#最终一致性" class="headerlink" title="最终一致性"></a>最终一致性</h2><p>思考中，未消化。<br><a href="https://zhuanlan.zhihu.com/p/25933039" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25933039</a><br><a href="https://zhuanlan.zhihu.com/p/36153160" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/36153160</a></p>
-<h2 id="脑裂问题"><a href="#脑裂问题" class="headerlink" title="脑裂问题"></a>脑裂问题</h2><p>分区容忍性（CAP 中的 P）是不可避免的，在网络环境下，节点无法全部互联，从而出现各自为政的局面，如下图所示，我们称之为脑裂现象。</p>
-<img src="/2018/11/18/acid%20base%20cap/splitbrain.png">
-<p>如上例，我们假定上述5个节点为 redis-sentinel 节点，左边三个互联，右边两个互联，左边和右边网络断开连接，此时需要哨兵投票哪个 redis 服务器作为主服务器。左边三个认为 A 是或者的，选择了 A 节点，右边两个认为 B 是存活的，选择 B 节点，那么就会存在数据不一致的严重问题。如何保证一致性或最终一致性呢？</p>
-<h3 id="Quorum-（维基百科）"><a href="#Quorum-（维基百科）" class="headerlink" title="Quorum （维基百科）"></a>Quorum （维基百科）</h3><p>Quorom 机制，是一种分布式系统中常用的，用来保证数据冗余和最终一致性的投票算法，其主要数学思想来源于鸽巢原理。</p>
-<p>在有冗余数据的分布式存储系统当中，冗余数据对象会在不同的机器之间存放多份拷贝。但是同一时刻一个数据对象的多份拷贝只能用于读或者用于写。该算法可以保证同一份数据对象的多份拷贝不会被超过两个访问对象读写。</p>
-<p>分布式系统中的每一份数据拷贝对象都被赋予一票。每一个读操作获得的票数必须大于最小读票数（read quorum）（Vr），每个写操作必须获得获得的票数必须大于最小写票数（write quorum）(Vw）才能读或者写。如果系统有V票（意味着一个数据对象有V份冗余拷贝），那么最小读写票数(quorum)应满足如下限制：</p>
-<ol>
-<li>Vr + Vw &gt; V</li>
-<li>Vw &gt; V/2</li>
-</ol>
-<p>第一条规则保证了一个数据不会被同时读写。当一个写操作请求过来的时候，它必须要获得Vw个冗余拷贝的许可。而剩下的数量是V-Vw 不够Vr，因此不能再有读请求过来了。同理，当读请求已经获得了Vr个冗余拷贝的许可时，写请求就无法获得许可了。第二条规则保证了数据的串行化修改。一份数据的冗余拷贝不可能同时被两个写请求修改。</p>
-<p>在区间 (V/2, V] 调整 Vw 的值可以改变写入操作的开销。</p>
-<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><blockquote>
-<p>[1] <a href="https://hackernoon.com/a-thorough-introduction-to-distributed-systems-3b91562c9b3c" target="_blank" rel="noopener">https://hackernoon.com/a-thorough-introduction-to-distributed-systems-3b91562c9b3c</a><br>[2] <a href="https://www.dummies.com/programming/big-data/hadoop/acid-versus-base-data-stores/" target="_blank" rel="noopener">https://www.dummies.com/programming/big-data/hadoop/acid-versus-base-data-stores/</a><br>[3] <a href="https://queue.acm.org/detail.cfm?id=1394128" target="_blank" rel="noopener">https://queue.acm.org/detail.cfm?id=1394128</a><br>[4] <a href="https://www.johndcook.com/blog/2009/07/06/brewer-cap-theorem-base/" target="_blank" rel="noopener">https://www.johndcook.com/blog/2009/07/06/brewer-cap-theorem-base/</a><br>[5] <a href="https://zh.wikipedia.org/wiki/Quorum_(%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F)" target="_blank" rel="noopener">https://zh.wikipedia.org/wiki/Quorum_(%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F)</a></p>
-</blockquote>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1915,7 +1854,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
