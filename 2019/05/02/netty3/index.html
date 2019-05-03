@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="base network," />
 
 
 
@@ -81,16 +81,18 @@
 
 
 
-<meta name="description" content="分享 交流">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Light">
-<meta property="og:url" content="http://wzlovegit.github.io/archives/2018/05/index.html">
+<meta name="description" content="React 模型翻译为反应堆模型。这种用抽象名词解释抽象名词的方式真是让人崩溃，所以大家姑且不需要管这些。  上文我们简单提到了多路复用 IO 模型，由于多路复用 IO 模型是现今服务器主流的网络 IO 型，并且它也是 React 模型的重要组成部分，所以我们这节就详细介绍一下多路复用 IO 模型。 多路复用 IO我不打算采用抽象的句子解释什么是多路复用，先从一个现实生活中的实例（其实操作系统以">
+<meta name="keywords" content="base network">
+<meta property="og:type" content="article">
+<meta property="og:title" content="netty 3 之 React 模型">
+<meta property="og:url" content="http://wzlovegit.github.io/2019/05/02/netty3/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="分享 交流">
+<meta property="og:description" content="React 模型翻译为反应堆模型。这种用抽象名词解释抽象名词的方式真是让人崩溃，所以大家姑且不需要管这些。  上文我们简单提到了多路复用 IO 模型，由于多路复用 IO 模型是现今服务器主流的网络 IO 型，并且它也是 React 模型的重要组成部分，所以我们这节就详细介绍一下多路复用 IO 模型。 多路复用 IO我不打算采用抽象的句子解释什么是多路复用，先从一个现实生活中的实例（其实操作系统以">
 <meta property="og:locale" content="中文">
+<meta property="og:updated_time" content="2019-05-03T01:47:47.116Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Light">
-<meta name="twitter:description" content="分享 交流">
+<meta name="twitter:title" content="netty 3 之 React 模型">
+<meta name="twitter:description" content="React 模型翻译为反应堆模型。这种用抽象名词解释抽象名词的方式真是让人崩溃，所以大家姑且不需要管这些。  上文我们简单提到了多路复用 IO 模型，由于多路复用 IO 模型是现今服务器主流的网络 IO 型，并且它也是 React 模型的重要组成部分，所以我们这节就详细介绍一下多路复用 IO 模型。 多路复用 IO我不打算采用抽象的句子解释什么是多路复用，先从一个现实生活中的实例（其实操作系统以">
 
 
 
@@ -120,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://wzlovegit.github.io/archives/2018/05/"/>
+  <link rel="canonical" href="http://wzlovegit.github.io/2019/05/02/netty3/"/>
 
 
 
 
 
-  <title>Archive | Light</title>
+  <title>netty 3 之 React 模型 | Light</title>
   
 
 
@@ -145,7 +147,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -219,185 +221,197 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/05/02/netty3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">netty 3 之 React 模型</h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-02T15:42:00+08:00">
+                2019-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
           
-        
-        Um..! 25 posts in total. Keep on posting.
-      </span>
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
+                  </a>
+                </span>
 
-      
-
-        
-        
-        
-
-        
+                
+                
+              
+            </span>
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
 
-        
+          
+            
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/05/21/mosquittio source code/" itemprop="url">
-              
-                <span itemprop="name">Mosquitto源码分析</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-05-21T16:30:00+08:00"
-              content="2018-05-21" >
-          05-21
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+          
 
+        </div>
+      </header>
+    
 
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/05/15/mosquttio cook/" itemprop="url">
-              
-                <span itemprop="name">Mosquitto简介</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-05-15T09:15:00+08:00"
-              content="2018-05-15" >
-          05-15
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/05/11/Jedis design/" itemprop="url">
-              
-                <span itemprop="name">Jedis简介</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-05-11T18:34:00+08:00"
-              content="2018-05-11" >
-          05-11
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <blockquote>
+<p>React 模型翻译为反应堆模型。这种用抽象名词解释抽象名词的方式真是让人崩溃，所以大家姑且不需要管这些。</p>
+</blockquote>
+<p>上文我们简单提到了多路复用 IO 模型，由于多路复用 IO 模型是现今服务器主流的网络 IO 型，并且它也是 React 模型的重要组成部分，所以我们这节就详细介绍一下多路复用 IO 模型。</p>
+<h1 id="多路复用-IO"><a href="#多路复用-IO" class="headerlink" title="多路复用 IO"></a>多路复用 IO</h1><p>我不打算采用抽象的句子解释什么是多路复用，先从一个现实生活中的实例（其实操作系统以及各种业务系统的资源配置策略都来源于生活）来入手了解什么是多路复用：</p>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/05/03/Java thread/" itemprop="url">
-              
-                <span itemprop="name">Java多线程服务启动和停止</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-05-03T20:33:00+08:00"
-              content="2018-05-03" >
-          05-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>谢谢鼓励</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>Donate</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="王哲 WeChat Pay"/>
+        <p>WeChat Pay</p>
+      </div>
+    
+
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/base-network/" rel="tag"># base network</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/30/netty2/" rel="next" title="netty 2 之 IO 模型">
+                <i class="fa fa-chevron-left"></i> netty 2 之 IO 模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -405,6 +419,15 @@
 
 
           
+
+  
+    <div class="comments" id="comments">
+      <div id="lv-container" data-id="city" data-uid="MTAyMC80MDc1Mi8xNzI3OA=="></div>
+    </div>
+
+  
+
+
 
         </div>
         
@@ -425,8 +448,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -493,6 +525,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#多路复用-IO"><span class="nav-number">1.</span> <span class="nav-text">多路复用 IO</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -633,6 +681,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
@@ -661,6 +713,17 @@
 
 
 
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
   
 
 

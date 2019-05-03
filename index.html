@@ -187,7 +187,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -197,7 +197,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -220,6 +220,152 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/05/02/netty3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/02/netty3/" itemprop="url">netty 3 之 React 模型</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-02T15:42:00+08:00">
+                2019-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>React 模型翻译为反应堆模型。这种用抽象名词解释抽象名词的方式真是让人崩溃，所以大家姑且不需要管这些。</p>
+</blockquote>
+<p>上文我们简单提到了多路复用 IO 模型，由于多路复用 IO 模型是现今服务器主流的网络 IO 型，并且它也是 React 模型的重要组成部分，所以我们这节就详细介绍一下多路复用 IO 模型。</p>
+<h1 id="多路复用-IO"><a href="#多路复用-IO" class="headerlink" title="多路复用 IO"></a>多路复用 IO</h1><p>我不打算采用抽象的句子解释什么是多路复用，先从一个现实生活中的实例（其实操作系统以及各种业务系统的资源配置策略都来源于生活）来入手了解什么是多路复用：</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -263,7 +409,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-30T15:42:00+08:00">
                 2019-04-30
@@ -284,7 +430,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -346,6 +492,16 @@
 <blockquote>
 <p>还是采用上面的现实实例：水烧开后，壶发出蜂鸣声，就是异步，因为不用我们一直去看水是否开了。</p>
 </blockquote>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>示例部分重在介绍概念，包容一下编码规范性。</p>
+<h2 id="简单-BIO"><a href="#简单-BIO" class="headerlink" title="简单 BIO"></a>简单 BIO</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> server;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.BufferedOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.Inet4Address;</span><br><span class="line"><span class="keyword">import</span> java.net.ServerSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BioServer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> PORT = <span class="number">1234</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> BACKLOG = <span class="number">1000</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> BUFFER_LEN = <span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * Java 的 ServerSocket 把</span></span><br><span class="line"><span class="comment">             * 1. 创建 socket</span></span><br><span class="line"><span class="comment">             * 2. bind 绑定 socket</span></span><br><span class="line"><span class="comment">             * 3. linten 监听 socket</span></span><br><span class="line"><span class="comment">             * 都做了，无需我们再单独编写</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            ServerSocket serverSocket = <span class="keyword">new</span> ServerSocket(PORT, BACKLOG, Inet4Address.getLocalHost());</span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                Socket cliSocket = serverSocket.accept();</span><br><span class="line">                BufferedInputStream bufferedInputStream = <span class="keyword">new</span> BufferedInputStream(cliSocket.getInputStream());</span><br><span class="line">                <span class="comment">// 简单起见，认为 echo 字符串长度不超过 1000</span></span><br><span class="line">                <span class="keyword">byte</span> [] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[BUFFER_LEN];</span><br><span class="line">                bufferedInputStream.read(bytes);</span><br><span class="line">                System.out.println(<span class="keyword">new</span> String(bytes));</span><br><span class="line">                BufferedOutputStream bufferedOutputStream = <span class="keyword">new</span> BufferedOutputStream(cliSocket.getOutputStream());</span><br><span class="line">                bufferedOutputStream.write(bytes);</span><br><span class="line">                bufferedOutputStream.flush();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">//TO DO:</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> BioServer().start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> client;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.BufferedOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.Inet4Address;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BioClient</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Socket socket = <span class="keyword">new</span> Socket(Inet4Address.getLocalHost(), <span class="number">1234</span>);</span><br><span class="line">            BufferedOutputStream bufferedOutputStream = <span class="keyword">new</span> BufferedOutputStream(socket.getOutputStream());</span><br><span class="line">            bufferedOutputStream.write(<span class="string">"echo"</span>.getBytes());</span><br><span class="line">            bufferedOutputStream.flush();</span><br><span class="line">            BufferedInputStream bufferedInputStream = <span class="keyword">new</span> BufferedInputStream(socket.getInputStream());</span><br><span class="line">            <span class="keyword">byte</span> [] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1000</span>];</span><br><span class="line">            bufferedInputStream.read(bytes);</span><br><span class="line">            System.out.println(<span class="keyword">new</span> String(bytes));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            System.out.println(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> BioClient().start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p>客户端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">...client.BioClient</span><br><span class="line">echo</span><br><span class="line">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure></p>
+<p>服务端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">server.BioServer</span><br><span class="line">echo</span><br></pre></td></tr></table></figure></p>
+<p>还有一种在服务端采用多线程异步处理 IO 的方式，但决定 IO 是同步的还是异步的，我们的出发点是 socket，并非上层应用的处理方式。</p>
+<h2 id="多线程-BIO"><a href="#多线程-BIO" class="headerlink" title="多线程 BIO"></a>多线程 BIO</h2><p>多核计算机已经飞入寻常百姓家，更何况服务器呢？所以采用上面的 BIO 处理方式很难体现多核的优势，我们可以采用多线程的方式去处理。 一个 IO 线程用于 accept 新的连接，其他线程用于和这些对端交互。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> server;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.BufferedOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.Inet4Address;</span><br><span class="line"><span class="keyword">import</span> java.net.ServerSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ExecutorService;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.Executors;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bio2Server</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 这个线程池只是为了说明可以这么做，真实业务场景下，往往会通过 ThreadPoolExecutor 或其他工具控制线程池大小和行为</span></span><br><span class="line">    <span class="keyword">private</span> ExecutorService executorService = Executors.newCachedThreadPool();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> PORT = <span class="number">1234</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> BACKLOG = <span class="number">1000</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> BUFFER_LEN = <span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * Java 的 ServerSocket 把</span></span><br><span class="line"><span class="comment">             * 1. 创建 socket</span></span><br><span class="line"><span class="comment">             * 2. bind 绑定 socket</span></span><br><span class="line"><span class="comment">             * 3. linten 监听 socket</span></span><br><span class="line"><span class="comment">             * 都做了，无需我们再单独编写</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            ServerSocket serverSocket = <span class="keyword">new</span> ServerSocket(PORT, BACKLOG, Inet4Address.getLocalHost());</span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                Socket cliSocket = serverSocket.accept();</span><br><span class="line">                executorService.execute(<span class="keyword">new</span> IoTask(cliSocket));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">//TO DO:</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">IoTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> Socket cliSocket;</span><br><span class="line"></span><br><span class="line">        IoTask (Socket socket) &#123;</span><br><span class="line">            <span class="keyword">this</span>.cliSocket = socket;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                BufferedInputStream bufferedInputStream = <span class="keyword">new</span> BufferedInputStream(cliSocket.getInputStream());</span><br><span class="line">                <span class="comment">// 简单起见，认为 echo 字符串长度不超过 1000</span></span><br><span class="line">                <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[BUFFER_LEN];</span><br><span class="line">                bufferedInputStream.read(bytes);</span><br><span class="line">                System.out.println(<span class="keyword">new</span> String(bytes));</span><br><span class="line">                BufferedOutputStream bufferedOutputStream = <span class="keyword">new</span> BufferedOutputStream(cliSocket.getOutputStream());</span><br><span class="line">                bufferedOutputStream.write(bytes);</span><br><span class="line">                bufferedOutputStream.flush();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Bio2Server().start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>NIO 和多路复用 IO 在后续的文章中会着重描述，这里先不给实例了。</p>
 <h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>虽然很多人把多路复用 IO 列为单独的一种 IO，但我还是把它划分到了 Non-blocked IO，因为我觉得这两个在 IO 模型上没有太大区别，只是为了提升性能，内核帮我们做了一些事情。</p>
 <p>对于 Java 的 NIO，是 Java 处理 IO 的一种改进。在 NIO 之前， Java 多采用流式方式而非 buffer 方式处理 IO，并且 Java 大多是提供单通道（比如 InputStream 只有读取的能力， OutputStream 只有写入的能力）能力而非双通道（比如 Channel）的方式处理数据。大家容易把 NIO 和 Non-blocked IO 混在一起谈论，是因为 NIO 在网络库上使用广泛，而网络库目前大多基于多路复用 IO 模型。</p>
 
@@ -415,7 +571,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/03/24/fastdfs/" itemprop="url">Unbenannt</a></h1>
+                <a class="post-title-link" href="/2019/03/24/fastdfs/" itemprop="url">Untitled</a></h1>
         
 
         <div class="post-meta">
@@ -425,7 +581,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-24T19:34:04+08:00">
                 2019-03-24
@@ -544,7 +700,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-27T21:35:00+08:00">
                 2019-02-27
@@ -565,7 +721,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -715,7 +871,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-24T09:51:00+08:00">
                 2019-02-24
@@ -736,7 +892,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -883,7 +1039,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-18T18:43:00+08:00">
                 2019-02-18
@@ -904,7 +1060,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1037,7 +1193,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-15T22:43:00+08:00">
                 2019-02-15
@@ -1058,7 +1214,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1220,7 +1376,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-27T13:17:00+08:00">
                 2019-01-27
@@ -1241,7 +1397,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1372,7 +1528,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-12T13:17:00+08:00">
                 2019-01-12
@@ -1393,7 +1549,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1535,7 +1691,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-23T20:30:00+08:00">
                 2018-12-23
@@ -1556,7 +1712,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1606,169 +1762,6 @@
 <img src="/2018/12/23/springcloud/springcloud.png">
 <p>Zuul 被用作 API 网关，同时借助 Ribbon 和 Hystrix 提供可监控的服务器负载均衡能力。Zuul 服务通常采用 Eureka-Client 注册到 Eureka-Server，用于获取内部服务的状态，并将请求转发给对应的服务。内部服务通过 Ribbon、Hystrix、Feign 完成微服务间调用。通过 Sleuth 监控微服务调用的依赖关系和性能，将监控到的元数据 SPAN 发布到离线消息队列 KAFKA，用 Zipkin 展示微服务调用的依赖关系和性能。Actuator 用于检查服务本身的运行状态：CPU状况、内存状况等。</p>
 <h1 id="微服务和SOA"><a href="#微服务和SOA" class="headerlink" title="微服务和SOA"></a>微服务和SOA</h1><p>上图中提供了一套微服务的基础设施，然而，在历史包袱的情况下，我们是不能一步到位将所有服务都转型为微服务的架构。那么整个的微服务模块可以作为一个整体对外提供服务，也就是 SOA 结构。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/12/18/ribbon/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="王哲">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Light">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/18/ribbon/" itemprop="url">ribbon</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-18T19:31:00+08:00">
-                2018-12-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/base/" itemprop="url" rel="index">
-                    <span itemprop="name">base</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>本文只对 Ribbon 的概要设计进行描述，从客户端负载均衡器的角度认识 Ribbon，便于自己设计和实现客户端负载均衡器，或者为 Ribbon 做插件满足自身业务需求（最近项目中我们给 Ribbon 做了个小插件完成 A/B 测试能力）。源代码分析可以自行深入或者配合博客书籍自己阅读。</p>
-</blockquote>
-<p>Ribbon 是一款非常优秀的客户端负载均衡工具，在 Spring Cloud 的微服务架构中起了至关重要的作用。近来由于项目的需要，对 Ribbon 的原理进行了深入学习，同时在 Ribbon 的基础上扩展了几个点，所以对 Ribbon 有了更新的认识。</p>
-<h1 id="客户端负载均衡和服务端负载均衡"><a href="#客户端负载均衡和服务端负载均衡" class="headerlink" title="客户端负载均衡和服务端负载均衡"></a>客户端负载均衡和服务端负载均衡</h1><p>之前介绍 REST 的时候介绍过为了降低服务器开发的复杂性，REST 的设计理念当中，HTTP 请求需要客户端负载均衡，Ribbon 就是 HTTP 客户端负载均衡工具；不过想必大家也听说过诸如 Nginx 、 Zuul 这些具有服务器负载均衡能力的网关。那么问题来了：为什么既有客户端负载又要有服务端负载均衡呢？</p>
-<img src="/2018/12/18/ribbon/loadbalancer.png">
-<p>从功能上来讲，服务端负载均衡通常出现在服务网关中，网关隔离外部客户端和内部服务，这个外部客户端如同用户和服务的中介。比如：小明在 APP 点击下单，此时 APP 会将下单的请求发送到淘宝的网关，再由网关转到对应的服务。网关在隔离 APP 和服务的同时，为服务提供负载均衡的能力。客户端负载均衡通常出现在内部服务的交互中，在微服务架构中尤为常见。比如服务 A 查询服务 B 中某用户是否在黑名单，从而进一步决定自己的业务流向。上图中红色部分为服务端负载均衡，绿色部分为客户端负载均衡。</p>
-<h1 id="Ribbon-的工作方式"><a href="#Ribbon-的工作方式" class="headerlink" title="Ribbon 的工作方式"></a>Ribbon 的工作方式</h1><p>Ribbon 通过在 RestTemplate 上面添加 @LoadBalancer 实现。RestTemplate 是 Spring 为我们封装的 HTTP 请求工具，借助 @LoadBalancer 可以为 RestTemplate 设置请求前拦截器，用以拦截请求，根据策略为该请求选择合适的实例，并将请求转发出去。<br>我们不妨从一个设计者的角度出发去思考如何设计一个客户端负载均衡器。第一步，需要我们获取服务实例状态；第二步需要根据服务实例状态按照某种策略选择一个实例；第三部需要将请求发送到该实例。其实这也是 Ribbon 的总体设计。</p>
-<img src="/2018/12/18/ribbon/ribbonmodule.png">
-<p>如上图所示，Ribbon 通过 ServerList 提供的方法获取实例状态。 ServerListUpdater 采用周期性拉取服务器实例或者经由注册中心发布服务器实例状态变更信息。ServerListFilter 按照规则过滤出符合规则的服务器实例，提供了更多的个性化能力。IPing 用于测试服务器实例是否正常。这些信息足够我们获取全部实例的状态。在全部实例状态的基础上，IRule 提供了众多的实例选取策略，比如轮询、随机、权重等。在我们选择了一个实例以后，就可以将请求发送到服务实例。</p>
-<h2 id="获取服务实例状态"><a href="#获取服务实例状态" class="headerlink" title="获取服务实例状态"></a>获取服务实例状态</h2><p>Ribbon 可以通过配置读取服务器实例状态，也可以通过 Eureka-Client 等服务发现客户端从服务注册中心获取全量服务器实例状态。通常情况下，Ribbon 提供的这两种方式足以满足我们的业务需求。但是有些情况下我们想让 Ribbon 按照我们指定的策略获取服务器实例信息，怎么处理呢？</p>
-<p>从上面的介绍可知， ServerListFilter 可以从全部实例中按照规则过滤服务器实例，所以此处我们是可以自定义 ServerListFilter 规则，并在配置文件中指定我们的 ServerListFilter 为 Ribbon 过滤服务器的策略，这样在每次 ServerListUpdater 触发执行的时候，都会按照我们指定的 ServerListFilter 选择服务器实例。</p>
-<p>Ribbon 在 ServerListFilter 也提供了众多的方案，比如 Zone亲和、动态获取等。</p>
-<h2 id="选择指定类型的服务实例"><a href="#选择指定类型的服务实例" class="headerlink" title="选择指定类型的服务实例"></a>选择指定类型的服务实例</h2><p>Zuul 网关在实现的时候直接集成了 Ribbon 和 Hystrix（模块化做的太好了），直接在网关上面集成了负载均衡的能力。假设我们需要为每个请求选择指定类型的服务器实例，请求 reqA 选择 A 类型的服务实例，请求 reqB 选择 B 类型的服务实例，怎么处理呢？</p>
-<p>乍一看我们可以通过 ServerListFilter 来完成，但是其实是做不到的。因为 ServerListFilter 的执行时机是 ServerListUpdater 触发的时候，与 HTTP 请求的生命周期是没有任何关系的。即使没有请求 ServerListFilter 依旧会被 ServerListUpdater 触发；请求到来也不会触发 ServerListFilter。因此我们无法通过 ServerListFilter 为每个请求选择服务实例。我们可以通过扩展 ILoadBalancer 来根据请求内容变换 ILoadBalancer 的服务器实例信息。因为请求到来后，必然会执行 IRule 的 chooseServer 方法， chooseServer 方法会从负载均衡状态对象中获取服务器实例状态，在返回这些状态的时候，我们可以通过 req 携带的 A 或者 B 信息筛选服务器实例，并传递给 IRule。 IRule 只会从这些返回实例中根据路由规则获取一个实例。可以看一下 Ribbon 的 chooseServer 实现方式：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 可以看到我们把 ILoadBalancer 传递进去了，他会提供 getReachableServers getAllServers 等信息给 IRule 让其选择一个实例</span><br><span class="line"> */</span><br><span class="line">public Server choose(ILoadBalancer lb, Object key) &#123;</span><br><span class="line">    if (lb == null) &#123;</span><br><span class="line">        log.warn(&quot;no load balancer&quot;);</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Server server = null;</span><br><span class="line">    int count = 0;</span><br><span class="line">    while (server == null &amp;&amp; count++ &lt; 10) &#123;</span><br><span class="line">        List&lt;Server&gt; reachableServers = lb.getReachableServers();</span><br><span class="line">        List&lt;Server&gt; allServers = lb.getAllServers();</span><br><span class="line">        int upCount = reachableServers.size();</span><br><span class="line">        int serverCount = allServers.size();</span><br><span class="line"></span><br><span class="line">        if ((upCount == 0) || (serverCount == 0)) &#123;</span><br><span class="line">            log.warn(&quot;No up servers available from load balancer: &quot; + lb);</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int nextServerIndex = incrementAndGetModulo(serverCount);</span><br><span class="line">        server = allServers.get(nextServerIndex);</span><br><span class="line"></span><br><span class="line">        if (server == null) &#123;</span><br><span class="line">            /* Transient. */</span><br><span class="line">            Thread.yield();</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if (server.isAlive() &amp;&amp; (server.isReadyToServe())) &#123;</span><br><span class="line">            return (server);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // Next.</span><br><span class="line">        server = null;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (count &gt;= 10) &#123;</span><br><span class="line">        log.warn(&quot;No available alive servers after 10 tries from load balancer: &quot;</span><br><span class="line">                + lb);</span><br><span class="line">    &#125;</span><br><span class="line">    return server;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="约定大于配置"><a href="#约定大于配置" class="headerlink" title="约定大于配置"></a>约定大于配置</h2><p>或许有些朋友好奇为什么指定了我们自己提供扩展，Ribbon 就会使用我们提供的扩展而不是使用期默认的实现。Springboot 的约定大于配置并非废弃配置，只是提供了一种便捷的配置方案。下面举例说明 Ribbon 是如何实现的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line">	@ConditionalOnMissingBean</span><br><span class="line">	@SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">	public ServerListFilter ribbonServerListFilter(IClientConfig config) &#123;</span><br><span class="line">		if (this.propertiesFactory.isSet(ServerListFilter.class, name)) &#123;</span><br><span class="line">			return this.propertiesFactory.get(ServerListFilter.class, config, name);</span><br><span class="line">		&#125;</span><br><span class="line">		ZonePreferenceServerListFilter filter = new ZonePreferenceServerListFilter();</span><br><span class="line">		filter.initWithNiwsConfig(config);</span><br><span class="line">		return filter;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
-<p>从 RibbonClientConfiguration.java 的ServerListFilter 这段代码中可知， Spring 在装配 Ribbon 的 ServerListFilter 的时候，会先从 propertiesFactory 查询是否已经配置，如果是，则返回配置的 filter，否则创建 ZonePreferenceServerListFilter， 初始化之后返回。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 读取配置文件获取类</span><br><span class="line"> */</span><br><span class="line">public String getClassName(Class clazz, String name) &#123;</span><br><span class="line">	if (this.classToProperty.containsKey(clazz)) &#123;</span><br><span class="line">		String classNameProperty = this.classToProperty.get(clazz);</span><br><span class="line">		String className = environment.getProperty(name + &quot;.&quot; + NAMESPACE + &quot;.&quot; + classNameProperty);</span><br><span class="line">		return className;</span><br><span class="line">	&#125;</span><br><span class="line">	return null;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 如果类存在则实例化该类，并返回</span><br><span class="line"> * 否则返回 null</span><br><span class="line"> */</span><br><span class="line">public  C get(Class clazz, IClientConfig config, String name) &#123;</span><br><span class="line">	String className = getClassName(clazz, name);</span><br><span class="line">	if (StringUtils.hasText(className)) &#123;</span><br><span class="line">		try &#123;</span><br><span class="line">			Class toInstantiate = Class.forName(className);</span><br><span class="line">			return (C) instantiateWithConfig(toInstantiate, config);</span><br><span class="line">		&#125; catch (ClassNotFoundException e) &#123;</span><br><span class="line">			throw new IllegalArgumentException(&quot;Unknown class to load &quot;+className+&quot; for class &quot; + clazz + &quot; named &quot; + name);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如果 getClassName 从配置文件中读到了配置的类，则通过 Class.forName 和 instantiateWithConfig 初始化一个 ServerListFilter 实例，并返回给 Spring 容器，后续状态整个负载均衡器的时候，采用 ServerListFilter 装配。</p>
-<p>所以我们在提供 starter 的时候，也可以采用这种方式实现，提供更加灵活的配置。</p>
 
           
         
@@ -1854,8 +1847,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">24</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
@@ -1866,7 +1859,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">Kategorien</span>
+                  <span class="site-state-item-name">categories</span>
                 
               </div>
             
@@ -1877,7 +1870,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">19</span>
-                  <span class="site-state-item-name">Tags</span>
+                  <span class="site-state-item-name">tags</span>
                 
               </div>
             
@@ -1930,7 +1923,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 

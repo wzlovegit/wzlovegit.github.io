@@ -73,6 +73,8 @@
 
 
 
+  
+
 
   <link rel="alternate" href="/rss2.xml" title="Light" type="application/atom+xml" />
 
@@ -91,7 +93,7 @@
 <meta property="og:locale" content="中文">
 <meta property="og:image" content="http://wzlovegit.github.io/2019/04/30/netty2/bio.png">
 <meta property="og:image" content="http://wzlovegit.github.io/2019/04/30/netty2/nio.png">
-<meta property="og:updated_time" content="2019-05-02T10:30:10.561Z">
+<meta property="og:updated_time" content="2019-05-03T01:47:37.337Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="netty 2 之 IO 模型">
 <meta name="twitter:description" content="我们知道，从操作系统的角度来看，IO 是其必不可少的一部分。网络上的数据流入到系统中为 Input 的一种，数据从系统中流出到网络上为 Output 的一种。那么我们应该如何高效的处理网络 IO 呢？ BIOBIO Blocked-IO 的简写，即阻塞式 IO。阻塞是指应用程序在调用操作系统提供的系统 API（比如，read, write）的时候，会挂起当前进程或线程，直到该 API 返回结果。拿">
@@ -191,7 +193,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -201,7 +203,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -265,7 +267,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-30T15:42:00+08:00">
                 2019-04-30
@@ -286,7 +288,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -346,6 +348,16 @@
 <blockquote>
 <p>还是采用上面的现实实例：水烧开后，壶发出蜂鸣声，就是异步，因为不用我们一直去看水是否开了。</p>
 </blockquote>
+<h1 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h1><p>示例部分重在介绍概念，包容一下编码规范性。</p>
+<h2 id="简单-BIO"><a href="#简单-BIO" class="headerlink" title="简单 BIO"></a>简单 BIO</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> server;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.BufferedOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.Inet4Address;</span><br><span class="line"><span class="keyword">import</span> java.net.ServerSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BioServer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> PORT = <span class="number">1234</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> BACKLOG = <span class="number">1000</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> BUFFER_LEN = <span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * Java 的 ServerSocket 把</span></span><br><span class="line"><span class="comment">             * 1. 创建 socket</span></span><br><span class="line"><span class="comment">             * 2. bind 绑定 socket</span></span><br><span class="line"><span class="comment">             * 3. linten 监听 socket</span></span><br><span class="line"><span class="comment">             * 都做了，无需我们再单独编写</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            ServerSocket serverSocket = <span class="keyword">new</span> ServerSocket(PORT, BACKLOG, Inet4Address.getLocalHost());</span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                Socket cliSocket = serverSocket.accept();</span><br><span class="line">                BufferedInputStream bufferedInputStream = <span class="keyword">new</span> BufferedInputStream(cliSocket.getInputStream());</span><br><span class="line">                <span class="comment">// 简单起见，认为 echo 字符串长度不超过 1000</span></span><br><span class="line">                <span class="keyword">byte</span> [] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[BUFFER_LEN];</span><br><span class="line">                bufferedInputStream.read(bytes);</span><br><span class="line">                System.out.println(<span class="keyword">new</span> String(bytes));</span><br><span class="line">                BufferedOutputStream bufferedOutputStream = <span class="keyword">new</span> BufferedOutputStream(cliSocket.getOutputStream());</span><br><span class="line">                bufferedOutputStream.write(bytes);</span><br><span class="line">                bufferedOutputStream.flush();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">//TO DO:</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> BioServer().start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> client;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.BufferedOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.Inet4Address;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BioClient</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Socket socket = <span class="keyword">new</span> Socket(Inet4Address.getLocalHost(), <span class="number">1234</span>);</span><br><span class="line">            BufferedOutputStream bufferedOutputStream = <span class="keyword">new</span> BufferedOutputStream(socket.getOutputStream());</span><br><span class="line">            bufferedOutputStream.write(<span class="string">"echo"</span>.getBytes());</span><br><span class="line">            bufferedOutputStream.flush();</span><br><span class="line">            BufferedInputStream bufferedInputStream = <span class="keyword">new</span> BufferedInputStream(socket.getInputStream());</span><br><span class="line">            <span class="keyword">byte</span> [] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1000</span>];</span><br><span class="line">            bufferedInputStream.read(bytes);</span><br><span class="line">            System.out.println(<span class="keyword">new</span> String(bytes));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            System.out.println(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> BioClient().start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p>客户端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">...client.BioClient</span><br><span class="line">echo</span><br><span class="line">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure></p>
+<p>服务端<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">server.BioServer</span><br><span class="line">echo</span><br></pre></td></tr></table></figure></p>
+<p>还有一种在服务端采用多线程异步处理 IO 的方式，但决定 IO 是同步的还是异步的，我们的出发点是 socket，并非上层应用的处理方式。</p>
+<h2 id="多线程-BIO"><a href="#多线程-BIO" class="headerlink" title="多线程 BIO"></a>多线程 BIO</h2><p>多核计算机已经飞入寻常百姓家，更何况服务器呢？所以采用上面的 BIO 处理方式很难体现多核的优势，我们可以采用多线程的方式去处理。 一个 IO 线程用于 accept 新的连接，其他线程用于和这些对端交互。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">package</span> server;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.BufferedInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.BufferedOutputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.Inet4Address;</span><br><span class="line"><span class="keyword">import</span> java.net.ServerSocket;</span><br><span class="line"><span class="keyword">import</span> java.net.Socket;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ExecutorService;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.Executors;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bio2Server</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 这个线程池只是为了说明可以这么做，真实业务场景下，往往会通过 ThreadPoolExecutor 或其他工具控制线程池大小和行为</span></span><br><span class="line">    <span class="keyword">private</span> ExecutorService executorService = Executors.newCachedThreadPool();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> PORT = <span class="number">1234</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> BACKLOG = <span class="number">1000</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> BUFFER_LEN = <span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * Java 的 ServerSocket 把</span></span><br><span class="line"><span class="comment">             * 1. 创建 socket</span></span><br><span class="line"><span class="comment">             * 2. bind 绑定 socket</span></span><br><span class="line"><span class="comment">             * 3. linten 监听 socket</span></span><br><span class="line"><span class="comment">             * 都做了，无需我们再单独编写</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            ServerSocket serverSocket = <span class="keyword">new</span> ServerSocket(PORT, BACKLOG, Inet4Address.getLocalHost());</span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                Socket cliSocket = serverSocket.accept();</span><br><span class="line">                executorService.execute(<span class="keyword">new</span> IoTask(cliSocket));</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">//TO DO:</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">IoTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> Socket cliSocket;</span><br><span class="line"></span><br><span class="line">        IoTask (Socket socket) &#123;</span><br><span class="line">            <span class="keyword">this</span>.cliSocket = socket;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                BufferedInputStream bufferedInputStream = <span class="keyword">new</span> BufferedInputStream(cliSocket.getInputStream());</span><br><span class="line">                <span class="comment">// 简单起见，认为 echo 字符串长度不超过 1000</span></span><br><span class="line">                <span class="keyword">byte</span>[] bytes = <span class="keyword">new</span> <span class="keyword">byte</span>[BUFFER_LEN];</span><br><span class="line">                bufferedInputStream.read(bytes);</span><br><span class="line">                System.out.println(<span class="keyword">new</span> String(bytes));</span><br><span class="line">                BufferedOutputStream bufferedOutputStream = <span class="keyword">new</span> BufferedOutputStream(cliSocket.getOutputStream());</span><br><span class="line">                bufferedOutputStream.write(bytes);</span><br><span class="line">                bufferedOutputStream.flush();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String [] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">new</span> Bio2Server().start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>NIO 和多路复用 IO 在后续的文章中会着重描述，这里先不给实例了。</p>
 <h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>虽然很多人把多路复用 IO 列为单独的一种 IO，但我还是把它划分到了 Non-blocked IO，因为我觉得这两个在 IO 模型上没有太大区别，只是为了提升性能，内核帮我们做了一些事情。</p>
 <p>对于 Java 的 NIO，是 Java 处理 IO 的一种改进。在 NIO 之前， Java 多采用流式方式而非 buffer 方式处理 IO，并且 Java 大多是提供单通道（比如 InputStream 只有读取的能力， OutputStream 只有写入的能力）能力而非双通道（比如 Channel）的方式处理数据。大家容易把 NIO 和 Non-blocked IO 混在一起谈论，是因为 NIO 在网络库上使用广泛，而网络库目前大多基于多路复用 IO 模型。</p>
 
@@ -412,6 +424,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2019/05/02/netty3/" rel="prev" title="netty 3 之 React 模型">
+                netty 3 之 React 模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -469,10 +485,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Inhaltsverzeichnis
+            Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Übersicht
+            Overview
           </li>
         </ul>
       
@@ -492,8 +508,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">24</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
@@ -504,7 +520,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">Kategorien</span>
+                  <span class="site-state-item-name">categories</span>
                 
               </div>
             
@@ -515,7 +531,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">19</span>
-                  <span class="site-state-item-name">Tags</span>
+                  <span class="site-state-item-name">tags</span>
                 
               </div>
             
@@ -554,7 +570,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#BIO"><span class="nav-number">1.</span> <span class="nav-text">BIO</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Non-blocked-IO"><span class="nav-number">2.</span> <span class="nav-text">Non-blocked IO</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AIO"><span class="nav-number">3.</span> <span class="nav-text">AIO</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小结"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#BIO"><span class="nav-number">1.</span> <span class="nav-text">BIO</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Non-blocked-IO"><span class="nav-number">2.</span> <span class="nav-text">Non-blocked IO</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AIO"><span class="nav-number">3.</span> <span class="nav-text">AIO</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#示例"><span class="nav-number">4.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#简单-BIO"><span class="nav-number">4.1.</span> <span class="nav-text">简单 BIO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多线程-BIO"><span class="nav-number">4.2.</span> <span class="nav-text">多线程 BIO</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小结"><span class="nav-number">5.</span> <span class="nav-text">小结</span></a></li></ol></div>
             
 
           </div>
@@ -584,7 +600,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
