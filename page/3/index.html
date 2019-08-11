@@ -234,6 +234,170 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/05/15/mosquttio cook/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/05/15/mosquttio cook/" itemprop="url">Mosquitto简介</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-15T09:15:00+08:00">
+                2018-05-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/协议/" itemprop="url" rel="index">
+                    <span itemprop="name">协议</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1 概述"></a>1 概述</h1><p>Mosquitto是实现了MQTT协议3.1和3.1.1版本的一个消息服务器的开源实现。Mosquitto是轻量级的，它的应用平台囊括从低电量的单片机到所有服务器。</p>
+<p>MQTT协议基于<strong>publish/subscribe(发布/订阅)</strong>模型提供了轻量级的携带消息的方法。这就为传感器、移动设备（比如手机）、嵌入式设备接入互联网提供了可能。</p>
+<p>Mosquitto提供了实现MQTT客户端的C库，并且提供了<strong>mosquitto_pub</strong> 和 <strong>mosquitto_sub</strong>的命令行实现。</p>
+<h1 id="2-MQTT"><a href="#2-MQTT" class="headerlink" title="2 MQTT"></a>2 MQTT</h1><h2 id="2-1-描述"><a href="#2-1-描述" class="headerlink" title="2.1 描述"></a>2.1 描述</h2><p>MQTT是一个轻量级的发布/订阅协议。在低电量传感器中非常有用，但它也可以用于很多其他场景。</p>
+<h2 id="2-2-发布-订阅"><a href="#2-2-发布-订阅" class="headerlink" title="2.2 发布/订阅"></a>2.2 发布/订阅</h2><p>MQTT协议基于”pub/sub”即发布/订阅模型。客户端连接到服务器（broker）并且订阅它们感兴趣的主题（topics），除此之外，客户端也会连接到服务器并且发布消息到主题。不同的客户端可以订阅相同的主题。MQTT服务器就像一个接口一样供大量不同设备接入。</p>
+<h2 id="2-3-主题-订阅"><a href="#2-3-主题-订阅" class="headerlink" title="2.3 主题/订阅"></a>2.3 主题/订阅</h2><p>MQTT的主题结构是一种类似于文件系统的层级格式，每一层采用”/“分隔。与此同时，MQTT提供了”+”和”#”通配符，这就为客户端订阅相似的主题提供了便利。</p>
+<ul>
+<li>： 单一层级的通配符<br># ： 多层级通配符  </li>
+</ul>
+<p>比如：设备将温度发送到主题<strong>sensors/COMPUTER_NAME/temperature/HARDDRIVE_NAME</strong>中,如果我们想要订阅所有设备的温度变化，则可以订阅<strong>sensors/+/temperature/+</strong>这个主题。</p>
+<p>又比如订阅<strong>a/b/c/d</strong>这个主题，那么以下几种方式都可以订阅到：</p>
+<p>a/b/c/d<br>+/b/c/d<br>a/+/c/d<br>a/+/+/d<br>+/+/+/+</p>
+<p>a/b/c/d<br>#<br>a/#<br>a/b/#<br>a/b/c/#<br>+/b/c/#</p>
+<p>不要提供长度为0的层级主题。</p>
+<h2 id="2-4-服务质量QoS"><a href="#2-4-服务质量QoS" class="headerlink" title="2.4 服务质量QoS"></a>2.4 服务质量QoS</h2><p>MQTT提供了3个等级的QoS，每个等级对于可达性的要求不同。消息可以采用任意QoS等级发布，也可以采用任意QoS等级订阅，但最终发布端到订阅端的QoS的值为min(QoSSend，QoSReceive)。</p>
+<p>QoS0：只发一次，不发确认。<br>QoS1：最少一次，需要确认。<br>QoS2：精确一次，四次握手。</p>
+<h1 id="3-保持消息"><a href="#3-保持消息" class="headerlink" title="3 保持消息"></a>3 保持消息</h1><p>消息可以配置为保持消息，这意味着服务器在将消息发送到所有订阅的客户端之后，仍然会保存该消息。如果新的订阅到来，服务端会将保持消息发送到该客户端。在某些场景下，消息的更新频率很低，这个时候，如果新的客户端订阅消息时如果未保持消息，则新的客户端会等待比较长的时间；而如果进行了消息保持，则会立即获取到消息。</p>
+<h1 id="4-清除会话-持久连接"><a href="#4-清除会话-持久连接" class="headerlink" title="4 清除会话/持久连接"></a>4 清除会话/持久连接</h1><p>客户端的clean session字段若为false，则认为是持久连接。在持久连接中，当客户端断链，那么它将要订阅的所有主题以及所有它订阅的QoS1和QoS2级别的消息将会存储到服务端，直到它重连。如果clean session字段为false，则在客户端断链之后，会清除所有会话相关内容。</p>
+<h1 id="5-遗嘱"><a href="#5-遗嘱" class="headerlink" title="5 遗嘱"></a>5 遗嘱</h1><p>客户单连接到服务端后，可以给向服务端提供自己的遗嘱。这个遗嘱是在客户端意外断链的时候，服务端需要发布的消息。这个消息的主题，QoS和保持状态跟之前介绍的是一致的。</p>
+<h1 id="6-桥接"><a href="#6-桥接" class="headerlink" title="6 桥接"></a>6 桥接</h1><p>关于Mosquitto桥接的配置在配置文档里面已经描述清楚，这里对其原理进行介绍：</p>
+<img src="/2018/05/15/mosquttio%20cook/mosquitto桥接.jpg">
+<p>桥接在一台Mosquitto服务器配置。桥接服务器与其他服务器建立连接，并各自为该连接命名。</p>
+<p>在某个客户端向任何一台Mosquitto服务器publish消息的时候，由于客户端连接订阅了该主题，那么服务器就会往该连接publish 消息。当其他broker收到publish消息，会将消息发布到对应的topic当中。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/05/11/Jedis design/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1229,7 +1393,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
