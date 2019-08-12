@@ -106,7 +106,7 @@
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
-      author: 'Author'
+      author: 'Penulis'
     },
     algolia: {
       applicationID: '',
@@ -187,7 +187,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Beranda
           </a>
         </li>
       
@@ -197,7 +197,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Arsip
           </a>
         </li>
       
@@ -220,6 +220,169 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/01/12/consensus/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/12/consensus/" itemprop="url">consensus 共识</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Diposting di</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-12T13:17:00+08:00">
+                2019-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Di</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><a href="http://imengdong.cn/2018/11/18/acid%20base%20cap/" target="_blank" rel="noopener">一气呵成了解分布式</a>介绍了入门分布式系统的一点基本理论。在现有的网络基础设施条件下，<strong>CAP</strong> 理论中的 P 是不可避免的，因此我们需要在 C 和 A 中做选择。<strong>Base</strong> 理论选择了 AP，强调基本可用、最终一致性，后面我们讨论工业界常见的达成最终一致性的方案。在有些常见的系统中，选择 CP，如果获取不到一致性的值，则会直接导致不可用，zookeeper 就是其中之一。本文从 paxos 入手介绍分布式共识算法。</p>
+<h1 id="分布式共识模型"><a href="#分布式共识模型" class="headerlink" title="分布式共识模型"></a>分布式共识模型</h1><p>在具备容错能力的分布式系统中，分布式共识问题是需要解决的一个基本问题，<strong>它指的是多个分布式节点就某变量的值达成一致，而且一旦达成一致，则该值就是最终确认的值，不会由于某个节点的异常导致该值变化</strong>。<br>分布式共识模型是对工业界需要解决的常见问题的抽象，比如：选主、加锁等。想必大家见识过不止一种选主手段，比如采用 zookeeper 进行选主、在 redis 中通过 redis-sentinel 进行选主等。</p>
+<h1 id="共识算法"><a href="#共识算法" class="headerlink" title="共识算法"></a>共识算法</h1><blockquote>
+<p>如果我们不做数据内核相关的工作，目前对该类算法不感兴趣并不影响我们日常的工作，毕竟这是科学家搞出来的算法，有难度。然而简单了解一下却可以帮助我们了解到类似 zookeeper 这些分布式协调服务的能力边界，不至于认为它可以顺利解决所有分布式问题。</p>
+</blockquote>
+<h2 id="形象化描述"><a href="#形象化描述" class="headerlink" title="形象化描述"></a>形象化描述</h2><p>受论文的影响，paxos 算法介绍的时候总是采用议会选举来描述。这里我们采用小伙伴们常见的约球选球场的方式说明如何就选择哪个球场达成共识。共识问题描述如下：你和其余4个朋友共 5 人，相约每周日要去球馆打篮球。市区内有 30 个球馆在周日提供服务。现在你们周日要去打球了，你们几个只能通过手机（不能建立群组）相互联系，并且由于西安联通的信号很差，所以小伙伴之间经常无法正常取得联系，那么大家怎么最终就选择某个球馆达成一致呢？</p>
+<h2 id="PAXOS-算法"><a href="#PAXOS-算法" class="headerlink" title="PAXOS 算法"></a>PAXOS 算法</h2><img src="/2019/01/12/consensus/paxos1.jpg">
+<p>上图是对球场共识场景的一个简化，5 人可以同时承担提议者和接受者的角色。为了便于理解，我们让这些人只担当一种角色，从 2 个提议者，3 个接受者的角度入手描述。</p>
+<p>上图描述了 paxos 最简单的场景。小 A 分别对 3 个接受者说，我来给大家选球场（prepare[N]）吧。3 个接受者说好（promise[N]）。小 A 收到这 3 个接受者的授权后，分别对 3 个接受者说，我们去 V 球场（Accept[N，V]）吧。三个接受者因为没有收到其他人的建议就回复小 A 说好（Accepted[N,V]）。此时就去 V 球场就达成了一致。小 B 这时和三个接受者说，我来给大家选球场（prepare[M])吧。若M &lt; N，则接受者会忽略；若M &gt; N，则接受者会告诉小 B，我们已经决定了去 V 球场。此时小 B 接收到了 3 个接受者的拒绝信息，就确定大家都去 V 球场了。</p>
+<p>比如三个接受者中有一个联系不上了，即分布式系统中出现了分区问题，那么怎么办？ </p>
+<img src="/2019/01/12/consensus/paxos2.jpg">
+<p>上图中虽然有一个接受者联通信号不行，联系不上了，但是由于小 A 获得了超过一半的接受者的支持（达到了quorum）,小 A 依旧会提供自己的建议给这些接受者，直到最终就 V 球场达成一致。等到信号差的接受者电话好了，其他接受者会将选择了 V 球场作为共识的信息通知到该接受者。因此我们可以看到 paxos 算法就最终去 V 球场达成了一致。也就是说<strong>只要接受者有一半可以正常联系到，那么就可以达成共识，容错能力超强</strong>。</p>
+<h2 id="PAXOS-算法问题"><a href="#PAXOS-算法问题" class="headerlink" title="PAXOS 算法问题"></a>PAXOS 算法问题</h2><p>也许你已经发现上述算法一个很大的漏洞，即如果小 A 说完我给大家选球场（prepare[N]），三个接受者同意后（promise[N]）,小 B 也说我给大家选球场(prepare[M])，三个接受者由于还未达成任何共识，因为 N &lt; M，他们必须同意小 B 选球场（promise[M]）。此时如果小 A 提出了去球场 V (accept[N,V])打球，三个接受者会因为小 B 的 M 更大而忽略小 A 的提议。此时小 A 会重新提出我来给大家选球场（prepare[P])，M &lt; P。如此循环下去，那么这个将无休无止了，最终无法选出一个球场。如下图所示：<br><img src="/2019/01/12/consensus/paxos-problem.jpg"><br>令大家意想不到的是，工业界解决这类问题的方法简单到爆：随机时间。即如果提案被忽略，则需要等待一个随机时间才可以再次提出 prepare，该随机时间通常会超过上一个提案达成共识的时间。</p>
+<h2 id="MULTI-PAXOS-算法"><a href="#MULTI-PAXOS-算法" class="headerlink" title="MULTI-PAXOS 算法"></a>MULTI-PAXOS 算法</h2><p>通过对 PAXOS 介绍，我们可发现，每个共识的生成，都至少需要 4 个步骤，两次 RPC，对一个高性能的共识服务器是一个不小的冲击，那么是否可以简化呢？答案是肯定的。我们平时选择球场的时候，通常会由固定的某一个人发起，multi-paxos 选用类似的方式。</p>
+<img src="/2019/01/12/consensus/multi-paxos.jpg">
+<p>上图是 multi-paxos 算法的描述，与 paxos 不同的是， multi-paxos 会首先通过 paxos 的方式选主。上图中选定小 A 为第 I 年度的队长，那么以后每周去哪个球馆都由小 A 直接向接受者提出（accept[N, I, V]），而不需要先向接受者提出让自己来选择球馆(prepare[N])。这样除了第一次是 4 个步骤，后续只需要两个步骤，少了一半。</p>
+<p>假如小 A 也换成了联通手机，大家都无法联系到小 A 了（即分布式系统中主异常），此时剩下的几人就需要重新选出一个主，即选取第 J 年度队长。等小 A 联系上了之后，接受者会通知小 A，由于你的信号太差，我们选了小 B 作为第 J 年度队长，以后我们让小 B 通知大家吧，小 A 也就欣然接受小 B 作为队长，以后不再提出异议。</p>
+<h2 id="raft、zab"><a href="#raft、zab" class="headerlink" title="raft、zab"></a>raft、zab</h2><p>raft 和 zab 是 multi-paxos 的变种，它们将共识过程分为 3 步：1. 选主；2，备份；3.安全性。raft 在选主完成之后，主会周期性的通过心跳通知从，大哥还好好的，你们听话，直到主异常后，才会进入下一轮的选主。 zab 则在选主完成之后，从周期性的通过心跳看大哥是不是好好的，如果不好就篡位了。想更形象了解 raft，可以通过<a href="https://raft.github.io/了解。" target="_blank" rel="noopener">https://raft.github.io/了解。</a></p>
+<h1 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h1><p>通过上述的介绍，我们对分布式共识算法有了初步了解。我们知道 zookeeper 实现了 zab 协议，那么它可以做到什么，做不到什么呢，又是如何工作的呢？</p>
+<img src="/2019/01/12/consensus/masterandlock.jpg">
+<p>因为 zookeeper 可以就某一值达成共识，所以我们可以通过 zookeeper 对我们的服务进行选主。由于算法的安全性保障只要达到 quorum 的 zookeeper 正常工作，我们最终可以确认唯一的节点为主节点。分布式锁也可以由 zookeeper 实现，一旦某个客户端加锁成功，则 zookeeper 会就这一情况达成共识，即使主 zookeeper 后来挂掉，也会延续这一共识。但我们要认识到，在 curator-recipes 的实现中采用的临时 node，那么一旦具有锁的客户端连接丢失，超过 session 时间后，锁就会被释放。</p>
+<p>zookeeper 不能完成所有情况下客户端强一致性的保证。比如我们用 zookeeper 做个简单的配置中心，配置下发过程中，一旦客户端连接丢失，则配置信息不会及时通知到客户端。也就是说，我们不能就此保证各个客户端目前肯定就某一种配置达成一致。<br><img src="/2019/01/12/consensus/client.jpg"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -263,7 +426,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Diposting di</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-23T20:30:00+08:00">
                 2018-12-23
@@ -284,7 +447,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">Di</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -411,7 +574,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Diposting di</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-18T19:31:00+08:00">
                 2018-12-18
@@ -432,7 +595,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">Di</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -574,7 +737,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Diposting di</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-18T10:26:00+08:00">
                 2018-11-18
@@ -595,7 +758,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">Di</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -797,7 +960,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Diposting di</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-21T17:26:00+08:00">
                 2018-10-21
@@ -818,7 +981,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">Di</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1021,7 +1184,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Diposting di</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-01T09:15:00+08:00">
                 2018-10-01
@@ -1042,7 +1205,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">Di</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1274,7 +1437,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Diposting di</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-28T09:15:00+08:00">
                 2018-09-28
@@ -1295,7 +1458,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">Di</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1428,7 +1591,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Diposting di</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-05T14:38:00+08:00">
                 2018-08-05
@@ -1449,7 +1612,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">Di</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1572,7 +1735,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Diposting di</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-25T21:00:00+08:00">
                 2018-07-25
@@ -1593,7 +1756,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">Di</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1748,7 +1911,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Diposting di</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-23T10:34:00+08:00">
                 2018-06-23
@@ -1769,7 +1932,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">Di</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1897,165 +2060,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/05/21/mosquittio source code/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="王哲">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Light">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/05/21/mosquittio source code/" itemprop="url">Mosquitto源码分析</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-21T16:30:00+08:00">
-                2018-05-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">in</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/协议/" itemprop="url" rel="index">
-                    <span itemprop="name">协议</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>[Mosquitto简介]这篇文章介绍了Mosquitto的基本功能。本文在此基础上，对Mosquitto的内核实现进行简单总结。文章只对Mosquitto概要设计进行分析，不深入代码细节。</p>
-<h1 id="连接管理"><a href="#连接管理" class="headerlink" title="连接管理"></a>连接管理</h1><p>Mosquitto对socket连接的管理和redis等其他开源c软件大同小异，均采用反应堆模式（可参考<a href="http://www.cnblogs.com/xujian2014/p/5711828.html）。事件驱动是反应堆的核心。" target="_blank" rel="noopener">http://www.cnblogs.com/xujian2014/p/5711828.html）。事件驱动是反应堆的核心。</a></p>
-<h2 id="事件驱动模型"><a href="#事件驱动模型" class="headerlink" title="事件驱动模型"></a>事件驱动模型</h2><p>事件指I/O、定时器等事件。一个新的客户端连接服务器，就会触发监听socket的可读事件；客户端向服务器发送消息，就会触发客户端与服务器之间这个socket的可读事件；服务器想向客户端发送消息，那么服务器会去触发客户端与服务器之间这个socket的可写事件。</p>
-
-<p>由上图，事件驱动模型有3大部件：1，事件收集器；2，事件发送器；3，事件处理器。在C语言编写的服务器里面，事件收集器的工作通常由select、poll或epoll这类多路复用IO承担。事件发送器通常在与多路复用IO同一个应用线程当中实现，即将收集的事件分发到不同的事件队列。事件处理器通常是与多路复用IO不同的一些线程，这些线程从事件队列中获取事件，并根据事件类型执行响应的事件处理函数。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mosquitto_main_loop</span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line">	while (run)</span><br><span class="line">	&#123;</span><br><span class="line">		...</span><br><span class="line">		fdcount = epoll_wait(db-&gt;epollfd, events, MAX_EVENTS, 100);</span><br><span class="line">		...</span><br><span class="line">			ev.data.fd = net__socket_accept(db, listensock[j])</span><br><span class="line">		...</span><br><span class="line">		loop_handle_reads_writes(db, events[i].data.fd, events[i].events);</span><br><span class="line">		...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>上述代码片为简化版的1.5.0的Mosquitto的主循环实现。代码中清晰的分辨出事件收集器epoll，事件发送器loop_handle_reads_writes。事件处理器则在其他线程执行不同事件的处理函数。</p>
-<p>为什么称为事件驱动呢？驱动是指事物本身是静止状态，在驱动的驱使下发生变动。由上述代码片，若没有事件发生，那么只有while循环这一个线程在空转，事件处理器处于全体静止状态。事件发生，则会处罚事件处理器执行事件的处理函数。因此说，整个的server是事件驱动的。</p>
-<h2 id="客户端对象"><a href="#客户端对象" class="headerlink" title="客户端对象"></a>客户端对象</h2><p>c 语言虽然不是面向对象的语言，但开源项目中通常看到对象的影子。面向对象思想包含 3 个重要特性：封装、继承、多态。<br>封装性在 c 语言中采用 struct 结构体模拟。之所以叫模拟是因为 c 语言中 struct 不具备成员变量可见性控制；私有成员函数采用在 .c 文件中的 static 方法实现，对外接口则声明到头文件中。继承和多态在 c 语言中需要采用 void * 指针、回调函数、自定义虚函数表来模拟。虽然是模拟，但是 c 语言并不是面向对象语言。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">struct mosquitto &#123;</span><br><span class="line">	mosq_sock_t sock;</span><br><span class="line">#ifndef WITH_BROKER</span><br><span class="line">	mosq_sock_t sockpairR, sockpairW;</span><br><span class="line">#endif</span><br><span class="line">#if defined(__GLIBC__) &amp;&amp; defined(WITH_ADNS)</span><br><span class="line">	struct gaicb *adns; /* For getaddrinfo_a */</span><br><span class="line">#endif</span><br><span class="line">	... 客户端接收包所需的数据结构</span><br><span class="line">#ifdef WITH_TLS</span><br><span class="line">	...</span><br><span class="line">#endif</span><br><span class="line">	bool want_write;</span><br><span class="line">	bool want_connect;</span><br><span class="line">#if defined(WITH_THREADING) &amp;&amp; !defined(WITH_BROKER)</span><br><span class="line">	...</span><br><span class="line">#endif</span><br><span class="line">	bool clean_session;</span><br><span class="line">#ifdef WITH_BROKER</span><br><span class="line">	... 服务端端用于存储 msg 的结构</span><br><span class="line">#  ifdef WITH_WEBSOCKETS</span><br><span class="line">	...</span><br><span class="line">#  endif</span><br><span class="line">	bool ws_want_write;</span><br><span class="line">#else</span><br><span class="line">#  ifdef WITH_SOCKS</span><br><span class="line">	... SOCKS协议控制</span><br><span class="line">#  endif</span><br><span class="line">	... 登录登出、收发包等的回调</span><br><span class="line">#  ifdef WITH_SRV</span><br><span class="line">	ares_channel achan;</span><br><span class="line">#  endif</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">#ifdef WITH_BROKER</span><br><span class="line">	... handle</span><br><span class="line">#endif</span><br><span class="line">#ifdef WITH_EPOLL</span><br><span class="line">	uint32_t events;</span><br><span class="line">#endif</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>struct mosquitto 结构中包含了 #ifdef WITH_BROKER，因为在 Mosquitto 的设计中，在实现 server 的同时也实现了 client 的 lib 库。<br>包括 redis 在内，开源软件中很多 server 中都会对客户端进行抽象。这些客户端对象很方便管理各个客户端的状态、数据等。</p>
-<h1 id="服务器数据结构"><a href="#服务器数据结构" class="headerlink" title="服务器数据结构"></a>服务器数据结构</h1><p>Mosquitto 的实现，AWS IoT 对 MQTT 的支持，阿里 IoT 对 MQTT 的支持，均关注一个非常重要的指标：消息转发。与消息中间件（比如 Kafka ）不同，Mosquitto 更加关注消息转发效率而非消息吞吐量。</p>
-<h2 id="订阅树"><a href="#订阅树" class="headerlink" title="订阅树"></a>订阅树</h2><p>Mosquitto 的订阅树采用的是孩子兄弟表示法。与平时见到的实现不同，为了快速找到某个 topic 上的订阅者，它采用了 hash 表来加速查询。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">struct mosquitto__subleaf &#123;</span><br><span class="line">	struct mosquitto__subleaf *prev;</span><br><span class="line">	struct mosquitto__subleaf *next;</span><br><span class="line">	struct mosquitto *context;</span><br><span class="line">	int qos;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct mosquitto__subhier &#123;</span><br><span class="line">	UT_hash_handle hh;</span><br><span class="line">	struct mosquitto__subhier *parent;</span><br><span class="line">	struct mosquitto__subhier *children;</span><br><span class="line">	struct mosquitto__subleaf *subs;</span><br><span class="line">	struct mosquitto_msg_store *retained;</span><br><span class="line">	mosquitto__topic_element_uhpa topic;</span><br><span class="line">	uint16_t topic_len;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">typedef struct UT_hash_bucket &#123;</span><br><span class="line">   struct UT_hash_handle *hh_head;</span><br><span class="line">   unsigned count;</span><br><span class="line">   unsigned expand_mult;</span><br><span class="line"></span><br><span class="line">&#125; UT_hash_bucket;</span><br><span class="line"></span><br><span class="line">typedef struct UT_hash_table &#123;</span><br><span class="line">   UT_hash_bucket *buckets;</span><br><span class="line">   unsigned num_buckets, log2_num_buckets;</span><br><span class="line">   unsigned num_items;</span><br><span class="line">   struct UT_hash_handle *tail; /* tail hh in app order, for fast append    */</span><br><span class="line">   ptrdiff_t hho; /* hash handle offset (byte pos of hash handle in element */</span><br><span class="line">   unsigned ideal_chain_maxlen;</span><br><span class="line">   unsigned nonideal_items;</span><br><span class="line">   unsigned ineff_expands, noexpand;</span><br><span class="line"></span><br><span class="line">   uint32_t signature; /* used only to find hash tables in external analysis */</span><br><span class="line">#ifdef HASH_BLOOM</span><br><span class="line">   uint32_t bloom_sig; /* used only to test bloom exists in external analysis */</span><br><span class="line">   uint8_t *bloom_bv;</span><br><span class="line">   char bloom_nbits;</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">&#125; UT_hash_table;</span><br><span class="line"></span><br><span class="line">typedef struct UT_hash_handle &#123;</span><br><span class="line">   struct UT_hash_table *tbl;</span><br><span class="line">   void *prev;                       /* prev element in app order      */</span><br><span class="line">   void *next;                       /* next element in app order      */</span><br><span class="line">   struct UT_hash_handle *hh_prev;   /* previous hh in bucket order    */</span><br><span class="line">   struct UT_hash_handle *hh_next;   /* next hh in bucket order        */</span><br><span class="line">   void *key;                        /* ptr to enclosing struct&apos;s key  */</span><br><span class="line">   unsigned keylen;                  /* enclosing struct&apos;s key len     */</span><br><span class="line">   unsigned hashv;                   /* result of hash-fcn(key)        */</span><br><span class="line">&#125; UT_hash_handle;</span><br></pre></td></tr></table></figure>
-<p>订阅树中订阅节点采用双向链表实现。孩子兄弟表示法隐藏在handle数据结构中。从下图可以清晰得看出订阅树的数据结构。MQTT 主题采用目录结构形式，天然是树形结构，因此订阅主题采用订阅树的结构非常合适。Hash 表可以提升树形结构的查询效率。目前用不上，不做详细分析。</p>
-<img src="/2018/05/21/mosquittio%20source%20code/mosquitto_subhier.jpg">
-<img src="/2018/05/21/mosquittio%20source%20code/UT_hash_handle.jpg">
-<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>本文描述了 C 语言开发的事件驱动模型以及 mosquitto 的订阅树结构。若需要更加深入的使用 mosquitto 则可以沿此思路继续深入。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2106,8 +2110,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">26</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">posting</span>
                 </a>
               </div>
             
@@ -2118,7 +2122,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">Kategorien</span>
+                  <span class="site-state-item-name">kategori</span>
                 
               </div>
             
@@ -2129,7 +2133,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">19</span>
-                  <span class="site-state-item-name">Tags</span>
+                  <span class="site-state-item-name">tags</span>
                 
               </div>
             
@@ -2182,7 +2186,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
@@ -2190,7 +2194,7 @@
 
 
 
-  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+  <div class="theme-info">Tema &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
 
 
 
