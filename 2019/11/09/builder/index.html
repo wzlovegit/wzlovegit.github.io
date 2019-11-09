@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="spring," />
+  <meta name="keywords" content="base clean code builder," />
 
 
 
@@ -81,20 +81,18 @@
 
 
 
-<meta name="description" content="本文讲述如何使用 spring cloud 中的部分基础设施构建一套微服务脚手架，基于该脚手架工程丰富自己的业务，而无需关注过多基础设施的开发。  结构开源社区有很多能量很大的工程师，优秀地抽象了基础设施具备的能力。Spring 提供了 IoC 、 AOP 基础能力，基于此基础能力，很多基础设施又都方便得集成到了 Spring 上面，从而构成了大而全的 Spring Cloud 项目，而且还在不">
-<meta name="keywords" content="spring">
+<meta name="description" content="设计模式如果美一样，不通过一些训练很难掌握其中的奥妙。上学的时候，看过设计模式相关的书籍，相关的文档，之前的工作中受益不大，只有看到第三方库的时候才会遇见一些。现在公司对 code 质量要求很高，自己从中也不断受益。 场景最近工作中，遇到了一个 Bean 中有非常多的属性的情况。通过传参的方式构建这些 Bean，那么关键参数至少有 5 个。因此同事 review 的时候建议使用 Builder 的">
+<meta name="keywords" content="base clean code builder">
 <meta property="og:type" content="article">
-<meta property="og:title" content="springcloud">
-<meta property="og:url" content="http://wzlovegit.github.io/2018/12/23/springcloud/index.html">
+<meta property="og:title" content="Builder 模式">
+<meta property="og:url" content="http://wzlovegit.github.io/2019/11/09/builder/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="本文讲述如何使用 spring cloud 中的部分基础设施构建一套微服务脚手架，基于该脚手架工程丰富自己的业务，而无需关注过多基础设施的开发。  结构开源社区有很多能量很大的工程师，优秀地抽象了基础设施具备的能力。Spring 提供了 IoC 、 AOP 基础能力，基于此基础能力，很多基础设施又都方便得集成到了 Spring 上面，从而构成了大而全的 Spring Cloud 项目，而且还在不">
+<meta property="og:description" content="设计模式如果美一样，不通过一些训练很难掌握其中的奥妙。上学的时候，看过设计模式相关的书籍，相关的文档，之前的工作中受益不大，只有看到第三方库的时候才会遇见一些。现在公司对 code 质量要求很高，自己从中也不断受益。 场景最近工作中，遇到了一个 Bean 中有非常多的属性的情况。通过传参的方式构建这些 Bean，那么关键参数至少有 5 个。因此同事 review 的时候建议使用 Builder 的">
 <meta property="og:locale" content="中文">
-<meta property="og:image" content="http://wzlovegit.github.io/2018/12/23/springcloud/springcloud.png">
-<meta property="og:updated_time" content="2018-12-23T12:39:13.664Z">
+<meta property="og:updated_time" content="2019-11-09T13:59:29.992Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="springcloud">
-<meta name="twitter:description" content="本文讲述如何使用 spring cloud 中的部分基础设施构建一套微服务脚手架，基于该脚手架工程丰富自己的业务，而无需关注过多基础设施的开发。  结构开源社区有很多能量很大的工程师，优秀地抽象了基础设施具备的能力。Spring 提供了 IoC 、 AOP 基础能力，基于此基础能力，很多基础设施又都方便得集成到了 Spring 上面，从而构成了大而全的 Spring Cloud 项目，而且还在不">
-<meta name="twitter:image" content="http://wzlovegit.github.io/2018/12/23/springcloud/springcloud.png">
+<meta name="twitter:title" content="Builder 模式">
+<meta name="twitter:description" content="设计模式如果美一样，不通过一些训练很难掌握其中的奥妙。上学的时候，看过设计模式相关的书籍，相关的文档，之前的工作中受益不大，只有看到第三方库的时候才会遇见一些。现在公司对 code 质量要求很高，自己从中也不断受益。 场景最近工作中，遇到了一个 Bean 中有非常多的属性的情况。通过传参的方式构建这些 Bean，那么关键参数至少有 5 个。因此同事 review 的时候建议使用 Builder 的">
 
 
 
@@ -124,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="http://wzlovegit.github.io/2018/12/23/springcloud/"/>
+  <link rel="canonical" href="http://wzlovegit.github.io/2019/11/09/builder/"/>
 
 
 
 
 
-  <title>springcloud | Light</title>
+  <title>Builder 模式 | Light</title>
   
 
 
@@ -237,7 +235,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/12/23/springcloud/">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/11/09/builder/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王哲">
@@ -254,7 +252,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">springcloud</h1>
+          <h1 class="post-title" itemprop="name headline">Builder 模式</h1>
         
 
         <div class="post-meta">
@@ -266,8 +264,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-23T20:30:00+08:00">
-                2018-12-23
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-09T21:07:00+08:00">
+                2019-11-09
               </time>
             
 
@@ -289,8 +287,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/spring/" itemprop="url" rel="index">
-                    <span itemprop="name">spring</span>
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
                   </a>
                 </span>
 
@@ -326,13 +324,14 @@
       
 
       
-        <blockquote>
-<p>本文讲述如何使用 spring cloud 中的部分基础设施构建一套微服务脚手架，基于该脚手架工程丰富自己的业务，而无需关注过多基础设施的开发。</p>
-</blockquote>
-<h1 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h1><p>开源社区有很多能量很大的工程师，优秀地抽象了基础设施具备的能力。Spring 提供了 IoC 、 AOP 基础能力，基于此基础能力，很多基础设施又都方便得集成到了 Spring 上面，从而构成了大而全的 Spring Cloud 项目，而且还在不断地发展。Spring Cloud 是一套完整的微服务基础设施方案，我们通常采用如下方式构建项目：</p>
-<img src="/2018/12/23/springcloud/springcloud.png">
-<p>Zuul 被用作 API 网关，同时借助 Ribbon 和 Hystrix 提供可监控的服务器负载均衡能力。Zuul 服务通常采用 Eureka-Client 注册到 Eureka-Server，用于获取内部服务的状态，并将请求转发给对应的服务。内部服务通过 Ribbon、Hystrix、Feign 完成微服务间调用。通过 Sleuth 监控微服务调用的依赖关系和性能，将监控到的元数据 SPAN 发布到离线消息队列 KAFKA，用 Zipkin 展示微服务调用的依赖关系和性能。Actuator 用于检查服务本身的运行状态：CPU状况、内存状况等。</p>
-<h1 id="微服务和SOA"><a href="#微服务和SOA" class="headerlink" title="微服务和SOA"></a>微服务和SOA</h1><p>上图中提供了一套微服务的基础设施，然而，在历史包袱的情况下，我们是不能一步到位将所有服务都转型为微服务的架构。那么整个的微服务模块可以作为一个整体对外提供服务，也就是 SOA 结构。</p>
+        <p>设计模式如果美一样，不通过一些训练很难掌握其中的奥妙。上学的时候，看过设计模式相关的书籍，相关的文档，之前的工作中受益不大，只有看到第三方库的时候才会遇见一些。现在公司对 code 质量要求很高，自己从中也不断受益。</p>
+<h1 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h1><p>最近工作中，遇到了一个 Bean 中有非常多的属性的情况。通过传参的方式构建这些 Bean，那么关键参数至少有 5 个。因此同事 review 的时候建议使用 Builder 的方式，也暗合了 clean code 这本书当中，参数个数过多，需要考虑传递一个对象的方式。</p>
+<h1 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h1><p>传递太多个参数构造一个 Bean，一来看起来及其复杂，二来用的时候容易传错，三来对外界呈现的冗余的构造方法太多。不用多，比如这个 Bean 有三个属性：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bean</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> Type attr1;</span><br><span class="line">	<span class="keyword">private</span> Type attr2;</span><br><span class="line">	<span class="keyword">private</span> Type attr3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果每个属性都任意可以省略，那么需要 2 <em> 2 </em> 2  = 8 个构造方法。对于 3 个都传入的场景，需要特别注意传入次序。而 Builder 呢，就可以比较方便得解决这两个问题。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Bean</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> Type attr1;</span><br><span class="line">	<span class="keyword">private</span> Type attr2;</span><br><span class="line">	<span class="keyword">private</span> Type attr3;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="title">Bean</span><span class="params">(Type attr1)</span> </span>&#123;</span><br><span class="line">		attr1 = buidler.attr1;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//... 此处省略了一大堆 private 构造方法，不对外提供，减少使用者的困惑</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Builder</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">private</span> Type attr1;</span><br><span class="line">		<span class="keyword">private</span> Type attr2;</span><br><span class="line">		<span class="keyword">private</span> Type attr3;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// 通过 build 方法构造 builder</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> Bean <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="comment">// 根据 builder 的属性情况，确定到底返回哪个构造方法构造的 bean，但对外只需要 build 搞定			</span></span><br><span class="line">			<span class="keyword">if</span> (attr1 != <span class="keyword">null</span>) &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">new</span> Bean(<span class="keyword">this</span>.attr1);</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> (attr2 != <span class="keyword">null</span>) &#123;</span><br><span class="line">				<span class="comment">//...			</span></span><br><span class="line">			&#125;<span class="comment">//...</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">public</span> Builder <span class="title">attr1</span><span class="params">(Type attr1)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.attr1 = attr1;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> Builder <span class="title">attr2</span><span class="params">(Type attr2)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.attr2 = attr2;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> Builder <span class="title">attr3</span><span class="params">(Type attr3)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.attr3 = attr3;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用者使用起来负担非常小，只需传入自己需要的参数即可：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Bean.Builder buidler = <span class="keyword">new</span> Bean.Builder();</span><br><span class="line"></span><br><span class="line">builder.attr1(attr1);</span><br><span class="line"><span class="comment">//... 可以设置任意想设置的属性</span></span><br><span class="line"><span class="comment">// 统一使用 build 进行构建</span></span><br><span class="line">Bean bean = builder.build();</span><br></pre></td></tr></table></figure></p>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>builder 模式对于多个参数的 bean 起到了封装作用，减轻了使用者对于多个参数传递的心理负担，也减轻了使用者对于挑选构造方法产生的心理负担，并且清晰的表达了传入参数所代表的意义。</p>
 
       
     </div>
@@ -374,7 +373,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/spring/" rel="tag"># spring</a>
+            <a href="/tags/base-clean-code-builder/" rel="tag"># base clean code builder</a>
           
         </div>
       
@@ -387,8 +386,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/18/ribbon/" rel="next" title="ribbon">
-                <i class="fa fa-chevron-left"></i> ribbon
+              <a href="/2019/11/09/threadlocal/" rel="next" title="Thread Local">
+                <i class="fa fa-chevron-left"></i> Thread Local
               </a>
             
           </div>
@@ -396,10 +395,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/01/12/consensus/" rel="prev" title="consensus 共识">
-                consensus 共识 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -543,7 +538,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#结构"><span class="nav-number">1.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#微服务和SOA"><span class="nav-number">2.</span> <span class="nav-text">微服务和SOA</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#场景"><span class="nav-number">1.</span> <span class="nav-text">场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#思路"><span class="nav-number">2.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结论"><span class="nav-number">3.</span> <span class="nav-text">结论</span></a></li></ol></div>
             
 
           </div>

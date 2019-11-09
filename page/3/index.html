@@ -187,7 +187,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -197,7 +197,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -220,6 +220,197 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2018/06/23/JWT/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/23/JWT/" itemprop="url">JWT简介</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-23T10:34:00+08:00">
+                2018-06-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/安全/" itemprop="url" rel="index">
+                    <span itemprop="name">安全</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="1-JSON-Web-Tokens"><a href="#1-JSON-Web-Tokens" class="headerlink" title="1 JSON Web Tokens"></a>1 JSON Web Tokens</h1><p>JSON Web Tokens(JWT)是一个紧凑的自包含的用于多方安全传输信息的开放标准。由于JWT具有数字签名（可用对称密钥和非对称密钥进行签名），因此JWT传输的信息可以被认证和信任。</p>
+<blockquote>
+<p>数字签名： 用户Alice采用非对称密钥加密算法生成一对公钥和私钥；Alice将公钥公诸于世，私钥只有自己知道。此时Alice就可以采用自己的私钥将一段信息进行加密。其他人只有用Alice的公钥才能解密这一段信息。因此其他人就可以判定该信息由Alice发布，即具有Alice的数字签名。</p>
+</blockquote>
+<p>虽然JWT可以在加密信道传输，但是我们依然要关注JWT的签名。签名可以用于验证信息没有被篡改，并且可以判断发送者的身份。</p>
+<h1 id="2-JWT应用场景"><a href="#2-JWT应用场景" class="headerlink" title="2 JWT应用场景"></a>2 JWT应用场景</h1><ul>
+<li><p>认证</p>
+<p>JWT最常用的场景就是认证。一旦用户正确登录，则其后续的请求都必须携带JWT。根据JWT判断是否允许用户访问受保护的路由、服务和资源。<br>由于JWT的轻量级和在不同领域的易传输性使其广泛应用于SSO（Signle Sign On）单点登录。</p>
+</li>
+</ul>
+<blockquote>
+<p>SSO：单点登录，用户完成认证后，在访问整个系统的其他服务时，只需携带令牌，无需重新登录。</p>
+</blockquote>
+<ul>
+<li><p>信息交换</p>
+<p>JWT可用于多方信息安全传输。因为JWT是被签名的，因此可以判断发送者身份，并且可判断消息是否被篡改。</p>
+</li>
+</ul>
+<h1 id="3-JWT-结构"><a href="#3-JWT-结构" class="headerlink" title="3 JWT 结构"></a>3 JWT 结构</h1><p>紧凑型JWT包含三个部分，并且用点分隔，类似于xxx.yyy.zzz。</p>
+<ul>
+<li><p>Header</p>
+<p>头部通常包括两部分：类型和哈希算法<br>{<br>  “alg” : “HS256”<br>  “typ” : “JWT”<br>}<br>将这个JSON经过Base64Url编码后生成JWT的header</p>
+</li>
+<li><p>Payload</p>
+<p>负载包含三个部分：注册声明、公共声明和私有声明<br>注册声明包含一些推荐但不强制使用的预定义字段，提供注册该Token的相关信息。比如：iss（签发者），exp（过期时间），sub（使用者）等。<br>公共声明<br>私有声明是多方协商好携带信息的字段。<br>{<br>“sub” : “123”<br>“name” : “John”<br>“admin” : true<br>}</p>
+<p>将这个JSON经过Base64Url编码后生成JWT的payload</p>
+</li>
+<li><p>Signature</p>
+<p>签名是用加密算法生成编码后header和payload的摘要。比如：<br>HMACSHA256(base64UrlEncode(header) + “.” + base64UrlEncode(payload), secret)<br>签名用于鉴定信息是否被篡改，并且可以判断发送者身份。</p>
+</li>
+</ul>
+<h1 id="4-JWT如何工作"><a href="#4-JWT如何工作" class="headerlink" title="4 JWT如何工作"></a>4 JWT如何工作</h1><p>认证时，当用户登录系统，会为其返回一个JWT。JWT也是证书，因此需要保护好它的安全性。通常在用完JWT后即释放。</p>
+<p>当用户访问受保护的路由活资源时，用户代理同时需要将JWT发送过去。通常JWT令牌放在Authorization头的Bearer主题下。</p>
+<blockquote>
+<p>Authorization: Bearer \<token></token></p>
+</blockquote>
+<p>JWT在某些情况下是无状态认证机制。服务器认证JWT通过之后就会让其访问受保护的资源。如果JWT包含一些必要的数据，那么可以减少对数据库的查询操作。</p>
+<p>如果token在Authorization头中发送，那么跨域资源共享（CORS）就不存在问题，因为他们不是cookie。</p>
+<p>下图是JWT官网的图：<br><img src="/2018/06/23/JWT/client-credentials-grant.png" title="client-credentials-grant.png"></p>
+<ol>
+<li>应用或客户端发送认证请求到认证服务器。</li>
+<li>认证通过，认证服务器给应用返回一个访问令牌</li>
+<li>应用程序使用访问令牌访问服务端受保护的资源</li>
+</ol>
+<p>注意：JWT中的所有信息都可以被所有人获取，因此JWT不应该存储密钥信息。</p>
+<h1 id="5-为什么选择JWT"><a href="#5-为什么选择JWT" class="headerlink" title="5 为什么选择JWT"></a>5 为什么选择JWT</h1><ul>
+<li>JSON比XML冗余小，更紧凑，适合在HTML和HTTP环境</li>
+<li>JWT相比于SWT，可以使用非对称加密算法。相比于SAML更加简单清晰</li>
+<li>JSON格式平台兼容性更好</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -263,7 +454,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-21T16:30:00+08:00">
                 2018-05-21
@@ -284,7 +475,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -422,7 +613,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-15T09:15:00+08:00">
                 2018-05-15
@@ -443,7 +634,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -586,7 +777,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-11T18:34:00+08:00">
                 2018-05-11
@@ -607,7 +798,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -777,7 +968,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-05-03T20:33:00+08:00">
                 2018-05-03
@@ -798,7 +989,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -938,7 +1129,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-31T23:40:00+08:00">
                 2018-03-31
@@ -959,7 +1150,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1157,7 +1348,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-24T23:40:00+08:00">
                 2018-03-24
@@ -1178,7 +1369,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1402,7 +1593,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-11T17:46:00+08:00">
                 2018-03-11
@@ -1423,7 +1614,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1552,8 +1743,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">27</span>
-                  <span class="site-state-item-name">Artikel</span>
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">posts</span>
                 </a>
               </div>
             
@@ -1564,7 +1755,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">Kategorien</span>
+                  <span class="site-state-item-name">categories</span>
                 
               </div>
             
@@ -1574,8 +1765,8 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">19</span>
-                  <span class="site-state-item-name">Tags</span>
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">tags</span>
                 
               </div>
             
@@ -1628,7 +1819,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 
