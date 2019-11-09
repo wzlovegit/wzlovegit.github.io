@@ -187,7 +187,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -197,7 +197,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -220,6 +220,165 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/11/09/threadlocal/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="王哲">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Light">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/09/threadlocal/" itemprop="url">Thread Local</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-09T09:52:00+08:00">
+                2019-11-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">in</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/base/" itemprop="url" rel="index">
+                    <span itemprop="name">base</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>相比于全局变量，ThreadLocal 并不是一个非常常用的技术，理解和使用起来比较生疏。但在有些 CPU 密集型的服务中，我们可能需要关注线程的负载情况，做一些降级和限流，以保证在极端流量的情况下，保证核心业务的运行。那么 ThreadLocal 或许是比全局变量更加合理的选择。一来编码直观，二来没有锁带来的开销。</p>
+<h1 id="ThreadLocal-直观理解"><a href="#ThreadLocal-直观理解" class="headerlink" title="ThreadLocal 直观理解"></a>ThreadLocal 直观理解</h1><p>抛开 Java 对 ThreadLocal 实现的代码，从直观上，ThreadLocal 想要完成单个线程内的全局状态共享，想必是每个线程对应了一块只由自己可见的内存。比如有 T1 和 T2 两个线程：</p>
+<p>T1 -&gt; 只有 T1 可见的内存1<br>T2 -&gt; 只有 T2 可见的内存2</p>
+<p>T1 和 T2 均不可见对方的那一块内存。这样线程就可以将自己相关的上下文都存储到这一篇内存当中，由于其他线程不可见，也就不用担心多线程问题。</p>
+<h1 id="ThreadLocal-原理浅析"><a href="#ThreadLocal-原理浅析" class="headerlink" title="ThreadLocal 原理浅析"></a>ThreadLocal 原理浅析</h1><img src="/2019/11/09/threadlocal/threadlocal.png" title="ThreadLocal内存">
+<p>ThreadLocal 之所以不好理解，我觉得是因为我们平时习惯了面向对象的思维方式。面向对象编程中，绝大多数情况下是对象维持了状态，这个状态不管到哪个线程要用，它都是一样的。比如，有一个对象 Student student = new Student(name, age); 那么不管哪个线程读到 student，它都是这一个对象。这个对象对应的那一片内存不会换。student.getName(); student.getAge() 都是从这一片内存上读取一个值，在哪个线程都一样。理解起来比较直观，就像人的祖籍，走到哪里，me.getHome() 都是河北。</p>
+<p>ThreadLocal 对象多了一层逻辑。虽然在每个线程中 ThreadLocal 对象都是同一个对象，但是它们在每个线程中映射的内存都是线程独有的一块内存。也不难理解，就和社保一样。我是河北人，在西安工作的时候，社保就交到了西安，现在在北京工作，那么社保就交到了北京。所以在西安这个线程中访问我的社保，那就是西安的社保；在北京这个线程中访问我的社保，那就是北京的社保。互不干涉，各管各的。</p>
+<p>ThreadLocal 源码的分析已经有很多了，这里不做过多分析。只需把握住两点：</p>
+<ol>
+<li>每个线程单独一片内存，getMap(t)，t 表示线程，可以获取到这片内存</li>
+<li>这一片内存中存储了以 ThreadLocal 变量为 key，以 threadLocal.set(value) 的 value 为值的 Map。</li>
+</ol>
+<p>所以在每个线程中读到的内容都不同。</p>
+<h1 id="内存泄露"><a href="#内存泄露" class="headerlink" title="内存泄露"></a>内存泄露</h1><p>Java 中有容器的地方，使用不当就会造成内存泄露。 ThreadLocal 的底层实现当中就有一个 Map，那么使用不当，引起内存泄露也不是什么难事。</p>
+<p>由上图可以看到，一旦执行了 threadLocal.set(value) 方法，在线程中就会存储一个 threadLocal -&gt; value 的映射。如果线程中直接将 threadLocalRef 置为 null，或者指向另外的 threadLocal 对象，那么堆里面当前的 ThreadLocal 对象可以被 gc，那么 Map 中的 key 就指向了一片被 gc 掉的内存，此时 Map 就不能通过这个 key 索引到这个 value，就会造成内存泄露。</p>
+<h1 id="使用心得"><a href="#使用心得" class="headerlink" title="使用心得"></a>使用心得</h1><p>最近工作中用到了 ThreadLocal。看了一些案例，最常见的用法是将 ThreadLocal 实现成 static 的，这样就可以在多个线程中用同一个 ThreadLocal 对象访问到线程独有的内存。</p>
+<p>但并非 ThreadLocal 就得是 static 的，需要根据场景而定。只需明白一个 threadLocal 变量对应 Map 中的一个映射关系。比如我把 ThreadLocal 作为一个非 static 的成员变量封到一个 AnyClass 中，那么一个 AnyClass 对象对会有一个 ThreadLocal 变量对应到 Map 中。</p>
+<p>完!</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -263,7 +422,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-05T16:12:00+08:00">
                 2019-05-05
@@ -284,7 +443,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -404,7 +563,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-02T15:42:00+08:00">
                 2019-05-02
@@ -425,7 +584,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -572,7 +731,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-30T15:42:00+08:00">
                 2019-04-30
@@ -593,7 +752,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -734,7 +893,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/03/24/fastdfs/" itemprop="url">Untitled</a></h1>
+                <a class="post-title-link" href="/2019/03/24/fastdfs/" itemprop="url">Unbenannt</a></h1>
         
 
         <div class="post-meta">
@@ -744,7 +903,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-24T19:34:04+08:00">
                 2019-03-24
@@ -863,7 +1022,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-27T21:35:00+08:00">
                 2019-02-27
@@ -884,7 +1043,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1034,7 +1193,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-24T09:51:00+08:00">
                 2019-02-24
@@ -1055,7 +1214,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1202,7 +1361,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-18T18:43:00+08:00">
                 2019-02-18
@@ -1223,7 +1382,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1356,7 +1515,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-15T22:43:00+08:00">
                 2019-02-15
@@ -1377,7 +1536,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1539,7 +1698,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-27T13:17:00+08:00">
                 2019-01-27
@@ -1560,7 +1719,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -1649,169 +1808,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/01/12/consensus/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="王哲">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Light">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/12/consensus/" itemprop="url">consensus 共识</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-12T13:17:00+08:00">
-                2019-01-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/base/" itemprop="url" rel="index">
-                    <span itemprop="name">base</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><a href="http://imengdong.cn/2018/11/18/acid%20base%20cap/" target="_blank" rel="noopener">一气呵成了解分布式</a>介绍了入门分布式系统的一点基本理论。在现有的网络基础设施条件下，<strong>CAP</strong> 理论中的 P 是不可避免的，因此我们需要在 C 和 A 中做选择。<strong>Base</strong> 理论选择了 AP，强调基本可用、最终一致性，后面我们讨论工业界常见的达成最终一致性的方案。在有些常见的系统中，选择 CP，如果获取不到一致性的值，则会直接导致不可用，zookeeper 就是其中之一。本文从 paxos 入手介绍分布式共识算法。</p>
-<h1 id="分布式共识模型"><a href="#分布式共识模型" class="headerlink" title="分布式共识模型"></a>分布式共识模型</h1><p>在具备容错能力的分布式系统中，分布式共识问题是需要解决的一个基本问题，<strong>它指的是多个分布式节点就某变量的值达成一致，而且一旦达成一致，则该值就是最终确认的值，不会由于某个节点的异常导致该值变化</strong>。<br>分布式共识模型是对工业界需要解决的常见问题的抽象，比如：选主、加锁等。想必大家见识过不止一种选主手段，比如采用 zookeeper 进行选主、在 redis 中通过 redis-sentinel 进行选主等。</p>
-<h1 id="共识算法"><a href="#共识算法" class="headerlink" title="共识算法"></a>共识算法</h1><blockquote>
-<p>如果我们不做数据内核相关的工作，目前对该类算法不感兴趣并不影响我们日常的工作，毕竟这是科学家搞出来的算法，有难度。然而简单了解一下却可以帮助我们了解到类似 zookeeper 这些分布式协调服务的能力边界，不至于认为它可以顺利解决所有分布式问题。</p>
-</blockquote>
-<h2 id="形象化描述"><a href="#形象化描述" class="headerlink" title="形象化描述"></a>形象化描述</h2><p>受论文的影响，paxos 算法介绍的时候总是采用议会选举来描述。这里我们采用小伙伴们常见的约球选球场的方式说明如何就选择哪个球场达成共识。共识问题描述如下：你和其余4个朋友共 5 人，相约每周日要去球馆打篮球。市区内有 30 个球馆在周日提供服务。现在你们周日要去打球了，你们几个只能通过手机（不能建立群组）相互联系，并且由于西安联通的信号很差，所以小伙伴之间经常无法正常取得联系，那么大家怎么最终就选择某个球馆达成一致呢？</p>
-<h2 id="PAXOS-算法"><a href="#PAXOS-算法" class="headerlink" title="PAXOS 算法"></a>PAXOS 算法</h2><img src="/2019/01/12/consensus/paxos1.jpg">
-<p>上图是对球场共识场景的一个简化，5 人可以同时承担提议者和接受者的角色。为了便于理解，我们让这些人只担当一种角色，从 2 个提议者，3 个接受者的角度入手描述。</p>
-<p>上图描述了 paxos 最简单的场景。小 A 分别对 3 个接受者说，我来给大家选球场（prepare[N]）吧。3 个接受者说好（promise[N]）。小 A 收到这 3 个接受者的授权后，分别对 3 个接受者说，我们去 V 球场（Accept[N，V]）吧。三个接受者因为没有收到其他人的建议就回复小 A 说好（Accepted[N,V]）。此时就去 V 球场就达成了一致。小 B 这时和三个接受者说，我来给大家选球场（prepare[M])吧。若M &lt; N，则接受者会忽略；若M &gt; N，则接受者会告诉小 B，我们已经决定了去 V 球场。此时小 B 接收到了 3 个接受者的拒绝信息，就确定大家都去 V 球场了。</p>
-<p>比如三个接受者中有一个联系不上了，即分布式系统中出现了分区问题，那么怎么办？ </p>
-<img src="/2019/01/12/consensus/paxos2.jpg">
-<p>上图中虽然有一个接受者联通信号不行，联系不上了，但是由于小 A 获得了超过一半的接受者的支持（达到了quorum）,小 A 依旧会提供自己的建议给这些接受者，直到最终就 V 球场达成一致。等到信号差的接受者电话好了，其他接受者会将选择了 V 球场作为共识的信息通知到该接受者。因此我们可以看到 paxos 算法就最终去 V 球场达成了一致。也就是说<strong>只要接受者有一半可以正常联系到，那么就可以达成共识，容错能力超强</strong>。</p>
-<h2 id="PAXOS-算法问题"><a href="#PAXOS-算法问题" class="headerlink" title="PAXOS 算法问题"></a>PAXOS 算法问题</h2><p>也许你已经发现上述算法一个很大的漏洞，即如果小 A 说完我给大家选球场（prepare[N]），三个接受者同意后（promise[N]）,小 B 也说我给大家选球场(prepare[M])，三个接受者由于还未达成任何共识，因为 N &lt; M，他们必须同意小 B 选球场（promise[M]）。此时如果小 A 提出了去球场 V (accept[N,V])打球，三个接受者会因为小 B 的 M 更大而忽略小 A 的提议。此时小 A 会重新提出我来给大家选球场（prepare[P])，M &lt; P。如此循环下去，那么这个将无休无止了，最终无法选出一个球场。如下图所示：<br><img src="/2019/01/12/consensus/paxos-problem.jpg"><br>令大家意想不到的是，工业界解决这类问题的方法简单到爆：随机时间。即如果提案被忽略，则需要等待一个随机时间才可以再次提出 prepare，该随机时间通常会超过上一个提案达成共识的时间。</p>
-<h2 id="MULTI-PAXOS-算法"><a href="#MULTI-PAXOS-算法" class="headerlink" title="MULTI-PAXOS 算法"></a>MULTI-PAXOS 算法</h2><p>通过对 PAXOS 介绍，我们可发现，每个共识的生成，都至少需要 4 个步骤，两次 RPC，对一个高性能的共识服务器是一个不小的冲击，那么是否可以简化呢？答案是肯定的。我们平时选择球场的时候，通常会由固定的某一个人发起，multi-paxos 选用类似的方式。</p>
-<img src="/2019/01/12/consensus/multi-paxos.jpg">
-<p>上图是 multi-paxos 算法的描述，与 paxos 不同的是， multi-paxos 会首先通过 paxos 的方式选主。上图中选定小 A 为第 I 年度的队长，那么以后每周去哪个球馆都由小 A 直接向接受者提出（accept[N, I, V]），而不需要先向接受者提出让自己来选择球馆(prepare[N])。这样除了第一次是 4 个步骤，后续只需要两个步骤，少了一半。</p>
-<p>假如小 A 也换成了联通手机，大家都无法联系到小 A 了（即分布式系统中主异常），此时剩下的几人就需要重新选出一个主，即选取第 J 年度队长。等小 A 联系上了之后，接受者会通知小 A，由于你的信号太差，我们选了小 B 作为第 J 年度队长，以后我们让小 B 通知大家吧，小 A 也就欣然接受小 B 作为队长，以后不再提出异议。</p>
-<h2 id="raft、zab"><a href="#raft、zab" class="headerlink" title="raft、zab"></a>raft、zab</h2><p>raft 和 zab 是 multi-paxos 的变种，它们将共识过程分为 3 步：1. 选主；2，备份；3.安全性。raft 在选主完成之后，主会周期性的通过心跳通知从，大哥还好好的，你们听话，直到主异常后，才会进入下一轮的选主。 zab 则在选主完成之后，从周期性的通过心跳看大哥是不是好好的，如果不好就篡位了。想更形象了解 raft，可以通过<a href="https://raft.github.io/了解。" target="_blank" rel="noopener">https://raft.github.io/了解。</a></p>
-<h1 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h1><p>通过上述的介绍，我们对分布式共识算法有了初步了解。我们知道 zookeeper 实现了 zab 协议，那么它可以做到什么，做不到什么呢，又是如何工作的呢？</p>
-<img src="/2019/01/12/consensus/masterandlock.jpg">
-<p>因为 zookeeper 可以就某一值达成共识，所以我们可以通过 zookeeper 对我们的服务进行选主。由于算法的安全性保障只要达到 quorum 的 zookeeper 正常工作，我们最终可以确认唯一的节点为主节点。分布式锁也可以由 zookeeper 实现，一旦某个客户端加锁成功，则 zookeeper 会就这一情况达成共识，即使主 zookeeper 后来挂掉，也会延续这一共识。但我们要认识到，在 curator-recipes 的实现中采用的临时 node，那么一旦具有锁的客户端连接丢失，超过 session 时间后，锁就会被释放。</p>
-<p>zookeeper 不能完成所有情况下客户端强一致性的保证。比如我们用 zookeeper 做个简单的配置中心，配置下发过程中，一旦客户端连接丢失，则配置信息不会及时通知到客户端。也就是说，我们不能就此保证各个客户端目前肯定就某一种配置达成一致。<br><img src="/2019/01/12/consensus/client.jpg"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1862,8 +1858,8 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">26</span>
-                  <span class="site-state-item-name">posts</span>
+                  <span class="site-state-item-count">27</span>
+                  <span class="site-state-item-name">Artikel</span>
                 </a>
               </div>
             
@@ -1874,7 +1870,7 @@
               <div class="site-state-item site-state-categories">
                 
                   <span class="site-state-item-count">13</span>
-                  <span class="site-state-item-name">categories</span>
+                  <span class="site-state-item-name">Kategorien</span>
                 
               </div>
             
@@ -1885,7 +1881,7 @@
               <div class="site-state-item site-state-tags">
                 
                   <span class="site-state-item-count">19</span>
-                  <span class="site-state-item-name">tags</span>
+                  <span class="site-state-item-name">Tags</span>
                 
               </div>
             
@@ -1938,7 +1934,7 @@
 </div>
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+  <div class="powered-by">Erstellt mit  <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
 
 
 

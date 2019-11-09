@@ -81,18 +81,20 @@
 
 
 
-<meta name="description" content="近期在优化 FreeSwitch ESL 客户端相关的业务实现的过程中，对 ESL 提供的 Client 进行了封装，设计并开发了 FreeSwitch 连接池，命名为 JreeSwitch（学习 Jedis 命名方式）。本文围绕如何设计池和如何使用池展开讨论，对池化技术的精髓进行介绍。 对象池对象池是统一管理多个对象生命周期的一种技术。对象池最大的优点是省去频繁创建和销毁对象的性能损耗，其次可以">
+<meta name="description" content="相比于全局变量，ThreadLocal 并不是一个非常常用的技术，理解和使用起来比较生疏。但在有些 CPU 密集型的服务中，我们可能需要关注线程的负载情况，做一些降级和限流，以保证在极端流量的情况下，保证核心业务的运行。那么 ThreadLocal 或许是比全局变量更加合理的选择。一来编码直观，二来没有锁带来的开销。 ThreadLocal 直观理解抛开 Java 对 ThreadLocal 实现">
 <meta name="keywords" content="base java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="pool 池化技术">
-<meta property="og:url" content="http://wzlovegit.github.io/2019/02/15/pool/index.html">
+<meta property="og:title" content="Thread Local">
+<meta property="og:url" content="http://wzlovegit.github.io/2019/11/09/threadlocal/index.html">
 <meta property="og:site_name" content="Light">
-<meta property="og:description" content="近期在优化 FreeSwitch ESL 客户端相关的业务实现的过程中，对 ESL 提供的 Client 进行了封装，设计并开发了 FreeSwitch 连接池，命名为 JreeSwitch（学习 Jedis 命名方式）。本文围绕如何设计池和如何使用池展开讨论，对池化技术的精髓进行介绍。 对象池对象池是统一管理多个对象生命周期的一种技术。对象池最大的优点是省去频繁创建和销毁对象的性能损耗，其次可以">
+<meta property="og:description" content="相比于全局变量，ThreadLocal 并不是一个非常常用的技术，理解和使用起来比较生疏。但在有些 CPU 密集型的服务中，我们可能需要关注线程的负载情况，做一些降级和限流，以保证在极端流量的情况下，保证核心业务的运行。那么 ThreadLocal 或许是比全局变量更加合理的选择。一来编码直观，二来没有锁带来的开销。 ThreadLocal 直观理解抛开 Java 对 ThreadLocal 实现">
 <meta property="og:locale" content="中文">
-<meta property="og:updated_time" content="2019-02-16T11:45:23.835Z">
+<meta property="og:image" content="http://wzlovegit.github.io/2019/11/09/threadlocal/threadlocal.png">
+<meta property="og:updated_time" content="2019-11-09T02:54:34.839Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="pool 池化技术">
-<meta name="twitter:description" content="近期在优化 FreeSwitch ESL 客户端相关的业务实现的过程中，对 ESL 提供的 Client 进行了封装，设计并开发了 FreeSwitch 连接池，命名为 JreeSwitch（学习 Jedis 命名方式）。本文围绕如何设计池和如何使用池展开讨论，对池化技术的精髓进行介绍。 对象池对象池是统一管理多个对象生命周期的一种技术。对象池最大的优点是省去频繁创建和销毁对象的性能损耗，其次可以">
+<meta name="twitter:title" content="Thread Local">
+<meta name="twitter:description" content="相比于全局变量，ThreadLocal 并不是一个非常常用的技术，理解和使用起来比较生疏。但在有些 CPU 密集型的服务中，我们可能需要关注线程的负载情况，做一些降级和限流，以保证在极端流量的情况下，保证核心业务的运行。那么 ThreadLocal 或许是比全局变量更加合理的选择。一来编码直观，二来没有锁带来的开销。 ThreadLocal 直观理解抛开 Java 对 ThreadLocal 实现">
+<meta name="twitter:image" content="http://wzlovegit.github.io/2019/11/09/threadlocal/threadlocal.png">
 
 
 
@@ -122,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="http://wzlovegit.github.io/2019/02/15/pool/"/>
+  <link rel="canonical" href="http://wzlovegit.github.io/2019/11/09/threadlocal/"/>
 
 
 
 
 
-  <title>pool 池化技术 | Light</title>
+  <title>Thread Local | Light</title>
   
 
 
@@ -235,7 +237,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/02/15/pool/">
+    <link itemprop="mainEntityOfPage" href="http://wzlovegit.github.io/2019/11/09/threadlocal/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="王哲">
@@ -252,7 +254,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">pool 池化技术</h1>
+          <h1 class="post-title" itemprop="name headline">Thread Local</h1>
         
 
         <div class="post-meta">
@@ -264,8 +266,8 @@
               
                 <span class="post-meta-item-text">Veröffentlicht am</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-15T22:43:00+08:00">
-                2019-02-15
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-09T09:52:00+08:00">
+                2019-11-09
               </time>
             
 
@@ -324,48 +326,24 @@
       
 
       
-        <p>近期在优化 FreeSwitch ESL 客户端相关的业务实现的过程中，对 ESL 提供的 Client 进行了封装，设计并开发了 FreeSwitch 连接池，命名为 JreeSwitch（学习 Jedis 命名方式）。本文围绕如何设计池和如何使用池展开讨论，对池化技术的精髓进行介绍。</p>
-<h1 id="对象池"><a href="#对象池" class="headerlink" title="对象池"></a>对象池</h1><p>对象池是统一管理多个对象生命周期的一种技术。对象池最大的优点是<strong>省去频繁创建和销毁对象的性能损耗</strong>，其次可以<strong>将对象生命周期的管理复杂度集中管理，减少开发和运维难度</strong>。</p>
-<blockquote>
-<p>小贴士： 池化技术在现实生活当中随处可见，即共享技术。例如共享单车属于单车资源池化，高铁属于交通资源池化，我们不创建共享单车和高铁，但是我们可以方便得使用它们。</p>
-</blockquote>
-<h1 id="用处"><a href="#用处" class="headerlink" title="用处"></a>用处</h1><p>正是由于对象池的这些优点，使得我们经常见到线程池、连接池等名词。既然对象池如此优秀，为什么不讲所有的对象都放到对象池呢？我总结出如下用法：</p>
-<ul>
-<li>对象一次创建和销毁的开销相对业务本身较大，通常涉及内核资源的调度（系统 API 调用），比如连接、线程、内存等</li>
-<li>对象可以复用，并非临时性对象，比如连接创建之后，在连接上发送命令即可，无需频繁建链。</li>
-</ul>
-<h1 id="对象池设计"><a href="#对象池设计" class="headerlink" title="对象池设计"></a>对象池设计</h1><blockquote>
-<p>参照 GenericObjectPool 进行讲解</p>
-</blockquote>
-<p>我们在使用对象池时是不关注对象何时创建的，用完对象之后，同样也不关注对象何时被销毁，那么对于一个用于租赁对象的对象池来讲，它需要具备以下几个核心能力。</p>
-<ul>
-<li>borrowObject : 对象池出租对象给用户</li>
-<li>returnObject : 用户归还对象给对象池</li>
-<li>检查对象状态 : 出租前、归还后检查</li>
-<li>对象池检查 : 定时检查，根据对象状态和对象池状态决定是否回收或创建连接</li>
-<li>动态扩容缩容 : 根据对象池状态，动态扩充新对象或销毁对象</li>
-</ul>
-<h2 id="GenericObject"><a href="#GenericObject" class="headerlink" title="GenericObject"></a>GenericObject</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GenericObjectPool(PooledObjectFactory&lt;T&gt; factory, GenericObjectPoolConfig&lt;T&gt; config)</span><br></pre></td></tr></table></figure>
-<p>入参为 PooledObjectFactory 和 GenericObjectPoolConfig。其中 PooledObjectFactory 用于提供对象的创建、激活、去激活、销毁等方法给 GenericObjectPool 管理对象生命周期时使用。GenericObjectPoolConfig 用于完成对象池的配置，比如最小空闲对象数等。</p>
-<h2 id="PooledObjectFactory"><a href="#PooledObjectFactory" class="headerlink" title="PooledObjectFactory"></a>PooledObjectFactory</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public interface PooledObjectFactory&lt;T&gt;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>makeObject()<br>创建对象实例。 当我们调用对象池的 borrowObject 方法获取对象时，在规则满足的情况下（比如池中无空闲对象并且没有到达最大对象数），那么对象池会调用该方法生成一个新的对象放入对象池。</p>
-</li>
-<li><p>activateObject(org.apache.commons.pool2.PooledObject) 激活对象实例。当我们从对象池中 borrowObject 的时，会执行该方法先激活对象再返回给用户使用。</p>
-</li>
-<li><p>validateObject(org.apache.commons.pool2.PooledObject) 判断对象合法性。在对象池返回某个对象或者将对象归还到对象池中的时，若满足配置规则，则会调用该方法判断对象是否可用。</p>
-</li>
-<li><p>passivateObject(org.apache.commons.pool2.PooledObject) 去激活对象实例。当我们 returnObject 给对象池时，会调用该方法去激活对象。</p>
-</li>
-<li>destroyObject(org.apache.commons.pool2.PooledObject) 销毁对象。当定时检查对象状态和对象池状态时，若满足规则，则销毁一部分对象。</li>
-</ul>
-<h2 id="GenericObjectPoolConfig"><a href="#GenericObjectPoolConfig" class="headerlink" title="GenericObjectPoolConfig"></a>GenericObjectPoolConfig</h2><p>管理对象池的最大个数，最大空闲对象个数和最少空闲个数。</p>
-<h1 id="快速实现"><a href="#快速实现" class="headerlink" title="快速实现"></a>快速实现</h1><p>在 GenericObjectPool 的基础上，我们可以快速完成对象池化。</p>
-<ul>
-<li>实现 PooledObjectFactory ：提供对象的创建、激活、去激活、销毁等方法。</li>
-<li>创建 GenericObjectPool ： 完成对象池生命周期管理（当然可以通过 GenericObjectPoolConfig 设置对象池的大小）。</li>
-</ul>
-<p>使用者在使用时无需关注何时创建、何时销毁等操作就可以复用以前的对象，非常方便。</p>
+        <p>相比于全局变量，ThreadLocal 并不是一个非常常用的技术，理解和使用起来比较生疏。但在有些 CPU 密集型的服务中，我们可能需要关注线程的负载情况，做一些降级和限流，以保证在极端流量的情况下，保证核心业务的运行。那么 ThreadLocal 或许是比全局变量更加合理的选择。一来编码直观，二来没有锁带来的开销。</p>
+<h1 id="ThreadLocal-直观理解"><a href="#ThreadLocal-直观理解" class="headerlink" title="ThreadLocal 直观理解"></a>ThreadLocal 直观理解</h1><p>抛开 Java 对 ThreadLocal 实现的代码，从直观上，ThreadLocal 想要完成单个线程内的全局状态共享，想必是每个线程对应了一块只由自己可见的内存。比如有 T1 和 T2 两个线程：</p>
+<p>T1 -&gt; 只有 T1 可见的内存1<br>T2 -&gt; 只有 T2 可见的内存2</p>
+<p>T1 和 T2 均不可见对方的那一块内存。这样线程就可以将自己相关的上下文都存储到这一篇内存当中，由于其他线程不可见，也就不用担心多线程问题。</p>
+<h1 id="ThreadLocal-原理浅析"><a href="#ThreadLocal-原理浅析" class="headerlink" title="ThreadLocal 原理浅析"></a>ThreadLocal 原理浅析</h1><img src="/2019/11/09/threadlocal/threadlocal.png" title="ThreadLocal内存">
+<p>ThreadLocal 之所以不好理解，我觉得是因为我们平时习惯了面向对象的思维方式。面向对象编程中，绝大多数情况下是对象维持了状态，这个状态不管到哪个线程要用，它都是一样的。比如，有一个对象 Student student = new Student(name, age); 那么不管哪个线程读到 student，它都是这一个对象。这个对象对应的那一片内存不会换。student.getName(); student.getAge() 都是从这一片内存上读取一个值，在哪个线程都一样。理解起来比较直观，就像人的祖籍，走到哪里，me.getHome() 都是河北。</p>
+<p>ThreadLocal 对象多了一层逻辑。虽然在每个线程中 ThreadLocal 对象都是同一个对象，但是它们在每个线程中映射的内存都是线程独有的一块内存。也不难理解，就和社保一样。我是河北人，在西安工作的时候，社保就交到了西安，现在在北京工作，那么社保就交到了北京。所以在西安这个线程中访问我的社保，那就是西安的社保；在北京这个线程中访问我的社保，那就是北京的社保。互不干涉，各管各的。</p>
+<p>ThreadLocal 源码的分析已经有很多了，这里不做过多分析。只需把握住两点：</p>
+<ol>
+<li>每个线程单独一片内存，getMap(t)，t 表示线程，可以获取到这片内存</li>
+<li>这一片内存中存储了以 ThreadLocal 变量为 key，以 threadLocal.set(value) 的 value 为值的 Map。</li>
+</ol>
+<p>所以在每个线程中读到的内容都不同。</p>
+<h1 id="内存泄露"><a href="#内存泄露" class="headerlink" title="内存泄露"></a>内存泄露</h1><p>Java 中有容器的地方，使用不当就会造成内存泄露。 ThreadLocal 的底层实现当中就有一个 Map，那么使用不当，引起内存泄露也不是什么难事。</p>
+<p>由上图可以看到，一旦执行了 threadLocal.set(value) 方法，在线程中就会存储一个 threadLocal -&gt; value 的映射。如果线程中直接将 threadLocalRef 置为 null，或者指向另外的 threadLocal 对象，那么堆里面当前的 ThreadLocal 对象可以被 gc，那么 Map 中的 key 就指向了一片被 gc 掉的内存，此时 Map 就不能通过这个 key 索引到这个 value，就会造成内存泄露。</p>
+<h1 id="使用心得"><a href="#使用心得" class="headerlink" title="使用心得"></a>使用心得</h1><p>最近工作中用到了 ThreadLocal。看了一些案例，最常见的用法是将 ThreadLocal 实现成 static 的，这样就可以在多个线程中用同一个 ThreadLocal 对象访问到线程独有的内存。</p>
+<p>但并非 ThreadLocal 就得是 static 的，需要根据场景而定。只需明白一个 threadLocal 变量对应 Map 中的一个映射关系。比如我把 ThreadLocal 作为一个非 static 的成员变量封到一个 AnyClass 中，那么一个 AnyClass 对象对会有一个 ThreadLocal 变量对应到 Map 中。</p>
+<p>完!</p>
 
       
     </div>
@@ -420,8 +398,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/01/27/2018/" rel="next" title="小结">
-                <i class="fa fa-chevron-left"></i> 小结
+              <a href="/2019/05/05/netty4/" rel="next" title="netty 4 之 pipeline 模型">
+                <i class="fa fa-chevron-left"></i> netty 4 之 pipeline 模型
               </a>
             
           </div>
@@ -429,10 +407,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/02/18/server keepalive/" rel="prev" title="服务保活">
-                服务保活 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -576,7 +550,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#对象池"><span class="nav-number">1.</span> <span class="nav-text">对象池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#用处"><span class="nav-number">2.</span> <span class="nav-text">用处</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对象池设计"><span class="nav-number">3.</span> <span class="nav-text">对象池设计</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GenericObject"><span class="nav-number">3.1.</span> <span class="nav-text">GenericObject</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PooledObjectFactory"><span class="nav-number">3.2.</span> <span class="nav-text">PooledObjectFactory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GenericObjectPoolConfig"><span class="nav-number">3.3.</span> <span class="nav-text">GenericObjectPoolConfig</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#快速实现"><span class="nav-number">4.</span> <span class="nav-text">快速实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ThreadLocal-直观理解"><span class="nav-number">1.</span> <span class="nav-text">ThreadLocal 直观理解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ThreadLocal-原理浅析"><span class="nav-number">2.</span> <span class="nav-text">ThreadLocal 原理浅析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#内存泄露"><span class="nav-number">3.</span> <span class="nav-text">内存泄露</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用心得"><span class="nav-number">4.</span> <span class="nav-text">使用心得</span></a></li></ol></div>
             
 
           </div>

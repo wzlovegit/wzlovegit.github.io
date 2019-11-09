@@ -8,8 +8,27 @@
     <atom:link href="/rss2.xml" rel="self" type="application/rss+xml"/>
     
     <description>分享 交流</description>
-    <pubDate>Sun, 05 May 2019 08:13:01 GMT</pubDate>
+    <pubDate>Sat, 09 Nov 2019 02:54:34 GMT</pubDate>
     <generator>http://hexo.io/</generator>
+    
+    <item>
+      <title>Thread Local</title>
+      <link>http://wzlovegit.github.io/2019/11/09/threadlocal/</link>
+      <guid>http://wzlovegit.github.io/2019/11/09/threadlocal/</guid>
+      <pubDate>Sat, 09 Nov 2019 01:52:00 GMT</pubDate>
+      <description>
+      
+        
+        
+          &lt;p&gt;相比于全局变量，ThreadLocal 并不是一个非常常用的技术，理解和使用起来比较生疏。但在有些 CPU 密集型的服务中，我们可能需要关注线程的负载情况，做一些降级和限流，以保证在极端流量的情况下，保证核心业务的运行。那么 ThreadLocal 或许是比全局变量更加合理
+        
+      
+      </description>
+      
+      <content:encoded><![CDATA[<p>相比于全局变量，ThreadLocal 并不是一个非常常用的技术，理解和使用起来比较生疏。但在有些 CPU 密集型的服务中，我们可能需要关注线程的负载情况，做一些降级和限流，以保证在极端流量的情况下，保证核心业务的运行。那么 ThreadLocal 或许是比全局变量更加合理的选择。一来编码直观，二来没有锁带来的开销。</p><h1 id="ThreadLocal-直观理解"><a href="#ThreadLocal-直观理解" class="headerlink" title="ThreadLocal 直观理解"></a>ThreadLocal 直观理解</h1><p>抛开 Java 对 ThreadLocal 实现的代码，从直观上，ThreadLocal 想要完成单个线程内的全局状态共享，想必是每个线程对应了一块只由自己可见的内存。比如有 T1 和 T2 两个线程：</p><p>T1 -&gt; 只有 T1 可见的内存1<br>T2 -&gt; 只有 T2 可见的内存2</p><p>T1 和 T2 均不可见对方的那一块内存。这样线程就可以将自己相关的上下文都存储到这一篇内存当中，由于其他线程不可见，也就不用担心多线程问题。</p><h1 id="ThreadLocal-原理浅析"><a href="#ThreadLocal-原理浅析" class="headerlink" title="ThreadLocal 原理浅析"></a>ThreadLocal 原理浅析</h1><img src="/2019/11/09/threadlocal/threadlocal.png" title="ThreadLocal内存"><p>ThreadLocal 之所以不好理解，我觉得是因为我们平时习惯了面向对象的思维方式。面向对象编程中，绝大多数情况下是对象维持了状态，这个状态不管到哪个线程要用，它都是一样的。比如，有一个对象 Student student = new Student(name, age); 那么不管哪个线程读到 student，它都是这一个对象。这个对象对应的那一片内存不会换。student.getName(); student.getAge() 都是从这一片内存上读取一个值，在哪个线程都一样。理解起来比较直观，就像人的祖籍，走到哪里，me.getHome() 都是河北。</p><p>ThreadLocal 对象多了一层逻辑。虽然在每个线程中 ThreadLocal 对象都是同一个对象，但是它们在每个线程中映射的内存都是线程独有的一块内存。也不难理解，就和社保一样。我是河北人，在西安工作的时候，社保就交到了西安，现在在北京工作，那么社保就交到了北京。所以在西安这个线程中访问我的社保，那就是西安的社保；在北京这个线程中访问我的社保，那就是北京的社保。互不干涉，各管各的。</p><p>ThreadLocal 源码的分析已经有很多了，这里不做过多分析。只需把握住两点：</p><ol><li>每个线程单独一片内存，getMap(t)，t 表示线程，可以获取到这片内存</li><li>这一片内存中存储了以 ThreadLocal 变量为 key，以 threadLocal.set(value) 的 value 为值的 Map。</li></ol><p>所以在每个线程中读到的内容都不同。</p><h1 id="内存泄露"><a href="#内存泄露" class="headerlink" title="内存泄露"></a>内存泄露</h1><p>Java 中有容器的地方，使用不当就会造成内存泄露。 ThreadLocal 的底层实现当中就有一个 Map，那么使用不当，引起内存泄露也不是什么难事。</p><p>由上图可以看到，一旦执行了 threadLocal.set(value) 方法，在线程中就会存储一个 threadLocal -&gt; value 的映射。如果线程中直接将 threadLocalRef 置为 null，或者指向另外的 threadLocal 对象，那么堆里面当前的 ThreadLocal 对象可以被 gc，那么 Map 中的 key 就指向了一片被 gc 掉的内存，此时 Map 就不能通过这个 key 索引到这个 value，就会造成内存泄露。</p><h1 id="使用心得"><a href="#使用心得" class="headerlink" title="使用心得"></a>使用心得</h1><p>最近工作中用到了 ThreadLocal。看了一些案例，最常见的用法是将 ThreadLocal 实现成 static 的，这样就可以在多个线程中用同一个 ThreadLocal 对象访问到线程独有的内存。</p><p>但并非 ThreadLocal 就得是 static 的，需要根据场景而定。只需明白一个 threadLocal 变量对应 Map 中的一个映射关系。比如我把 ThreadLocal 作为一个非 static 的成员变量封到一个 AnyClass 中，那么一个 AnyClass 对象对会有一个 ThreadLocal 变量对应到 Map 中。</p><p>完!</p>]]></content:encoded>
+      
+      <comments>http://wzlovegit.github.io/2019/11/09/threadlocal/#disqus_thread</comments>
+    </item>
     
     <item>
       <title>netty 4 之 pipeline 模型</title>
